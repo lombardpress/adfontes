@@ -25,7 +25,8 @@ module.exports = {
 		root: __dirname,
 		modulesDirectories: [
 			'node_modules',
-			'./app/components'
+			'./app/components',
+			'./app/api'
 		],
 		alias: {
 			applicationStyles: "app/styles/app.scss"
@@ -50,7 +51,7 @@ module.exports = {
 		]
 	},
 	devtool: 'cheap-module-eval-source-map'
-	
+
 	// "cheap-source-map" can be used instead of above
 	// which currently has bugs
 	// buggy warning can also be avoided with filter in console.
