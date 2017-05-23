@@ -1,0 +1,19 @@
+.quotation{
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  padding: 1rem;
+  transition: background .3s ease;
+
+  p, input {
+    margin: 0;
+  }
+
+
+  &:hover{
+    background: #f0f0f0;
+  }
+}
+.focused {
+  background: $light-color;
+}

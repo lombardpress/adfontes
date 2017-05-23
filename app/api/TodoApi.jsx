@@ -7,6 +7,38 @@ module.exports = {
       return todos;
     }
   },
+  getQuotations: function(canonicalQuotationId){
+    var initialQuotations = [
+    	{
+    		id: 1,
+    		quotation: "this is quotation 1",
+    		focused: false,
+    		isInstanceOf: 100,
+      },
+    	{
+    		id: 2,
+    		quotation: "this is quotation 2",
+    		focused: false,
+    		isInstanceOf: 101
+    	},
+    	{
+    		id: 3,
+    		quotation: "this is quotation 3",
+    		focused: false,
+    		isInstanceOf: 100
+    	},
+    	{
+    		id: 4,
+    		quotation: "this is quotation 4",
+    		focused: false,
+    		isInstanceOf: 101
+    	}
+    ]
+    var filteredQuotations = initialQuotations.filter(function(quotation){
+      return quotation.isInstanceOf === canonicalQuotationId;
+    });
+    return filteredQuotations
+  },
   getTodos: function(){
     var stringTodos = localStorage.getItem("todos");
     var todos = [];
