@@ -73,7 +73,7 @@ export var quotationsReducer = (state = [], action) => {
           id: quotation.quotation.value,
           quotation: quotation.quotation_text.value,
           focused: false,
-          isIstanceOf: quotation.isInstanceOf.value ? quotation.isInstanceOf.value : null
+          isIstanceOf: quotation.isInstanceOf ? quotation.isInstanceOf.value : null
         }
       });
     case 'CHANGE_QUOTATIONS_FOCUS':
@@ -113,6 +113,8 @@ export var canonicalQuotationReducer = (state = {}, action) => {
   switch (action.type){
     case 'CREATE_CANONICAL_QUOTATION':
       return action.quotation;
+    case 'CLEAR_CANONICAL_QUOTATION':
+      return null;
     default:
       return state;
   };
@@ -127,15 +129,24 @@ export var canonicalQuotationsReducer = (state = [], action) => {
         ...state,
         ...action.quotations
       ];
+    case 'CLEAR_CANONICAL_QUOTATIONS':
+      return []
     case 'START_CANONICAL_QUOTATIONS_FETCH':
       return []
     case 'COMPLETE_CANONICAL_QUOTATIONS_FETCH':
 
-      return action.canonicalQuotations.map((quotation)=>{
+      return action.canonicalQuotations.map((quotation) => {
         return {
           id: quotation.quotation.value,
           quotation: quotation.quotation_text.value,
           focused: false,
+        }
+      });
+    case 'CLEAR_CANONICAL_QUOTATIONS_FOCUS':
+      return state.map((quotation) => {
+        return{
+          ...quotation,
+          focused: false
         }
       });
     case 'CHANGE_CANONICAL_QUOTATIONS_FOCUS':

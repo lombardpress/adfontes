@@ -4,11 +4,12 @@ var {connect} = require('react-redux');
 export var CanonicalQuotation = React.createClass({
 	render: function(){
     var {canonicalQuotation} = this.props;
-		var {quotation} = canonicalQuotation
+		var displayQuotation = canonicalQuotation ? canonicalQuotation.quotation : "No canonical quotation id assigned"
+		//var {quotation} = canonicalQuotation
 
 		return(
 			<div>
-				<p>Canonical Quotation: {quotation}</p>
+				<p>Canonical Quotation: {displayQuotation}</p>
 			</div>
 		)
 	}

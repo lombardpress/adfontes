@@ -1,9 +1,20 @@
 var React = require('react');
 var {connect} = require('react-redux');
+var actions = require('actions');
 
 import CanonicalQuotationListItem from "CanonicalQuotationListItem"
 
 export var CanonicalQuotationList = React.createClass({
+	handleOnShowQuotationsWithoutAssociation: function(e){
+		e.preventDefault();
+		var {dispatch} = this.props;
+		var searchText = this.refs.searchText.value;
+
+		dispatch(actions.clearCanonicalQuotation());
+		//dispatch(actions.clearCanonicalQuotationsFocus());
+		dispatch(actions.fetchCanonicalQuotations(searchText));
+		dispatch(actions.fetchQuotations(searchText));
+	},
 	render: function(){
     var {canonicalQuotations} = this.props;
     var renderQuotations = () => {
@@ -26,6 +37,10 @@ export var CanonicalQuotationList = React.createClass({
 		return(
 			<div>
 				<p>List of Canonical Quotations</p>
+
+				<input type="text" ref="searchText" onChange={this.handleOnShowQuotationsWithoutAssociation}  placeholder="Show Quotations"/>
+
+
 				{renderQuotations()}
 			</div>
 		)

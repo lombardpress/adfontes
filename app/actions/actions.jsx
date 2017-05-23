@@ -49,29 +49,37 @@ export var completeQuotationsFetch = (quotations) => {
     quotations
   };
 };
-export var fetchQuotations = () =>{
+export var fetchQuotations = (searchText = "") =>{
   return (dispatch, getState) => {
     var state = getState();
-    console.log(state);
-    var canonicalQuotationId = state.canonicalQuotation.id;
-    var query = [
-          "SELECT ?quotation ?isInstanceOf ?quotation_text ",
-          "WHERE {",
-          "<" + canonicalQuotationId + "> <http://scta.info/property/hasInstance> ?quotation .",
-          "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-          "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
-          "}"
-        ].join('');
-    var queryText = [
+    console.log("searchTextTest", searchText);
+    var query = ""
+    if (state.canonicalQuotation){
+      var canonicalQuotationId = state.canonicalQuotation.id;
+      var query = [
+            "SELECT ?quotation ?isInstanceOf ?quotation_text ",
+            "WHERE {",
+            "<" + canonicalQuotationId + "> <http://scta.info/property/hasInstance> ?quotation .",
+            "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+            "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
+            "}"
+          ].join('');
+    }
+    else{
+      var query = [
           "SELECT ?quotation ?isInstanceOf ?quotation_text ",
           "WHERE {",
           "?quotation <http://scta.info/property/structureElementType><http://scta.info/resource/structureElementQuote> .",
-          "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-          "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
-          "FILTER (REGEX(STR(?quotation_text), 'fides', 'i')) .",
+          "OPTIONAL {",
+            "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
           "}",
-          "ORDER BY ?quotation_text"
+          "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
+          "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
+          "}",
+          "ORDER BY ?quotation_text ",
+          "LIMIT 1000"
         ].join('');
+      }
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -110,6 +118,12 @@ export var createCanonicalQuotation = (quotation) => {
     quotation
   };
 };
+export var clearCanonicalQuotation = () => {
+  return{
+    type: "CLEAR_CANONICAL_QUOTATION"
+  };
+};
+
 
 // CanonicalQuotations (plural) Actions
 export var changeCanonicalQuotationsFocus = (id) => {
@@ -118,6 +132,16 @@ export var changeCanonicalQuotationsFocus = (id) => {
     id
   }
 }
+export var clearCanonicalQuotationsFocus = () =>{
+  return{
+    type: "CLEAR_CANONICAL_QUOTATIONS_FOCUS",
+  }
+}
+export var clearCanonicalQuotations = () => {
+  return{
+    type: "CLEAR_CANONICAL_QUOTATIONS"
+  };
+};
 export var startCanonicalQuotationsFetch = () => {
   return{
     type: "START_CANONICAL_QUOTATIONS_FETCH"
@@ -129,7 +153,7 @@ export var completeCanonicalQuotationsFetch = (canonicalQuotations) => {
     canonicalQuotations
   };
 };
-export var fetchCanonicalQuotations = () =>{
+export var fetchCanonicalQuotations = (searchText = "") =>{
   return (dispatch, getState) => {
     var state = getState();
 
@@ -139,6 +163,7 @@ export var fetchCanonicalQuotations = () =>{
           "WHERE {",
           "?quotation a <http://scta.info/resource/quotation> .",
           "?quotation <http://scta.info/property/quotation> ?quotation_text .",
+          "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}"
         ].join('');
     dispatch(startQuotationsFetch());
