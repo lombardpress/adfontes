@@ -17,18 +17,20 @@ var TodoApp = React.createClass({
 		return (
 			<div>
 				<h1 className='page-title'>Quotation App</h1>
-				<div className="row">
-					<div className="column small-3 medium-3 large-3">
+				<div className="wrapper">
+					<div id="CanonicalQuotationList" className="column1">
 						<CanonicalQuotationList/>
 					</div>
-					<div className="column small-3 medium-3 large-3">
+					<div className="column2">
 						<QuotationList/>
 					</div>
-					<div className="column small-6 medium-6 large-6">
-						<div className="container">
+					<div className="column3">
 							<CanonicalQuotation/>
 							<FocusedQuotation/>
-						</div>
+
+					</div>
+					<div className="column4">
+
 					</div>
 
 				</div>

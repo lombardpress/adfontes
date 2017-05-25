@@ -73,7 +73,7 @@ export var quotationsReducer = (state = [], action) => {
           id: quotation.quotation.value,
           quotation: quotation.quotation_text.value,
           focused: false,
-          isIstanceOf: quotation.isInstanceOf ? quotation.isInstanceOf.value : null
+          isInstanceOf: quotation.isInstanceOf ? quotation.isInstanceOf.value : null
         }
       });
     case 'CHANGE_QUOTATIONS_FOCUS':

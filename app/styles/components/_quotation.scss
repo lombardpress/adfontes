@@ -1,3 +1,4 @@
+
 .quotation{
   align-items: center;
   display: flex;
@@ -16,4 +17,37 @@
 }
 .focused {
   background: $light-color;
+}
+
+.isNotInstance{
+  border-left: 1px solid black;
+}
+
+.wrapper{
+
+}
+.column1, .column2, .column3, .column4{
+  position: fixed;
+  overflow: scroll;
+  height: 80%;
+  margin-bottom: 100px;
+  padding: 1%;
+  //border: .5px solid $light-color;
+
+}
+.column1{
+  width: 20%;
+  left: 5%;
+}
+.column2 {
+  width:20%;
+  left: 27%;
+}
+.column3{
+  width: 30%;
+  left: 49%;
+}
+.column4{
+  width: 20%;
+  left: 81%;
 }

@@ -20,9 +20,9 @@ export var CanonicalQuotationListItem = React.createClass({
 		dispatch(actions.clearQuotationFocus());
 	},
 	render: function(){
-    var {quotation, className} = this.props
+    var {id, quotation, className} = this.props
     return(
-			<p className={className} onClick={this.handleOnClick}>{quotation}</p>
+			<p id={id} className={className} onClick={this.handleOnClick}>{quotation}</p>
 		)
 	}
 });

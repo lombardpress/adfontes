@@ -5,10 +5,12 @@ export var FocusedQuotation = React.createClass({
 	render: function(){
     var {focusedQuotation} = this.props;
 		var {quotation} = focusedQuotation
+		var {id} = focusedQuotation
 
 		return(
 			<div>
 				<p>Focused Quotation: {quotation}</p>
+				<a href={id}>{id}</a>
 			</div>
 		)
 	}

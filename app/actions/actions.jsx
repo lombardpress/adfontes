@@ -52,7 +52,7 @@ export var completeQuotationsFetch = (quotations) => {
 export var fetchQuotations = (searchText = "") =>{
   return (dispatch, getState) => {
     var state = getState();
-    console.log("searchTextTest", searchText);
+    
     var query = ""
     if (state.canonicalQuotation){
       var canonicalQuotationId = state.canonicalQuotation.id;
@@ -83,7 +83,7 @@ export var fetchQuotations = (searchText = "") =>{
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
-      console.log(results);
+
       dispatch(completeQuotationsFetch(results));
     });
   };
@@ -98,7 +98,6 @@ export var changeQuotationsFocus = (id) => {
 }
 
 export var clearQuotationFocus = () => {
-  console.log("clear Quotation firing");
   return{
     type: "CLEAR_QUOTATION_FOCUS"
   }
@@ -169,7 +168,6 @@ export var fetchCanonicalQuotations = (searchText = "") =>{
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
-      console.log("results", results);
       dispatch(completeCanonicalQuotationsFetch(results));
     });
   };
