@@ -171,6 +171,8 @@ export var canonicalQuotationsReducer = (state = [], action) => {
       return state;
   };
 };
+
+/// manifestation quotations reducer
 export var manifestationQuotationsReducer = (state = [], action) => {
   switch (action.type){
     case 'ADD_MANIFESTATION_QUOTATIONS':
@@ -219,4 +221,20 @@ export var manifestationQuotationsReducer = (state = [], action) => {
     default:
       return state;
   };
+};
+
+// paragraphReducer
+export var paragraphReducer = (state = {}, action) => {
+  switch (action.type){
+    case 'ADD_PARAGRAPH':
+      return actiona.paragraph;
+      case 'CLEAR_PARAGRAPH':
+        return {}
+      case 'START_PARAGRAPH_FETCH':
+        return {}
+      case 'COMPLETE_PARAGRAPH_FETCH':
+        return action.paragraph
+      default:
+        return state;
+  }
 };

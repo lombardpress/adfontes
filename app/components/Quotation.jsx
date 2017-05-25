@@ -12,27 +12,27 @@ export var Quotation = React.createClass({
 			id,
 			quotation
 		}
+		// example of why all these different dispatches called here might be a problem
+		//fetchParagraph() requires that the createFocusedQuotation() is set. 
+		//seems to be working as is, but i'm not sure if this is the best way
 		dispatch(actions.createFocusedQuotation(newFocusedQuotationObject));
+		dispatch(actions.fetchParagraph());
+
+
+
 
 		if (isInstanceOf != null){
 			// create canonicalQuotation
-			//var canonicalQuotationText = document.getElementById(isInstanceOf).value;
-
-			//function getQuotation(id){
-				//return quotation.id === true;
-		//}
 			var canonicalQuotationObject = this.props.canonicalQuotations.find((quotation) => {
 				return quotation.id === isInstanceOf
 
 			});
-			console.log("isInstanceOf", isInstanceOf)
+
 			if (canonicalQuotationObject != undefined){
 				dispatch(actions.createCanonicalQuotation(canonicalQuotationObject));
-
 				// focus canonicalquotation List Item
 				dispatch(actions.changeCanonicalQuotationsFocus(isInstanceOf));
 				// scroll
-				console.log(this.props)
 				var topPos = document.getElementById(isInstanceOf).offsetTop;
 				$('#CanonicalQuotationList').animate({ scrollTop: topPos-10 }, 400);
 			}
