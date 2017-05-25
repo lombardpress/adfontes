@@ -24,7 +24,8 @@ export var QuotationList = React.createClass({
 
 		return(
 			<div>
-				<p>List of Quotation Instances</p>
+				<p>List of Expression Quotations</p>
+				<p>Count {quotations.length}</p>
 				{renderQuotations()}
 			</div>
 		)

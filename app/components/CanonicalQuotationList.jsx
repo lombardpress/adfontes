@@ -14,6 +14,7 @@ export var CanonicalQuotationList = React.createClass({
 		//dispatch(actions.clearCanonicalQuotationsFocus());
 		dispatch(actions.fetchCanonicalQuotations(searchText));
 		dispatch(actions.fetchQuotations(searchText));
+		dispatch(actions.fetchManifestationQuotations(searchText));
 	},
 	render: function(){
     var {canonicalQuotations} = this.props;
@@ -28,8 +29,7 @@ export var CanonicalQuotationList = React.createClass({
 				var quotationClass = quotation.focused ? "quotation focused" : "quotation"
 				//var quotationClass = "quotation"
         return (
-
-          <CanonicalQuotationListItem className={quotationClass} key={quotation.id} {...quotation}/>
+					<CanonicalQuotationListItem className={quotationClass} key={quotation.id} {...quotation}/>
         );
       });
     };
@@ -40,7 +40,7 @@ export var CanonicalQuotationList = React.createClass({
 
 				<input type="text" ref="searchText" onChange={this.handleOnShowQuotationsWithoutAssociation}  placeholder="Show Quotations"/>
 
-
+				<p>Count {canonicalQuotations.length}</p>
 				{renderQuotations()}
 			</div>
 		)

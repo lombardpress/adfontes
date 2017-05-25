@@ -1,6 +1,6 @@
 var redux = require('redux');
 var thunk = require('redux-thunk').default;
-var {searchTextReducer, showCompletedReducer, todosReducer, quotationsReducer, focusedQuotationReducer, canonicalQuotationReducer, canonicalQuotationsReducer} = require('reducers');
+var {searchTextReducer, showCompletedReducer, todosReducer, quotationsReducer, focusedQuotationReducer, canonicalQuotationReducer, canonicalQuotationsReducer, manifestationQuotationsReducer} = require('reducers');
 
 export var configure = (initialState = {}) => {
   var reducer = redux.combineReducers({
@@ -10,7 +10,8 @@ export var configure = (initialState = {}) => {
     quotations: quotationsReducer,
     focusedQuotation: focusedQuotationReducer,
     canonicalQuotation: canonicalQuotationReducer,
-    canonicalQuotations: canonicalQuotationsReducer
+    canonicalQuotations: canonicalQuotationsReducer,
+    manifestationQuotations: manifestationQuotationsReducer
   })
 
   var store = redux.createStore(reducer, initialState, redux.compose(

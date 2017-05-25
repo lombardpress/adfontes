@@ -10,6 +10,7 @@ import QuotationList from "QuotationList";
 import FocusedQuotation from "FocusedQuotation";
 import CanonicalQuotation from "CanonicalQuotation";
 import CanonicalQuotationList from "CanonicalQuotationList";
+import ManifestationQuotationList from "ManifestationQuotationList";
 
 
 var TodoApp = React.createClass({
@@ -25,11 +26,11 @@ var TodoApp = React.createClass({
 						<QuotationList/>
 					</div>
 					<div className="column3">
-							<CanonicalQuotation/>
-							<FocusedQuotation/>
-
+						<ManifestationQuotationList/>
 					</div>
 					<div className="column4">
+							<CanonicalQuotation/>
+							<FocusedQuotation/>
 
 					</div>
 
