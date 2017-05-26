@@ -13,13 +13,10 @@ export var Quotation = React.createClass({
 			quotation
 		}
 		// example of why all these different dispatches called here might be a problem
-		//fetchParagraph() requires that the createFocusedQuotation() is set. 
+		//fetchParagraph() requires that the createFocusedQuotation() is set.
 		//seems to be working as is, but i'm not sure if this is the best way
 		dispatch(actions.createFocusedQuotation(newFocusedQuotationObject));
 		dispatch(actions.fetchParagraph());
-
-
-
 
 		if (isInstanceOf != null){
 			// create canonicalQuotation

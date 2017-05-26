@@ -159,16 +159,21 @@ export var fetchCanonicalQuotations = (searchText = "") =>{
 
 
     var query = [
-          "SELECT ?quotation ?quotation_text ",
+          "SELECT ?quotation ?citation ?quotation_text ",
           "WHERE {",
           "?quotation a <http://scta.info/resource/quotation> .",
           "?quotation <http://scta.info/property/quotation> ?quotation_text .",
+          "OPTIONAL { ",
+          "?quotation <http://scta.info/property/citation> ?citation .",
+          "}",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
-          "}"
+          "}",
+          "ORDER BY ?citation "
         ].join('');
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
+      console.log(results);
       dispatch(completeCanonicalQuotationsFetch(results));
     });
   };

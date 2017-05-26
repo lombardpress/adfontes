@@ -6,11 +6,12 @@ var actions = require('actions');
 
 export var CanonicalQuotationListItem = React.createClass({
 	handleOnClick: function(){
-		var {id, quotation, dispatch} = this.props;
+		var {id, quotation, citation, dispatch} = this.props;
 		dispatch(actions.changeCanonicalQuotationsFocus(this.props.id));
 		var quotationObject = {
 			id,
-			quotation
+			quotation,
+			citation
 		}
 		dispatch(actions.createCanonicalQuotation(quotationObject));
 		// doesn't seem like the way to do it, because this dispatch might get of sync.
@@ -21,9 +22,11 @@ export var CanonicalQuotationListItem = React.createClass({
 		dispatch(actions.clearParagraph());
 	},
 	render: function(){
-    var {id, quotation, className} = this.props
+    var {id, quotation, className, citation} = this.props
     return(
-			<p id={id} className={className} onClick={this.handleOnClick}>{quotation}</p>
+			<p id={id} className={className} onClick={this.handleOnClick}>{quotation}
+				<br/>
+			  <em>-- {citation}</em></p>
 		)
 	}
 });

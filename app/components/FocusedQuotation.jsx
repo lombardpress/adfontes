@@ -8,9 +8,9 @@ export var FocusedQuotation = React.createClass({
 		var {id} = focusedQuotation
 
 		return(
-			<div>
+			<div className="container">
 				<p>Focused Quotation: {quotation}</p>
-				<a href={id}>{id}</a>
+				<p><a href={id}>{id}</a></p>
 			</div>
 		)
 	}

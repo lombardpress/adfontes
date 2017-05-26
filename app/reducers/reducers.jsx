@@ -139,6 +139,7 @@ export var canonicalQuotationsReducer = (state = [], action) => {
         return {
           id: quotation.quotation.value,
           quotation: quotation.quotation_text.value,
+          citation: quotation.citation ? quotation.citation.value : "citation not yet recorded",
           focused: false,
         }
       });

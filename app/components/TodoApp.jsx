@@ -30,10 +30,9 @@ var TodoApp = React.createClass({
 						<ManifestationQuotationList/>
 					</div>
 					<div className="column4">
-							<CanonicalQuotation/>
-							<FocusedQuotation/>
-							<Paragraph/>
-
+						<Paragraph/>
+						<FocusedQuotation/>
+						<CanonicalQuotation/>
 					</div>
 
 				</div>

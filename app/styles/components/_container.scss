@@ -2,8 +2,9 @@
   background: $light-grey;
   border: 1px solid $light-grey-border;
   border-radius: 5px;
-  padding: 0;
-  margin-bottom: 2rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  overflow: scroll
 }
 .container__header{
   border-bottom: 1px solid $light-grey-border;
