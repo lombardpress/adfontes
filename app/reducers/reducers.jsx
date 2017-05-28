@@ -65,6 +65,13 @@ export var quotationsReducer = (state = [], action) => {
         ...state,
         ...action.quotations
       ];
+    case 'CLEAR_QUOTATIONS_FOCUS':
+      return state.map((quotation) => {
+        return{
+          ...quotation,
+          focused: false
+        }
+      });
     case 'START_QUOTATIONS_FETCH':
       return []
     case 'COMPLETE_QUOTATIONS_FETCH':
@@ -103,7 +110,7 @@ export var focusedQuotationReducer = (state = {}, action) => {
   switch (action.type){
     case 'CREATE_FOCUSED_QUOTATION':
       return action.quotation;
-    case 'CLEAR_QUOTATION_FOCUS':
+    case 'CLEAR_FOCUSED_QUOTATION':
       return {}
     default:
       return state;
@@ -192,6 +199,7 @@ export var manifestationQuotationsReducer = (state = [], action) => {
           id: quotation.quotation.value,
           quotation: quotation.quotation_text.value,
           focused: false,
+          isManifestationOf: quotation.isManifestationOf ? quotation.isManifestationOf.value : null
         }
       });
     case 'CLEAR_MANIFESTATION_QUOTATIONS_FOCUS':

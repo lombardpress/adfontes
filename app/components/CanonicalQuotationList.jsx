@@ -11,6 +11,8 @@ export var CanonicalQuotationList = React.createClass({
 		var searchText = this.refs.searchText.value;
 
 		dispatch(actions.clearCanonicalQuotation());
+		dispatch(actions.clearFocusedQuotation());
+		dispatch(actions.clearParagraph());
 		//dispatch(actions.clearCanonicalQuotationsFocus());
 		dispatch(actions.fetchCanonicalQuotations(searchText));
 		dispatch(actions.fetchQuotations(searchText));

@@ -5,9 +5,9 @@ var {connect} = require('react-redux');
 
 export var Paragraph = React.createClass({
 	render: function(){
-		console.log(this.props)
+
     var {paragraph} = this.props;
-		var {expression_id, paragraph_text} = paragraph
+		var {expression_id, manifestation_id, paragraph_text} = paragraph
 
 		var domParser = new DOMParser();
 		var xsltProcessor = new XSLTProcessor();
@@ -23,7 +23,7 @@ export var Paragraph = React.createClass({
 		var parent = document.createElement("div");
 		parent.appendChild(fragment);
 		var text =  parent.innerHTML;
-		console.log(text); //
+
 
 
 
@@ -59,7 +59,7 @@ export var Paragraph = React.createClass({
 			<div className="container">
 				<p>Context Paragraph</p>
 				<div id="text">{text}</div>
-				<a href={expression_id}>{expression_id}</a>
+				<a href={manifestation_id}>{manifestation_id}</a>
 			</div>
 		)
 	}

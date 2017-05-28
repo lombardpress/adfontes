@@ -10,13 +10,18 @@ export var Quotation = React.createClass({
 		dispatch(actions.changeQuotationsFocus(this.props.id));
 		var newFocusedQuotationObject = {
 			id,
-			quotation
+			quotation,
+			type: "expression"
 		}
 		// example of why all these different dispatches called here might be a problem
 		//fetchParagraph() requires that the createFocusedQuotation() is set.
 		//seems to be working as is, but i'm not sure if this is the best way
 		dispatch(actions.createFocusedQuotation(newFocusedQuotationObject));
 		dispatch(actions.fetchParagraph());
+		//this fetch also seems to rely on focusedQuotation state being set.
+		// seems to work as is though
+		dispatch(actions.fetchManifestationQuotations());
+
 
 		if (isInstanceOf != null){
 			// create canonicalQuotation
@@ -50,12 +55,12 @@ export var Quotation = React.createClass({
 
 	},
 	render: function(){
-		var {isInstanceOf, quotation, className} = this.props;
+		var {isInstanceOf, quotation, className, id} = this.props;
 
 		var className = isInstanceOf === null ? className + " isNotInstance" : className;
 
 		return(
-				<p className={className} onClick={this.handleOnClick}>
+				<p id={id} className={className} onClick={this.handleOnClick}>
 				{quotation}
 				</p>
 

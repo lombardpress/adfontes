@@ -18,7 +18,8 @@ export var CanonicalQuotationListItem = React.createClass({
 		//The second one requires the state to be set by the first
 		// should be done in subscribe, but I'm not sure how yet
 		dispatch(actions.fetchQuotations());
-		dispatch(actions.clearQuotationFocus());
+		dispatch(actions.clearQuotationsFocus());
+		dispatch(actions.clearManifestationQuotations());
 		dispatch(actions.clearParagraph());
 	},
 	render: function(){

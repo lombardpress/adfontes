@@ -43,6 +43,11 @@ export var startQuotationsFetch = () => {
     type: "START_QUOTATIONS_FETCH"
   };
 };
+export var clearQuotationsFocus = () => {
+  return{
+    type: "CLEAR_QUOTATIONS_FOCUS"
+  };
+};
 export var completeQuotationsFetch = (quotations) => {
   return{
     type: "COMPLETE_QUOTATIONS_FETCH",
@@ -98,9 +103,9 @@ export var changeQuotationsFocus = (id) => {
   }
 }
 
-export var clearQuotationFocus = () => {
+export var clearFocusedQuotation = () => {
   return{
-    type: "CLEAR_QUOTATION_FOCUS"
+    type: "CLEAR_FOCUSED_QUOTATION"
   }
 }
 
@@ -173,7 +178,6 @@ export var fetchCanonicalQuotations = (searchText = "") =>{
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
-      console.log(results);
       dispatch(completeCanonicalQuotationsFetch(results));
     });
   };
@@ -202,10 +206,10 @@ export var startManifestationQuotationsFetch = () => {
     type: "START_MANIFESTATION_QUOTATIONS_FETCH"
   };
 };
-export var completeManifestationQuotationsFetch = (canonicalQuotations) => {
+export var completeManifestationQuotationsFetch = (manifestationQuotations) => {
   return{
     type: "COMPLETE_MANIFESTATION_QUOTATIONS_FETCH",
-    canonicalQuotations
+    manifestationQuotations
   };
 };
 export var fetchManifestationQuotations = (searchText = "") =>{
@@ -213,38 +217,38 @@ export var fetchManifestationQuotations = (searchText = "") =>{
     var state = getState();
 
     var query = ""
-    if (state.quotation){
-      var expressionQuotationId = state.quotation.id;
-      var query = [
-            "SELECT ?quotation ?isInstanceOf ?quotation_text ",
+
+    if (state.focusedQuotation.id != undefined){
+      var expressionQuotationId = state.focusedQuotation.id;
+      query = [
+            "SELECT ?quotation ?isManifestationOf ?quotation_text ",
             "WHERE {",
             "<" + expressionQuotationId + "> <http://scta.info/property/hasManifestation> ?quotation .",
-            "?quotation <http://scta.info/property/isManifestationOf> ?isInstanceOf .",
+            "?quotation <http://scta.info/property/isManifestationOf> ?isManifestationOf .",
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "}"
           ].join('');
     }
     else{
-      var query = [
-          "SELECT ?quotation ?isInstanceOf ?quotation_text ",
+      query = [
+          "SELECT ?quotation ?isManifestationOf ?quotation_text ",
           "WHERE {",
           "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "?quotation a <http://scta.info/resource/manifestation> .",
-          "OPTIONAL {",
-            "?quotation <http://scta.info/property/isManifestationOf> ?isInstanceOf .",
-          "}",
+          "?quotation <http://scta.info/property/isManifestationOf> ?isManifestationOf .",
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
-          "ORDER BY ?quotation_text ",
+          "ORDER BY ?isInstanceOf ",
           "LIMIT 1000"
         ].join('');
       }
-    dispatch(startQuotationsFetch());
-    axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
+
+    dispatch(startManifestationQuotationsFetch());
+    axios.get('http://localhost:3030/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
 
-      dispatch(completeQuotationsFetch(results));
+      dispatch(completeManifestationQuotationsFetch(results));
     });
   };
 }
@@ -272,23 +276,37 @@ export var fetchParagraph = () =>{
   return (dispatch, getState) => {
     var state = getState();
 
-    //var query = ""
     if (state.focusedQuotation){
-      var expressionQuotationId = state.focusedQuotation.id;
+      var quotationId = state.focusedQuotation.id;
       //var expressionQuotationId = quotationid;
-      var query = [
+      var query = "";
+      var idType = state.focusedQuotation.type
+
+      if (idType === "expression"){
+        query = [
             "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ",
             "WHERE { ",
-            "<" + expressionQuotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?expression_paragraph .",
+            "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?expression_paragraph .",
             "?expression_paragraph <http://scta.info/property/hasCanonicalManifestation> ?manifestation_paragraph .",
             "?manifestation_paragraph <http://scta.info/property/hasCanonicalTranscription> ?transcription_paragraph .",
             "?transcription_paragraph <http://scta.info/property/hasXML> ?xml_url .",
             "}"
           ].join('');
-
+        }
+      else if (idType === "manifestation"){
+        query = [
+            "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ",
+            "WHERE { ",
+            "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?manifestation_paragraph . ",
+            "?manifestation_paragraph <http://scta.info/property/isManifestationOf> ?expression_paragraph .",
+            "?manifestation_paragraph <http://scta.info/property/hasCanonicalTranscription> ?transcription_paragraph .",
+            "?transcription_paragraph <http://scta.info/property/hasXML> ?xml_url .",
+            "}"
+          ].join('');
+      }
 
       dispatch(startParagraphFetch());
-      axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
+      axios.get('http://localhost:3030/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
         var results = res.data.results.bindings[0];
         axios.get(results.xml_url.value).then(function(res2){
           var paragraph = {

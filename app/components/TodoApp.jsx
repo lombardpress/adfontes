@@ -23,10 +23,10 @@ var TodoApp = React.createClass({
 					<div id="CanonicalQuotationList" className="column1">
 						<CanonicalQuotationList/>
 					</div>
-					<div className="column2">
+					<div id="quotationsList" className="column2">
 						<QuotationList/>
 					</div>
-					<div className="column3">
+					<div id="ManifestationQuotationsList" className="column3">
 						<ManifestationQuotationList/>
 					</div>
 					<div className="column4">
