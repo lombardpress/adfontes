@@ -19,6 +19,7 @@ export var CanonicalQuotationListItem = React.createClass({
 		// should be done in subscribe, but I'm not sure how yet
 		dispatch(actions.fetchQuotations());
 		dispatch(actions.clearQuotationsFocus());
+		dispatch(actions.clearFocusedQuotation());
 		dispatch(actions.clearManifestationQuotations());
 		dispatch(actions.clearParagraph());
 	},

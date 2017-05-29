@@ -39,8 +39,10 @@ export var CanonicalQuotationList = React.createClass({
 		return(
 			<div>
 				<p>List of Canonical Quotations</p>
-
-				<input type="text" ref="searchText" onChange={this.handleOnShowQuotationsWithoutAssociation}  placeholder="Show Quotations"/>
+				<form onSubmit={this.handleOnShowQuotationsWithoutAssociation}>
+					<input type="text" ref="searchText" onSubmit={this.handleOnShowQuotationsWithoutAssociation}  placeholder="Show Quotations"/>
+					<button className="button expanded">Search</button>
+				</form>
 
 				<p>Count {canonicalQuotations.length}</p>
 				{renderQuotations()}

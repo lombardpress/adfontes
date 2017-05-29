@@ -245,7 +245,7 @@ export var fetchManifestationQuotations = (searchText = "") =>{
       }
 
     dispatch(startManifestationQuotationsFetch());
-    axios.get('http://localhost:3030/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
+    axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
 
       dispatch(completeManifestationQuotationsFetch(results));
@@ -306,7 +306,7 @@ export var fetchParagraph = () =>{
       }
 
       dispatch(startParagraphFetch());
-      axios.get('http://localhost:3030/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
+      axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
         var results = res.data.results.bindings[0];
         axios.get(results.xml_url.value).then(function(res2){
           var paragraph = {
