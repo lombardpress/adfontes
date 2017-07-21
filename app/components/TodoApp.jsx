@@ -6,6 +6,7 @@ var moment = require("moment");
 import TodoList from 'TodoList';
 import AddTodo from "AddTodo";
 import TodoSearch from "TodoSearch";
+import Search from "Search";
 import QuotationList from "QuotationList";
 import FocusedQuotation from "FocusedQuotation";
 import CanonicalQuotation from "CanonicalQuotation";
@@ -18,7 +19,10 @@ var TodoApp = React.createClass({
 	render: function(){
 		return (
 			<div>
-				<h1 className='page-title'>Quotation App</h1>
+				<h1 className='page-title'>SCTA Quotation App</h1>
+				<div className='search'>
+					<Search/>
+				</div>
 				<div className="wrapper">
 					<div id="CanonicalQuotationList" className="column1">
 						<CanonicalQuotationList/>
@@ -31,8 +35,8 @@ var TodoApp = React.createClass({
 					</div>
 					<div className="column4">
 						<Paragraph/>
-						<FocusedQuotation/>
-						<CanonicalQuotation/>
+						{/* <FocusedQuotation/>
+						<CanonicalQuotation/> */}
 					</div>
 
 				</div>

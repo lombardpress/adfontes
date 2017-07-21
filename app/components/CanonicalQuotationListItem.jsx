@@ -22,6 +22,9 @@ export var CanonicalQuotationListItem = React.createClass({
 		dispatch(actions.clearFocusedQuotation());
 		dispatch(actions.clearManifestationQuotations());
 		dispatch(actions.clearParagraph());
+
+		var selfTopPos = document.getElementById(id).offsetTop;
+		$('#CanonicalQuotationList').animate({ scrollTop: selfTopPos-10 }, 400);
 	},
 	render: function(){
     var {id, quotation, className, citation} = this.props

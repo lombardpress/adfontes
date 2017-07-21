@@ -1,9 +1,9 @@
 var axios = require('axios');
 
-export var setSearchText = (searchText) => {
+export var setSearchParameters = (searchParameters) => {
   return {
-    type: "SET_SEARCH_TEXT",
-    searchText
+    type: "SET_SEARCH_PARAMETERS",
+    searchParameters
   };
 };
 export var toggleShowCompleted = () => {
@@ -57,7 +57,37 @@ export var completeQuotationsFetch = (quotations) => {
 export var fetchQuotations = (searchText = "") =>{
   return (dispatch, getState) => {
     var state = getState();
+    ///
+    // var quotationTypeSparql = ""
+    // if (quotationType != ""){
+    //   var quotationTypeSparql = "?quotation <http://scta.info/property/quotationType>	<http://scta.info/resource/" + quotationType + "> ."
+    // }
+    var expressionIdSparql = "";
+    if (state.search.expressionId != ""){
+      var expressionIdSparql = [
+      "?quotation <http://scta.info/property/isPartOfTopLevelExpression> <http://scta.info/resource/" + state.search.expressionId + "> ."
+      ].join('');
 
+    }
+    var quotationTypeSparql = "";
+    if (state.search.quotationType != "" ){
+      var quotationTypeSparql = [
+        "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+        "?isInstanceOf <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.quotationType + "> ."
+      ].join('');
+    }
+    else if (state.search.quotationType != "" && state.canonicalQuotation){
+      var quotationTypeSparql = [
+        "?isInstanceOf <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.quotationType + "> ."
+      ].join('');
+    }
+    else{
+      var quotationTypeSparql = [
+      "OPTIONAL {",
+        "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+      "}"
+    ].join('');
+    }
     var query = ""
     if (state.canonicalQuotation){
       var canonicalQuotationId = state.canonicalQuotation.id;
@@ -65,7 +95,9 @@ export var fetchQuotations = (searchText = "") =>{
             "SELECT ?quotation ?isInstanceOf ?quotation_text ",
             "WHERE {",
             "<" + canonicalQuotationId + "> <http://scta.info/property/hasInstance> ?quotation .",
+            expressionIdSparql,
             "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+            quotationTypeSparql,
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "}"
           ].join('');
@@ -76,9 +108,8 @@ export var fetchQuotations = (searchText = "") =>{
           "WHERE {",
           "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "?quotation a <http://scta.info/resource/expression> .",
-          "OPTIONAL {",
-            "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-          "}",
+          expressionIdSparql,
+          quotationTypeSparql,
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
@@ -86,6 +117,7 @@ export var fetchQuotations = (searchText = "") =>{
           "LIMIT 1000"
         ].join('');
       }
+      
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -162,12 +194,26 @@ export var fetchCanonicalQuotations = (searchText = "") =>{
   return (dispatch, getState) => {
     var state = getState();
 
+    var quotationTypeSparql = ""
+    if (state.search.quotationType != ""){
+      var quotationTypeSparql = "?quotation <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.quotationType + "> ."
+    }
+    var expressionIdSparql = "";
+    if (state.search.expressionId != ""){
+      var expressionIdSparql = [
+      "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> <http://scta.info/resource/" + state.search.expressionId + "> .",
+      ].join('');
+
+    }
 
     var query = [
           "SELECT ?quotation ?citation ?quotation_text ",
           "WHERE {",
           "?quotation a <http://scta.info/resource/quotation> .",
           "?quotation <http://scta.info/property/quotation> ?quotation_text .",
+          expressionIdSparql,
+          quotationTypeSparql,
           "OPTIONAL { ",
           "?quotation <http://scta.info/property/citation> ?citation .",
           "}",
@@ -175,6 +221,7 @@ export var fetchCanonicalQuotations = (searchText = "") =>{
           "}",
           "ORDER BY ?citation "
         ].join('');
+
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings

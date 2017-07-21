@@ -14,9 +14,11 @@ export var CanonicalQuotationList = React.createClass({
 		dispatch(actions.clearFocusedQuotation());
 		dispatch(actions.clearParagraph());
 		//dispatch(actions.clearCanonicalQuotationsFocus());
+		//TODO change app so that searchText does need to be passed as parameters
+		//but is retrieved from the searchState
 		dispatch(actions.fetchCanonicalQuotations(searchText));
 		dispatch(actions.fetchQuotations(searchText));
-		dispatch(actions.fetchManifestationQuotations(searchText));
+		//dispatch(actions.fetchManifestationQuotations(searchText));
 	},
 	render: function(){
     var {canonicalQuotations} = this.props;
@@ -39,11 +41,6 @@ export var CanonicalQuotationList = React.createClass({
 		return(
 			<div>
 				<p>List of Canonical Quotations</p>
-				<form onSubmit={this.handleOnShowQuotationsWithoutAssociation}>
-					<input type="text" ref="searchText" onSubmit={this.handleOnShowQuotationsWithoutAssociation}  placeholder="Show Quotations"/>
-					<button className="button expanded">Search</button>
-				</form>
-
 				<p>Count {canonicalQuotations.length}</p>
 				{renderQuotations()}
 			</div>

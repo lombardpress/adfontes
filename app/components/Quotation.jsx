@@ -37,6 +37,9 @@ export var Quotation = React.createClass({
 				// scroll
 				var topPos = document.getElementById(isInstanceOf).offsetTop;
 				$('#CanonicalQuotationList').animate({ scrollTop: topPos-10 }, 400);
+				//scroll self to top
+				var selfTopPos = document.getElementById(id).offsetTop;
+				$('#quotationsList').animate({ scrollTop: selfTopPos-10 }, 400);
 			}
 			else{
 				alert("this quotation is assigned to a canonicalQuotation, but either there is an error in the id assigned or a canonicalQuotation record still needs to be made")
