@@ -26,29 +26,34 @@
 .wrapper{
 
 }
-.column1, .column2, .column3, .column4{
+.column1, .column2, .column3, .column4, .column5{
   position: fixed;
   overflow: scroll;
-  height: 65%;
+  height:87%;
   margin-bottom: 100px;
   padding: 1%;
   //border: .5px solid $light-color;
 
 }
 .column1{
-  width: 20%;
-  left: 5%;
+  width: 15%;
+  left: 0%;
+  border-right: 1px solid gray
 }
 .column2 {
-  width:20%;
-  left: 27%;
+  width:19%;
+  left: 17%;
 }
 .column3{
-  width: 20%;
-  left: 49%;
+  width: 19%;
+  left: 36%;
 
 }
 .column4{
-  width: 24%;
-  left: 71%;
+  width: 19%;
+  left: 55%;
+}
+.column5{
+  width: 19%;
+  left: 74%;
 }

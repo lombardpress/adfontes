@@ -22,7 +22,7 @@ export var CanonicalQuotationList = React.createClass({
 	},
 	render: function(){
     var {canonicalQuotations} = this.props;
-    var renderQuotations = () => {
+		var renderQuotations = () => {
       if (canonicalQuotations.length === 0){
         return(
             <p className="container__message">No Quotations</p>

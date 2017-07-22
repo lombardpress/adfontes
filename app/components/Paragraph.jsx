@@ -56,7 +56,7 @@ export var Paragraph = React.createClass({
 		return(
 
 
-			<div className="container">
+			<div>
 				<p>Context Paragraph</p>
 				<div id="text">{text}</div>
 				<a href={manifestation_id}>{manifestation_id}</a>

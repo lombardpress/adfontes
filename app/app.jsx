@@ -7,7 +7,7 @@ var TodoApp = require("TodoApp");
 
 var actions = require("actions");
 var store = require("configureStore").configure();
-var TodoAPI = require("TodoAPI");
+
 
 
 store.subscribe(() => {
@@ -15,8 +15,10 @@ store.subscribe(() => {
 
 });
 
-var state = store.getState();
+//var state = store.getState();
+
 store.dispatch(actions.fetchCanonicalQuotations());
+store.dispatch(actions.fetchSearchWorksList());
 
 
 // load foundation
