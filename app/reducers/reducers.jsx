@@ -38,6 +38,16 @@ export var searchReducer = (state = {}, action) => {
         ...state,
         quotationWorksList: action.quotationWorksList
       }
+      case 'START_EXPRESSION_TYPE_FETCH':
+          return {
+            ...state,
+            expressionTypes: []
+          }
+      case 'COMPLETE_EXPRESSION_TYPE_FETCH':
+        return {
+          ...state,
+          expressionTypes: action.expressionTypes
+        }
     default:
       return state
   };

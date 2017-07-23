@@ -151,8 +151,46 @@ export var fetchQuotationWorksList = () =>{
         }
         return quotationWorkInfo
       });
-      console.log(quotationWorksList);
       dispatch(completeQuotationWorksListFetch(quotationWorksList));
+    });
+  }
+};
+
+export var startExpressionTypeFetch = () => {
+  return{
+    type: "START_EXPRESSION_TYPE_FETCH"
+  };
+};
+export var completeExpressionTypeFetch = (expressionTypes) => {
+  return{
+    type: "COMPLETE_EXPRESSION_TYPE_FETCH",
+    expressionTypes
+  };
+};
+export var fetchExpressionTypes = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    var query = [
+        "SELECT ?expressionType ?expressionTypeTitle ?expressionTypeShortId",
+        "WHERE { ",
+        "?expressionType a <http://scta.info/resource/expressionType> .",
+        "?expressionType <http://scta.info/property/shortId> ?expressionTypeShortId .",
+        "?expressionType <http://purl.org/dc/elements/1.1/title> ?expressionTypeTitle .",
+        "}",
+        "ORDER BY ?expressionTypeTitle"].join('');
+
+  dispatch(startExpressionTypeFetch());
+  axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+    var expressionTypes = results.map((result) => {
+      var expressionTypeInfo = {
+          expressionType: result.expressionType.value,
+          expressionTypeShortId: result.expressionTypeShortId,
+          expressionTypeTitle: result.expressionTypeTitle.value
+        }
+        return expressionTypeInfo
+      });
+      dispatch(completeExpressionTypeFetch(expressionTypes));
     });
   }
 };
@@ -259,7 +297,6 @@ export var fetchQuotations = () =>{
           "LIMIT 1000"
         ].join('');
       }
-      console.log(query);
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -370,7 +407,6 @@ export var fetchCanonicalQuotations = () =>{
           "}",
           "ORDER BY ?citation "
         ].join('');
-        console.log(query);
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings

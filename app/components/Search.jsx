@@ -11,13 +11,15 @@ export var Search = React.createClass({
     var quotationWork = this.refs.quotationWork.value;
     var expressionId = this.refs.expressionId.value;
     var quotationAuthor = this.refs.expressionId.value;
+    var expressionType = this.refs.expressionType.value;
     var retainCanonical = this.refs.retainCanonical.checked;
     var searchParameters = {
       searchText,
       quotationType,
       expressionId,
       quotationAuthor,
-      quotationWork
+      quotationWork,
+      expressionType
     }
 
     dispatch(actions.setSearchParameters(searchParameters));
@@ -33,7 +35,6 @@ export var Search = React.createClass({
 	},
 	render: function(){
     var _this = this;
-    console.log(_this.props)
     function displaySearchWorksList(){
       var searchWorks = _this.props.search.searchWorks;
       return searchWorks.map((work) => {
@@ -58,6 +59,15 @@ export var Search = React.createClass({
       return authors.map((author) => {
         return(
           <option value={author.authorShortId}>{author.authorTitle}</option>
+          )
+        }
+      )
+    }
+    function displayExpressionTypeList(){
+      var expressionTypes = _this.props.search.expressionTypes;
+      return expressionTypes.map((type) => {
+        return(
+          <option value={type.expressionTypeShortId}>{type.expressionTypeTitle}</option>
           )
         }
       )
@@ -100,7 +110,7 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label>Filter by Work Author
+              <label>Filter by Expression Author
                 <select ref="expressionId" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
                   {displayAuthorsList()}
@@ -108,7 +118,15 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label>Filter by Work Title
+              <label>Filter by Expression Type
+                <select ref="expressionType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayExpressionTypeList()}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by Expression Title
                 <select ref="expressionId" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
                   {displaySearchWorksList()}
