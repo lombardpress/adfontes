@@ -4,7 +4,10 @@ var moment = require('moment');
 export var searchReducer = (state = {}, action) => {
   switch (action.type){
     case 'SET_SEARCH_PARAMETERS':
-      return action.searchParameters;
+      return {
+        ...state,
+        searchParameters: action.searchParameters
+        }
     case 'START_SEARCH_WORKS_FETCH':
         return {
           ...state,
@@ -14,6 +17,26 @@ export var searchReducer = (state = {}, action) => {
       return {
         ...state,
         searchWorks: action.listOfWorks
+      }
+    case 'START_AUTHORS_FETCH':
+        return {
+          ...state,
+          authors: []
+        }
+    case 'COMPLETE_AUTHORS_FETCH':
+      return {
+        ...state,
+        authors: action.authors
+      }
+    case 'START_QUOTATION_WORKS_LIST_FETCH':
+        return {
+          ...state,
+          quotationWorksList: []
+        }
+    case 'COMPLETE_QUOTATION_WORKS_LIST_FETCH':
+      return {
+        ...state,
+        quotationWorksList: action.quotationWorksList
       }
     default:
       return state

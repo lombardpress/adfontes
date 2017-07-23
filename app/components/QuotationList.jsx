@@ -9,7 +9,7 @@ export var QuotationList = React.createClass({
     var renderQuotations = () => {
       if (quotations.length === 0){
         return(
-            <p className="container__message">Nothing Quotations</p>
+            <p className="container__message">No Quotations</p>
         );
       }
 

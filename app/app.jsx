@@ -17,8 +17,12 @@ store.subscribe(() => {
 
 //var state = store.getState();
 
+store.dispatch(actions.setSearchParameters({}));
 store.dispatch(actions.fetchCanonicalQuotations());
+store.dispatch(actions.fetchAuthors());
 store.dispatch(actions.fetchSearchWorksList());
+store.dispatch(actions.fetchQuotationWorksList());
+
 
 
 // load foundation

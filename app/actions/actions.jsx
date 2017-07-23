@@ -23,31 +23,34 @@ export var fetchSearchWorksList = () =>{
   return (dispatch, getState) => {
     var state = getState();
     var query = [
-        "SELECT ?expression ?expressionShortId ?expressionTitle ?author ?authorTitle ?workGroup ?workGroupTitle ",
+        "SELECT ?type ?expression ?expressionShortId ?expressionTitle ?author ?authorTitle ?workGroup ?workGroupTitle",
         "WHERE { ",
-        "?expression a <http://scta.info/resource/expression> .",
-        "?expression <http://scta.info/property/level> '1' . ",
-        "?expression <http://scta.info/property/shortId> ?expressionShortId .",
-        "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
-        "?expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
-        "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
-        "?expression <http://purl.org/dc/terms/isPartOf> ?workGroup .",
-        "?workGroup <http://purl.org/dc/elements/1.1/title> ?workGroupTitle .",
-        "}",
+          "?expression a <http://scta.info/resource/expression> .",
+          "?expression a ?type .",
+          "?expression <http://scta.info/property/level> '1' . ",
+          "?expression <http://scta.info/property/shortId> ?expressionShortId .",
+          "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
+          "?expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
+          "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+          "?expression <http://purl.org/dc/terms/isPartOf> ?workGroup .",
+          "?workGroup <http://purl.org/dc/elements/1.1/title> ?workGroupTitle .",
+          "}",
         "ORDER BY ?expressionTitle"].join('');
 
   dispatch(startSearchWorksFetch());
   axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
     var results = res.data.results.bindings;
     var searchWorks = results.map((result) => {
-        var workInfo = {
+      var workInfo = {
           expression: result.expression.value,
-          expressionShortId: result.expressionShortId.value,
+          expressionShortId: result.expressionShortId ? result.expressionShortId.value : "",
           expressionTitle: result.expressionTitle.value,
-          workGroup: result.workGroup.value,
-          workGroupTitle: result.workGroupTitle.value,
-          author: result.author.value,
-          authorTitle: result.authorTitle.value,
+          workGroup: result.workGroup ? result.workGroup.value : "",
+          workGroupTitle: result.workGroupTitle ? result.workGroupTitle.value : "",
+          author: result.author ? result.author.value : "",
+          authorTitle: result.author ? result.authorTitle.value : "",
+          type: result.type.value
+
         }
         return workInfo
 
@@ -56,6 +59,105 @@ export var fetchSearchWorksList = () =>{
     });
   }
 };
+export var startAuthorsFetch = () => {
+  return{
+    type: "START_AUTHORS_FETCH"
+  };
+};
+export var completeAuthorsFetch = (authors) => {
+  return{
+    type: "COMPLETE_AUTHORS_FETCH",
+    authors
+  };
+};
+export var fetchAuthors = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    var query = [
+        "SELECT ?author ?authorTitle ?authorShortId ",
+        "WHERE { ",
+        "?author a <http://scta.info/resource/person> .",
+        "?author <http://scta.info/property/shortId> ?authorShortId .",
+        "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+        "}",
+        "ORDER BY ?authorTitle"].join('');
+
+  dispatch(startAuthorsFetch());
+  axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+    var authors = results.map((result) => {
+        var authorInfo = {
+          author: result.author.value,
+          authorShortId: result.authorShortId.value,
+          authorTitle: result.authorTitle.value,
+        }
+        return authorInfo
+
+      });
+      dispatch(completeAuthorsFetch(authors));
+    });
+  }
+};
+export var startQuotationWorksListFetch = () => {
+  return{
+    type: "START_QUOTATION_WORKS_LIST_FETCH"
+  };
+};
+export var completeQuotationWorksListFetch = (quotationWorksList) => {
+  return{
+    type: "COMPLETE_QUOTATION_WORKS_LIST_FETCH",
+    quotationWorksList
+  };
+};
+export var fetchQuotationWorksList = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    var query = [
+        "SELECT ?type ?expression ?expressionShortId ?expressionTitle ?author ?authorTitle ?workGroup ?workGroupTitle",
+        "WHERE { ",
+        "{",
+        "?expression a <http://scta.info/resource/work> .",
+        "?expression a ?type .",
+        "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
+        "}",
+        "UNION{",
+        "?expression a <http://scta.info/resource/expression> .",
+        "?expression a ?type .",
+        "?expression <http://scta.info/property/level> '1' . ",
+        "?expression <http://scta.info/property/shortId> ?expressionShortId .",
+        "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
+        "?expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
+        "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+        "?expression <http://purl.org/dc/terms/isPartOf> ?workGroup .",
+        "?workGroup <http://purl.org/dc/elements/1.1/title> ?workGroupTitle .",
+        "}",
+        "}",
+        "ORDER BY ?expressionTitle"].join('');
+
+  dispatch(startQuotationWorksListFetch());
+  axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+    var quotationWorksList = results.map((result) => {
+      var quotationWorkInfo = {
+          expression: result.expression.value,
+          expressionShortId: result.expressionShortId ? result.expressionShortId.value : "",
+          expressionTitle: result.expressionTitle.value,
+          workGroup: result.workGroup ? result.workGroup.value : "",
+          workGroupTitle: result.workGroupTitle ? result.workGroupTitle.value : "",
+          author: result.author ? result.author.value : "",
+          authorTitle: result.author ? result.authorTitle.value : "",
+          type: result.type.value
+
+        }
+        return quotationWorkInfo
+      });
+      console.log(quotationWorksList);
+      dispatch(completeQuotationWorksListFetch(quotationWorksList));
+    });
+  }
+};
+
+
 
 
 // Quotation Actions
@@ -85,30 +187,33 @@ export var completeQuotationsFetch = (quotations) => {
 export var fetchQuotations = () =>{
   return (dispatch, getState) => {
     var state = getState();
-    var searchText = state.search.searchText || "";
+    var searchText = state.search.searchParameters.searchText || "";
     ///
     // var quotationTypeSparql = ""
     // if (quotationType != ""){
     //   var quotationTypeSparql = "?quotation <http://scta.info/property/quotationType>	<http://scta.info/resource/" + quotationType + "> ."
     // }
     var expressionIdSparql = "";
-    if (state.search.expressionId != ""){
+    if (state.search.searchParameters.expressionId != ""){
       var expressionIdSparql = [
-      "?quotation <http://scta.info/property/isPartOfTopLevelExpression> <http://scta.info/resource/" + state.search.expressionId + "> ."
+      "?quotation <http://scta.info/property/isPartOfTopLevelExpression> <http://scta.info/resource/" + state.search.searchParameters.expressionId + "> ."
       ].join('');
 
     }
     var quotationTypeSparql = "";
-    if (state.search.quotationType != "" ){
+    if (state.search.searchParameters.quotationType != "" ){
       var quotationTypeSparql = [
         "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-        "?isInstanceOf <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.quotationType + "> ."
+        "?isInstanceOf <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.searchParameters.quotationType + "> ."
       ].join('');
     }
-    else if (state.search.quotationType != "" && state.canonicalQuotation){
+    else if (state.search.searchParameters.quotationType != "" && state.canonicalQuotation){
       var quotationTypeSparql = [
-        "?isInstanceOf <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.quotationType + "> ."
+        "?isInstanceOf <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.searchParameters.quotationType + "> ."
       ].join('');
+    }
+    else if (state.search.searchParameters.quotationWork){
+     var quotationTypeSparql = "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf ."
     }
     else{
       var quotationTypeSparql = [
@@ -116,6 +221,13 @@ export var fetchQuotations = () =>{
         "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
       "}"
     ].join('');
+    }
+
+    var quotationWorkSparql = "";
+    if (state.search.searchParameters.quotationWork){
+      quotationWorkSparql = [
+      "?isInstanceOf <http://scta.info/property/fromBiblicalBook> <http://scta.info/resource/" + state.search.searchParameters.quotationWork + "> .",
+      ].join('');
     }
     var query = ""
     if (state.canonicalQuotation){
@@ -125,8 +237,8 @@ export var fetchQuotations = () =>{
             "WHERE {",
             "<" + canonicalQuotationId + "> <http://scta.info/property/hasInstance> ?quotation .",
             expressionIdSparql,
-            "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
             quotationTypeSparql,
+            quotationWorkSparql,
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "}"
           ].join('');
@@ -139,6 +251,7 @@ export var fetchQuotations = () =>{
           "?quotation a <http://scta.info/resource/expression> .",
           expressionIdSparql,
           quotationTypeSparql,
+          quotationWorkSparql,
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
@@ -146,7 +259,7 @@ export var fetchQuotations = () =>{
           "LIMIT 1000"
         ].join('');
       }
-
+      console.log(query);
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -222,16 +335,22 @@ export var completeCanonicalQuotationsFetch = (canonicalQuotations) => {
 export var fetchCanonicalQuotations = () =>{
   return (dispatch, getState) => {
     var state = getState();
-    var searchText = state.search.searchText || "";
+    var searchText = state.search.searchParameters.searchText || "";
     var quotationTypeSparql = ""
-    if (state.search.quotationType){
-      var quotationTypeSparql = "?quotation <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.quotationType + "> ."
+    if (state.search.searchParameters.quotationType){
+      var quotationTypeSparql = "?quotation <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.searchParameters.quotationType + "> ."
     }
     var expressionIdSparql = "";
-    if (state.search.expressionId){
+    if (state.search.searchParameters.expressionId){
       var expressionIdSparql = [
       "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
-      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> <http://scta.info/resource/" + state.search.expressionId + "> .",
+      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> <http://scta.info/resource/" + state.search.searchParameters.expressionId + "> .",
+      ].join('');
+    }
+    var quotationWorkSparql = "";
+    if (state.search.searchParameters.quotationWork){
+      quotationWorkSparql = [
+      "?quotation <http://scta.info/property/fromBiblicalBook> <http://scta.info/resource/" + state.search.searchParameters.quotationWork + "> .",
       ].join('');
 
     }
@@ -241,6 +360,7 @@ export var fetchCanonicalQuotations = () =>{
           "WHERE {",
           "?quotation a <http://scta.info/resource/quotation> .",
           "?quotation <http://scta.info/property/quotation> ?quotation_text .",
+          quotationWorkSparql,
           expressionIdSparql,
           quotationTypeSparql,
           "OPTIONAL { ",
@@ -250,7 +370,7 @@ export var fetchCanonicalQuotations = () =>{
           "}",
           "ORDER BY ?citation "
         ].join('');
-        
+        console.log(query);
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -291,7 +411,7 @@ export var completeManifestationQuotationsFetch = (manifestationQuotations) => {
 export var fetchManifestationQuotations = () =>{
   return (dispatch, getState) => {
     var state = getState();
-    var searchText = state.search.searchText || "";
+    var searchText = state.search.searchParameters.searchText || "";
 
     var query = ""
 

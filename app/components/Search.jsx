@@ -8,13 +8,16 @@ export var Search = React.createClass({
 		var {dispatch, search} = this.props;
 		var searchText = this.refs.searchText.value;
     var quotationType = this.refs.quotationType.value;
+    var quotationWork = this.refs.quotationWork.value;
     var expressionId = this.refs.expressionId.value;
+    var quotationAuthor = this.refs.expressionId.value;
     var retainCanonical = this.refs.retainCanonical.checked;
     var searchParameters = {
       searchText,
       quotationType,
       expressionId,
-      searchWorks: search.searchWorks
+      quotationAuthor,
+      quotationWork
     }
 
     dispatch(actions.setSearchParameters(searchParameters));
@@ -30,11 +33,31 @@ export var Search = React.createClass({
 	},
 	render: function(){
     var _this = this;
+    console.log(_this.props)
     function displaySearchWorksList(){
-      var searchWorks = _this.props.search.searchWorks
+      var searchWorks = _this.props.search.searchWorks;
       return searchWorks.map((work) => {
         return(
           <option value={work.expressionShortId}>{work.expressionTitle}</option>
+          )
+        }
+      )
+    }
+    function displayQuotationWorksList(){
+      var quotationWorksList = _this.props.search.quotationWorksList;
+      return quotationWorksList.map((work) => {
+        var id = work.expressionShortId ? work.expressionShortId : work.expression.split("http://scta.info/resource/")[1];
+        return(
+          <option value={id}>{work.expressionTitle}</option>
+          )
+        }
+      )
+    }
+    function displayAuthorsList(){
+      var authors = _this.props.search.authors;
+      return authors.map((author) => {
+        return(
+          <option value={author.authorShortId}>{author.authorTitle}</option>
           )
         }
       )
@@ -61,7 +84,31 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label>Filter by Work
+              <label>Filter by Quotation Author
+                <select ref="quotationAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayAuthorsList()}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by Quotation Work
+                <select ref="quotationWork" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayQuotationWorksList()}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by Work Author
+                <select ref="expressionId" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayAuthorsList()}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by Work Title
                 <select ref="expressionId" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
                   {displaySearchWorksList()}
