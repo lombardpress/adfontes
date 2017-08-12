@@ -74,6 +74,8 @@ export var quotationsReducer = (state = [], action) => {
         return {
           id: quotation.quotation.value,
           quotation: quotation.quotation_text.value,
+          title: quotation.toplevel_expression_title.value,
+          author: quotation.author_title.value,
           focused: false,
           isInstanceOf: quotation.isInstanceOf ? quotation.isInstanceOf.value : null
         }

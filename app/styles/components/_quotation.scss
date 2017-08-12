@@ -3,12 +3,18 @@
   align-items: left;
   //display: flex;
   cursor: pointer;
-  padding: 1rem;
+  padding: 0.2rem;
   transition: background .3s ease;
+  line-height: 1.5;
+  margin-bottom: 0;
 
   p, input {
     margin: 0;
-  }
+    font-size: inherit;
+    line-height: 1.5;
+    margin-bottom: 0;
+    text-rendering: optimizeLegibility;
+    }
 
 
   &:hover{
@@ -56,4 +62,13 @@
 .column5{
   width: 19%;
   left: 74%;
+}
+
+.quotation-citation{
+  display: block;
+  font-size: 10px;
+}
+.quotation-wrapper{
+  padding: 0.2rem;
+  margin: 0;
 }

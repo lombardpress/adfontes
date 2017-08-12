@@ -29,9 +29,10 @@ export var CanonicalQuotationListItem = React.createClass({
 	render: function(){
     var {id, quotation, className, citation} = this.props
     return(
-			<p id={id} className={className} onClick={this.handleOnClick}>{quotation}
-				<br/>
-			  <em>-- {citation}</em></p>
+			<div className="quotation-wrapper">
+				<p id={id} className={className} onClick={this.handleOnClick}>{quotation}</p>
+				<a href={id} target="_blank" className="quotation-citation">{citation}</a>
+			</div>
 		)
 	}
 });

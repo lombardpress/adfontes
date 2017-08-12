@@ -271,19 +271,24 @@ export var fetchQuotations = () =>{
     if (state.canonicalQuotation){
       var canonicalQuotationId = state.canonicalQuotation.id;
       var query = [
-            "SELECT ?quotation ?isInstanceOf ?quotation_text ",
+            "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ",
             "WHERE {",
             "<" + canonicalQuotationId + "> <http://scta.info/property/hasInstance> ?quotation .",
             expressionIdSparql,
             quotationTypeSparql,
             quotationWorkSparql,
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
+            "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
+            "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
+            "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
+            "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
+            "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
             "}"
           ].join('');
     }
     else{
       var query = [
-          "SELECT ?quotation ?isInstanceOf ?quotation_text ",
+          "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ",
           "WHERE {",
           "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "?quotation a <http://scta.info/resource/expression> .",
@@ -291,12 +296,17 @@ export var fetchQuotations = () =>{
           quotationTypeSparql,
           quotationWorkSparql,
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
+          "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
+          "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
+          "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
+          "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
           "ORDER BY ?quotation_text ",
           "LIMIT 1000"
         ].join('');
       }
+      console.log(query);
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings

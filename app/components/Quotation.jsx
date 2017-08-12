@@ -58,14 +58,17 @@ export var Quotation = React.createClass({
 
 	},
 	render: function(){
-		var {isInstanceOf, quotation, className, id} = this.props;
+		var {isInstanceOf, quotation, className, title, author, id} = this.props;
 
 		var className = isInstanceOf === null ? className + " isNotInstance" : className;
 
 		return(
+			<div className="quotation-wrapper">
 				<p id={id} className={className} onClick={this.handleOnClick}>
 				{quotation}
 				</p>
+				<a href={id} target="_blank" className="quotation-citation">{author}, {title}</a>
+			</div>
 
 
 		)
