@@ -194,6 +194,43 @@ export var fetchExpressionTypes = () =>{
     });
   }
 };
+export var startWorkGroupsFetch = () => {
+  return{
+    type: "START_WORK_GROUPS_FETCH"
+  };
+};
+export var completeWorkGroupsFetch = (workGroups) => {
+  return{
+    type: "COMPLETE_WORK_GROUPS_FETCH",
+    workGroups
+  };
+};
+export var fetchWorkGroups = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    var query = [
+        "SELECT ?workGroup ?workGroupShortId ?workGroupTitle ",
+        "WHERE { ",
+        "?workGroup a <http://scta.info/resource/workGroup> .",
+        "?workGroup <http://scta.info/property/shortId> ?workGroupShortId .",
+        "?workGroup <http://purl.org/dc/elements/1.1/title> ?workGroupTitle .",
+        "}",
+        "ORDER BY ?workGroupTitle"].join('');
+  dispatch(startWorkGroupsFetch());
+  axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+    var workGroups = results.map((result) => {
+      var workGroupInfo = {
+          workGroup: result.workGroup.value,
+          workGroupShortId: result.workGroupShortId.value,
+          workGroupTitle: result.workGroupTitle.value
+        }
+        return workGroupInfo
+      });
+      dispatch(completeWorkGroupsFetch(workGroups));
+    });
+  }
+};
 
 
 
@@ -267,6 +304,12 @@ export var fetchQuotations = () =>{
       "?isInstanceOf <http://scta.info/property/fromBiblicalBook> <http://scta.info/resource/" + state.search.searchParameters.quotationWork + "> .",
       ].join('');
     }
+    var workGroupSparql = "";
+    if (state.search.searchParameters.workGroup){
+      workGroupSparql = [
+      "<http://scta.info/resource/" + state.search.searchParameters.workGroup + "> <http://scta.info/property/hasExpression> ?toplevel_expression .",
+      ].join('');
+    }
     var query = ""
     if (state.canonicalQuotation){
       var canonicalQuotationId = state.canonicalQuotation.id;
@@ -280,6 +323,7 @@ export var fetchQuotations = () =>{
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
+            workGroupSparql,
             "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
             "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
             "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
@@ -297,6 +341,7 @@ export var fetchQuotations = () =>{
           quotationWorkSparql,
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
+          workGroupSparql,
           "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
           "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
           "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
@@ -306,7 +351,6 @@ export var fetchQuotations = () =>{
           "LIMIT 1000"
         ].join('');
       }
-      console.log(query);
     dispatch(startQuotationsFetch());
     axios.get('http://sparql-staging.scta.info/ds/query', {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings

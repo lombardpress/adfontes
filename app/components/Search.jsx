@@ -12,6 +12,7 @@ export var Search = React.createClass({
     var expressionId = this.refs.expressionId.value;
     var quotationAuthor = this.refs.expressionId.value;
     var expressionType = this.refs.expressionType.value;
+    var workGroup = this.refs.workGroup.value;
     var retainCanonical = this.refs.retainCanonical.checked;
     var searchParameters = {
       searchText,
@@ -19,7 +20,8 @@ export var Search = React.createClass({
       expressionId,
       quotationAuthor,
       quotationWork,
-      expressionType
+      expressionType,
+      workGroup
     }
 
     dispatch(actions.setSearchParameters(searchParameters));
@@ -72,6 +74,15 @@ export var Search = React.createClass({
         }
       )
     }
+    function displayWorkGroupsList(){
+      var workGroups = _this.props.search.workGroups;
+      return workGroups.map((workGroup) => {
+        return(
+          <option value={workGroup.workGroupShortId}>{workGroup.workGroupTitle}</option>
+          )
+        }
+      )
+    }
     return(
       <div>
         <p>Search Parameters</p>
@@ -81,6 +92,9 @@ export var Search = React.createClass({
               <label>Search Text
                 <input type="text" ref="searchText" placeholder="search text" onChange={this.handleOnShowQuotationsWithoutAssociation}/>
               </label>
+            </div>
+            <div>
+              <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict Search to Selected Canonical Quotation</label>
             </div>
             <div>
               <label>Filter by Quotation Type
@@ -118,10 +132,10 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label>Filter by Expression Type
-                <select ref="expressionType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+              <label>Filter by Work Group
+                <select ref="workGroup" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
-                  {displayExpressionTypeList()}
+                  {displayWorkGroupsList()}
                 </select>
               </label>
             </div>
@@ -134,7 +148,12 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict Search to Selected Canonical Quotation</label>
+              <label>Filter by Expression Type
+                <select ref="expressionType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayExpressionTypeList()}
+                </select>
+              </label>
             </div>
           </div>
           {/*
