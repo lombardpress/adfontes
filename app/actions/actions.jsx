@@ -22,12 +22,27 @@ export var completeSearchWorksFetch = (listOfWorks) => {
 export var fetchSearchWorksList = () =>{
   return (dispatch, getState) => {
     var state = getState();
+
+    var workGroupSparql = ""
+    if (state.search.searchParameters.workGroup){
+      workGroupSparql = [
+      "<http://scta.info/resource/" + state.search.searchParameters.workGroup + "> <http://scta.info/property/hasExpression> ?expression ."
+      ].join('');
+    }
+    var authorSparql = ""
+    if (state.search.searchParameters.expressionAuthor){
+      authorSparql = [
+      "?expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> ."
+      ].join('');
+    }
     var query = [
         "SELECT ?type ?expression ?expressionShortId ?expressionTitle ?author ?authorTitle ?workGroup ?workGroupTitle",
         "WHERE { ",
           "?expression a <http://scta.info/resource/expression> .",
           "?expression a ?type .",
           "?expression <http://scta.info/property/level> '1' . ",
+          workGroupSparql,
+          authorSparql,
           "?expression <http://scta.info/property/shortId> ?expressionShortId .",
           "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
           "?expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
@@ -275,6 +290,12 @@ export var fetchQuotations = () =>{
       ].join('');
 
     }
+    var authorSparql = "";
+    if (state.search.searchParameters.expressionAuthor){
+      authorSparql = [
+      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
+      ].join('');
+    }
     var quotationTypeSparql = "";
     if (state.search.searchParameters.quotationType != "" ){
       var quotationTypeSparql = [
@@ -324,6 +345,7 @@ export var fetchQuotations = () =>{
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
             workGroupSparql,
+            authorSparql,
             "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
             "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
             "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
@@ -342,6 +364,7 @@ export var fetchQuotations = () =>{
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
           workGroupSparql,
+          authorSparql,
           "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
           "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
           "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
@@ -427,6 +450,21 @@ export var fetchCanonicalQuotations = () =>{
   return (dispatch, getState) => {
     var state = getState();
     var searchText = state.search.searchParameters.searchText || "";
+
+
+    var quotationInstanceSparql = ""
+    if (state.search.searchParameters.expressionId || state.search.searchParameters.expressionAuthor || state.search.searchParameters.workGroup){
+      quotationInstanceSparql = [
+      "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+      ].join('');
+    }
+    var topLevelExpressionSparql = ""
+    if (state.search.searchParameters.expressionAuthor || state.search.searchParameters.workGroup){
+      topLevelExpressionSparql = [
+      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
+      ].join('');
+    }
+
     var quotationTypeSparql = ""
     if (state.search.searchParameters.quotationType){
       var quotationTypeSparql = "?quotation <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.searchParameters.quotationType + "> ."
@@ -434,8 +472,16 @@ export var fetchCanonicalQuotations = () =>{
     var expressionIdSparql = "";
     if (state.search.searchParameters.expressionId){
       var expressionIdSparql = [
-      "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+      // "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
       "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> <http://scta.info/resource/" + state.search.searchParameters.expressionId + "> .",
+      ].join('');
+    }
+    var authorSparql = "";
+    if (state.search.searchParameters.expressionAuthor){
+      authorSparql = [
+      // "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+      // "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
+      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
       ].join('');
     }
     var quotationWorkSparql = "";
@@ -445,12 +491,25 @@ export var fetchCanonicalQuotations = () =>{
       ].join('');
 
     }
+    var workGroupSparql = "";
+    if (state.search.searchParameters.workGroup){
+      workGroupSparql = [
+      // "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+      // "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
+      "<http://scta.info/resource/" + state.search.searchParameters.workGroup + "> <http://scta.info/property/hasExpression> ?toplevel_expression .",
+      ].join('');
+
+    }
 
     var query = [
-          "SELECT ?quotation ?citation ?quotation_text ",
+          "SELECT DISTINCT ?quotation ?citation ?quotation_text ",
           "WHERE {",
           "?quotation a <http://scta.info/resource/quotation> .",
           "?quotation <http://scta.info/property/quotation> ?quotation_text .",
+          quotationInstanceSparql,
+          topLevelExpressionSparql,
+          authorSparql,
+          workGroupSparql,
           quotationWorkSparql,
           expressionIdSparql,
           quotationTypeSparql,

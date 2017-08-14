@@ -10,6 +10,7 @@ export var Search = React.createClass({
     var quotationType = this.refs.quotationType.value;
     var quotationWork = this.refs.quotationWork.value;
     var expressionId = this.refs.expressionId.value;
+    var expressionAuthor = this.refs.expressionAuthor.value;
     var quotationAuthor = this.refs.expressionId.value;
     var expressionType = this.refs.expressionType.value;
     var workGroup = this.refs.workGroup.value;
@@ -18,6 +19,7 @@ export var Search = React.createClass({
       searchText,
       quotationType,
       expressionId,
+      expressionAuthor,
       quotationAuthor,
       quotationWork,
       expressionType,
@@ -25,6 +27,8 @@ export var Search = React.createClass({
     }
 
     dispatch(actions.setSearchParameters(searchParameters));
+
+    dispatch(actions.fetchSearchWorksList());
 
 		if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
 		dispatch(actions.clearFocusedQuotation());
@@ -34,6 +38,7 @@ export var Search = React.createClass({
 		dispatch(actions.fetchQuotations());
 		//dispatch(actions.fetchManifestationQuotations(searchText, quotationType, expressionId));
     dispatch(actions.clearManifestationQuotations());
+
 	},
 	render: function(){
     var _this = this;
@@ -125,7 +130,7 @@ export var Search = React.createClass({
             </div>
             <div>
               <label>Filter by Expression Author
-                <select ref="expressionId" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                <select ref="expressionAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
                   {displayAuthorsList()}
                 </select>
