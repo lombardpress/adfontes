@@ -7,26 +7,37 @@ export var Search = React.createClass({
 		e.preventDefault();
 		var {dispatch, search} = this.props;
 		var searchText = this.refs.searchText.value;
-    var quotationType = this.refs.quotationType.value;
+    var quotationWorkGroup = this.refs.quotationWorkGroup.value;
     var quotationWork = this.refs.quotationWork.value;
+    var quotationWorkPart = this.refs.quotationWorkPart.value
     var expressionId = this.refs.expressionId.value;
     var expressionAuthor = this.refs.expressionAuthor.value;
-    var quotationAuthor = this.refs.expressionId.value;
+    var quotationAuthor = this.refs.quotationAuthor.value;
     var expressionType = this.refs.expressionType.value;
     var workGroup = this.refs.workGroup.value;
+
     var retainCanonical = this.refs.retainCanonical.checked;
     var searchParameters = {
       searchText,
-      quotationType,
       expressionId,
       expressionAuthor,
       quotationAuthor,
       quotationWork,
+      quotationWorkPart,
+      quotationWorkGroup,
       expressionType,
       workGroup
     }
 
     dispatch(actions.setSearchParameters(searchParameters));
+
+    dispatch(actions.fetchQuotationWorkParts(this.refs.quotationWorkPart.value));
+    // if (this.refs.quotationWorkPart.value){
+    //   dispatch(actions.fetchQuotationWorkParts(this.refs.quotationWorkPart.value));
+    // }
+    // else if (this.refs.quotationWork.value){
+    //   dispatch(actions.fetchQuotationWorkParts(this.refs.quotationWork.value));
+    // }
 
     dispatch(actions.fetchSearchWorksList());
 
@@ -60,6 +71,44 @@ export var Search = React.createClass({
           )
         }
       )
+    }
+    function displayQuotationWorkPartsParent(){
+      var quotationWorkParts = _this.props.search.quotationWorkParts;
+      if (quotationWorkParts){
+        var part = quotationWorkParts[0];
+        if (part){
+          var parentid = part.parent.split("http://scta.info/resource/")[1];
+          return(
+            <option value={parentid}>{part.parent}</option>
+          )
+        }
+      }
+    }
+    function displayQuotationWorkPartsGrandparent(){
+      var quotationWorkParts = _this.props.search.quotationWorkParts;
+      if (quotationWorkParts){
+        var part = quotationWorkParts[0];
+        if (part){
+          var grandparentid = part.grandparent.split("http://scta.info/resource/")[1];
+          return(
+            <option value={grandparentid}>{part.grandparent}</option>
+          )
+        }
+      }
+    }
+    function displayQuotationWorkParts(){
+      var quotationWorkParts = _this.props.search.quotationWorkParts;
+      if (quotationWorkParts){
+        return quotationWorkParts.map((part) => {
+          var id = part.childShortId ? part.childShortId : part.child.split("http://scta.info/resource/")[1];
+          if (part.child){
+            return(
+              <option value={id}>{part.child}</option>
+              )
+            }
+          }
+        )
+      }
     }
     function displayAuthorsList(){
       var authors = _this.props.search.authors;
@@ -102,21 +151,18 @@ export var Search = React.createClass({
               <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict Search to Selected Canonical Quotation</label>
             </div>
             <div>
-              <label>Filter by Quotation Type
-                <select ref="quotationType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
-                  <option value="">All</option>
-                  <option value="biblical">Biblical</option>
-                  <option value="Classical">Classical</option>
-                  <option value="Patristic">Patristic</option>
-                  <option value="Scholastic">scholastic</option>
-                </select>
-              </label>
-            </div>
-            <div>
               <label>Filter by Quotation Author
                 <select ref="quotationAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
                   {displayAuthorsList()}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by quotation Work Group
+                <select ref="quotationWorkGroup" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayWorkGroupsList()}
                 </select>
               </label>
             </div>
@@ -129,6 +175,16 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
+              <label>Filter by Quotation Work Part
+                <select ref="quotationWorkPart" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayQuotationWorkPartsGrandparent()}
+                  {displayQuotationWorkPartsParent()}
+                  {displayQuotationWorkParts()}
+                </select>
+              </label>
+            </div>
+            <div>
               <label>Filter by Expression Author
                 <select ref="expressionAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
@@ -137,7 +193,7 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label>Filter by Work Group
+              <label>Filter by Expression Work Group
                 <select ref="workGroup" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
                   {displayWorkGroupsList()}
@@ -146,7 +202,7 @@ export var Search = React.createClass({
             </div>
             <div>
               <label>Filter by Expression Title
-                <select ref="expressionId" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                <select ref="expressionId" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.expressionId}>
                   <option value="">All</option>
                   {displaySearchWorksList()}
                 </select>
