@@ -176,7 +176,7 @@ export var Search = React.createClass({
             </div>
             <div>
               <label>Filter by Quotation Work Part
-                <select ref="quotationWorkPart" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                <select ref="quotationWorkPart" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.quotationWorkPart}>
                   <option value="">All</option>
                   {displayQuotationWorkPartsGrandparent()}
                   {displayQuotationWorkPartsParent()}

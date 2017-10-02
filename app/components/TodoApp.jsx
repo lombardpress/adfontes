@@ -17,7 +17,11 @@ var TodoApp = React.createClass({
 	render: function(){
 		return (
 			<div>
-				<h1 className='page-title'>SCTA Quotation App</h1>
+				<h3 className='page-title'>Scholastic Quotation Explorer</h3>
+				<div className='page-header'>
+					<p>A <a href="http://lombardpress.org">LombardPress</a> Publication | Powerd by Data from the <a href="https://scta.info">Scholastic Commentaries and Text Archive</a></p>
+					<p>Designed by <a href="http://jeffreycwitt.com">Jeffrey C. Witt</a></p>
+				</div>
 				<div className="wrapper">
 					<div className='search column1'>
 						<Search/>
