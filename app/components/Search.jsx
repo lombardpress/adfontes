@@ -40,6 +40,7 @@ export var Search = React.createClass({
     // }
 
     dispatch(actions.fetchSearchWorksList());
+    dispatch(actions.fetchQuotationWorksList());
 
 		if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
 		dispatch(actions.clearFocusedQuotation());
@@ -168,7 +169,7 @@ export var Search = React.createClass({
             </div>
             <div>
               <label>Filter by Quotation Work
-                <select ref="quotationWork" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                <select ref="quotationWork" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.quotationWork}>
                   <option value="">All</option>
                   {displayQuotationWorksList()}
                 </select>

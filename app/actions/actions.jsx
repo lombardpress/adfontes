@@ -132,6 +132,19 @@ export var completeQuotationWorksListFetch = (quotationWorksList) => {
 export var fetchQuotationWorksList = () =>{
   return (dispatch, getState) => {
     var state = getState();
+    var quotationWorkGroupSparql = ""
+    if (state.search.searchParameters.quotationWorkGroup){
+      quotationWorkGroupSparql = [
+      "<http://scta.info/resource/" + state.search.searchParameters.quotationWorkGroup + "> <http://scta.info/property/hasExpression> ?expression ."
+      ].join('');
+    }
+    var quotationAuthorSparql = ""
+    if (state.search.searchParameters.quotationAuthor){
+      quotationAuthorSparql = [
+      "?expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.quotationAuthor + "> ."
+      ].join('');
+    }
+
     // var query = [
     //     "SELECT ?type ?expression ?expressionShortId ?expressionTitle ?author ?authorTitle ?workGroup ?workGroupTitle",
     //     "WHERE { ",
@@ -161,6 +174,8 @@ export var fetchQuotationWorksList = () =>{
         "?expression a <http://scta.info/resource/expression> .",
         "?expression a ?type .",
         "?expression <http://scta.info/property/level> '1' . ",
+        quotationWorkGroupSparql,
+        quotationAuthorSparql,
         "?expression <http://scta.info/property/shortId> ?expressionShortId .",
         "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
         "OPTIONAL { ",
@@ -373,6 +388,42 @@ export var fetchQuotations = () =>{
       "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
       ].join('');
     }
+    var quotationAuthorSparql = "";
+    if (state.search.searchParameters.quotationAuthor){
+      var searchShortId = (state.search.searchParameters.quotationAuthor);
+      quotationAuthorSparql = [
+        "{",
+          "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+          "?isInstanceOf <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
+        "}",
+        "UNION",
+        "{",
+          "?quotation <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
+        "}"
+      ].join('');
+    }
+    var quotationWorkGroupSparql = "";
+    if (state.search.searchParameters.quotationWorkGroup){
+      var searchShortId = (state.search.searchParameters.quotationWorkGroup);
+      quotationWorkGroupSparql = [
+        "{",
+          "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+          "?isInstanceOf <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "<http://scta.info/resource/" + state.search.searchParameters.quotationWorkGroup + "> <http://scta.info/property/hasExpression> ?source_toplevel_expression .",
+        "}",
+        "UNION",
+        "{",
+          "?quotation <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "<http://scta.info/resource/" + state.search.searchParameters.quotationWorkGroup + "> <http://scta.info/property/hasExpression> ?source_toplevel_expression .",
+        "}"
+      ].join('');
+    }
     // var quotationTypeSparql = "";
     // if (state.search.searchParameters.quotationType != "" ){
     //   var quotationTypeSparql = [
@@ -476,6 +527,8 @@ export var fetchQuotations = () =>{
             "WHERE {",
             "<" + canonicalQuotationId + "> <http://scta.info/property/hasInstance> ?quotation .",
             expressionIdSparql,
+            quotationAuthorSparql,
+            quotationWorkGroupSparql,
             //quotationTypeSparql,
             quotationWorkSparql,
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
@@ -496,10 +549,13 @@ export var fetchQuotations = () =>{
           "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "?quotation a <http://scta.info/resource/expression> .",
           expressionIdSparql,
+          quotationAuthorSparql,
+          quotationWorkGroupSparql,
           //quotationTypeSparql,
           quotationWorkSparql,
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
+          quotationAuthorSparql,
           workGroupSparql,
           authorSparql,
           "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
@@ -511,6 +567,7 @@ export var fetchQuotations = () =>{
           "LIMIT 1000"
         ].join('');
       }
+      console.log(query);
     dispatch(startQuotationsFetch());
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -621,6 +678,27 @@ export var fetchCanonicalQuotations = () =>{
       "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
       ].join('');
     }
+
+    var quotationAuthorSparql = "";
+    if (state.search.searchParameters.quotationAuthor){
+      var searchShortId = (state.search.searchParameters.quotationAuthor);
+      quotationAuthorSparql = [
+        "?quotation <http://scta.info/property/source> ?source .",
+        "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+        "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
+      ].join('');
+    }
+    var quotationWorkGroupSparql = "";
+    if (state.search.searchParameters.quotationWorkGroup){
+      var searchShortId = (state.search.searchParameters.quotationWorkGroup);
+      quotationWorkGroupSparql = [
+        "?quotation <http://scta.info/property/source> ?source .",
+        "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+        "<http://scta.info/resource/" + state.search.searchParameters.quotationWorkGroup + "> <http://scta.info/property/hasExpression> ?source_toplevel_expression .",
+      ].join('');
+    }
+
+
     // var quotationWorkSparql = "";
     // if (state.search.searchParameters.quotationWork){
     //   quotationWorkSparql = [
@@ -677,6 +755,8 @@ export var fetchCanonicalQuotations = () =>{
           topLevelExpressionSparql,
           authorSparql,
           workGroupSparql,
+          quotationAuthorSparql,
+          quotationWorkGroupSparql,
           quotationWorkSparql,
           expressionIdSparql,
           //quotationTypeSparql,
