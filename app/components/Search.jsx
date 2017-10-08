@@ -11,27 +11,30 @@ export var Search = React.createClass({
     var quotationWork = this.refs.quotationWork.value;
     var quotationWorkPart = this.refs.quotationWorkPart.value
     var expressionId = this.refs.expressionId.value;
+    var expressionPart = this.refs.expressionPart.value;
     var expressionAuthor = this.refs.expressionAuthor.value;
     var quotationAuthor = this.refs.quotationAuthor.value;
-    var expressionType = this.refs.expressionType.value;
+    //var expressionType = this.refs.expressionType.value;
     var workGroup = this.refs.workGroup.value;
 
     var retainCanonical = this.refs.retainCanonical.checked;
     var searchParameters = {
       searchText,
       expressionId,
+      expressionPart,
       expressionAuthor,
       quotationAuthor,
       quotationWork,
       quotationWorkPart,
       quotationWorkGroup,
-      expressionType,
+      //expressionType,
       workGroup
     }
 
     dispatch(actions.setSearchParameters(searchParameters));
 
-    dispatch(actions.fetchQuotationWorkParts(this.refs.quotationWorkPart.value));
+    dispatch(actions.fetchQuotationWorkParts());
+    dispatch(actions.fetchExpressionParts());
     // if (this.refs.quotationWorkPart.value){
     //   dispatch(actions.fetchQuotationWorkParts(this.refs.quotationWorkPart.value));
     // }
@@ -80,7 +83,7 @@ export var Search = React.createClass({
         if (part){
           var parentid = part.parent.split("http://scta.info/resource/")[1];
           return(
-            <option value={parentid}>{part.parent}</option>
+            <option value={parentid}>Current: {part.parent_title}</option>
           )
         }
       }
@@ -91,9 +94,11 @@ export var Search = React.createClass({
         var part = quotationWorkParts[0];
         if (part){
           var grandparentid = part.grandparent.split("http://scta.info/resource/")[1];
-          return(
-            <option value={grandparentid}>{part.grandparent}</option>
-          )
+          if (grandparentid != undefined){
+            return(
+              <option value={grandparentid}>Up: {part.grandparent_title}</option>
+            )
+          }
         }
       }
     }
@@ -104,13 +109,54 @@ export var Search = React.createClass({
           var id = part.childShortId ? part.childShortId : part.child.split("http://scta.info/resource/")[1];
           if (part.child){
             return(
-              <option value={id}>{part.child}</option>
+              <option value={id}>{part.child_title}</option>
               )
             }
           }
         )
       }
     }
+    function displayExpressionPartsParent(){
+      var expressionParts = _this.props.search.expressionParts;
+      if (expressionParts){
+        var part = expressionParts[0];
+        if (part){
+          var parentid = part.parent.split("http://scta.info/resource/")[1];
+          return(
+            <option value={parentid}>Current: {part.parent_title}</option>
+          )
+        }
+      }
+    }
+    function displayExpressionPartsGrandparent(){
+      var expressionParts = _this.props.search.expressionParts;
+      if (expressionParts){
+        var part = expressionParts[0];
+        if (part){
+          var grandparentid = part.grandparent.split("http://scta.info/resource/")[1];
+          if (grandparentid != undefined){
+            return(
+              <option value={grandparentid}>Up: {part.grandparent_title}</option>
+            )
+          }
+        }
+      }
+    }
+    function displayExpressionParts(){
+      var expressionParts = _this.props.search.expressionParts;
+      if (expressionParts){
+        return expressionParts.map((part) => {
+          var id = part.childShortId ? part.childShortId : part.child.split("http://scta.info/resource/")[1];
+          if (part.child){
+            return(
+              <option value={id}>{part.child_title}</option>
+              )
+            }
+          }
+        )
+      }
+    }
+
     function displayAuthorsList(){
       var authors = _this.props.search.authors;
       return authors.map((author) => {
@@ -210,13 +256,23 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
+              <label>Filter by Expression Part
+                <select ref="expressionPart" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.expressionPart}>
+                  <option value="">All</option>
+                  {displayExpressionPartsGrandparent()}
+                  {displayExpressionPartsParent()}
+                  {displayExpressionParts()}
+                </select>
+              </label>
+            </div>
+            {/* temporarily commenting out <div>
               <label>Filter by Expression Type
                 <select ref="expressionType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
                   {displayExpressionTypeList()}
                 </select>
               </label>
-            </div>
+            </div> */}
           </div>
           {/*
             <div className="small-3 columns">

@@ -48,6 +48,16 @@ export var searchReducer = (state = {}, action) => {
         ...state,
         quotationWorkParts: action.parts
       }
+    case 'START_EXPRESSION_PARTS_FETCH':
+      return {
+        ...state,
+        expressionParts: []
+      }
+    case 'COMPLETE_EXPRESSION_PARTS_FETCH':
+      return {
+        ...state,
+        expressionParts: action.parts
+      }
     case 'START_EXPRESSION_TYPE_FETCH':
         return {
           ...state,

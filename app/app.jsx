@@ -21,7 +21,7 @@ store.dispatch(actions.setSearchParameters({}));
 store.dispatch(actions.fetchCanonicalQuotations());
 store.dispatch(actions.fetchAuthors());
 store.dispatch(actions.fetchSearchWorksList());
-store.dispatch(actions.fetchExpressionTypes());
+//store.dispatch(actions.fetchExpressionTypes());
 store.dispatch(actions.fetchQuotationWorksList());
 store.dispatch(actions.fetchWorkGroups());
 
