@@ -11,6 +11,7 @@ import CanonicalQuotation from "CanonicalQuotation";
 import CanonicalQuotationList from "CanonicalQuotationList";
 import ManifestationQuotationList from "ManifestationQuotationList";
 import Paragraph from "Paragraph";
+import BarChart from "BarChart";
 
 
 var TodoApp = React.createClass({
@@ -40,8 +41,12 @@ var TodoApp = React.createClass({
 						{/* <FocusedQuotation/>
 						<CanonicalQuotation/> */}
 					</div>
+					<div className="chart">
+						<BarChart size={[500,500]}/>
+					</div>
 
 				</div>
+
 			</div>
 		)
 	}

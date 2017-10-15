@@ -411,7 +411,57 @@ export var fetchWorkGroups = () =>{
   }
 };
 
+///Chart Actions
 
+export var startChartFetch = () => {
+  return{
+    type: "START_CHART_FETCH"
+  };
+};
+export var completeChartFetch = (count) => {
+  return{
+    type: "COMPLETE_CHART_FETCH",
+    count
+  };
+};
+export var fetchChart = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    var level = 3;
+    var expressionId = state.search.searchParameters.expressionId 
+
+    "lombardsententia";
+    var query = [
+      "SELECT ?ref ?reftitle ?totalOrderNumber (count(?element) as ?count) ",
+      "WHERE {",
+      "?ref a <http://scta.info/resource/expression> .",
+      "?ref <http://scta.info/property/isMemberOf> <http://scta.info/resource/" + expressionId + "> .",
+      "?ref <http://scta.info/property/level> '" + level + "' .",
+      "?ref <http://purl.org/dc/elements/1.1/title> ?reftitle .",
+      "OPTIONAL {",
+      "?ref <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
+      "}",
+      "?element <http://scta.info/property/isMemberOf> ?ref .",
+      "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+      "}",
+      "group by ?ref ?reftitle ?totalOrderNumber ",
+      "ORDER BY ?totalOrderNumber "
+    ].join('');
+  dispatch(startChartFetch());
+  axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+    var count = results.map((result) => {
+        return {
+          "item": result.ref.value,
+          "title": result.reftitle.value,
+          "count": result.count.value
+        }
+      });
+      console.log(count);
+      dispatch(completeChartFetch(count));
+    });
+  }
+};
 
 
 // Quotation Actions
@@ -818,7 +868,7 @@ export var fetchCanonicalQuotations = () =>{
     if (state.search.searchParameters.quotationWork || state.search.searchParameters.quotationWorkPart){
       var searchShortId = (state.search.searchParameters.quotationWorkPart) ? state.search.searchParameters.quotationWorkPart : state.search.searchParameters.quotationWork
 
-    //OLD QUERY  -- THIS QUERY IS AN EXAMPLE OF WHAT WAS REQUIRED BEFORE THE isMemberOf PROPERTY WAS ADDED. 
+    //OLD QUERY  -- THIS QUERY IS AN EXAMPLE OF WHAT WAS REQUIRED BEFORE THE isMemberOf PROPERTY WAS ADDED.
     // It is replaced by the query below it
 
     //   quotationWorkSparql = [

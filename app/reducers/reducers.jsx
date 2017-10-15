@@ -82,7 +82,22 @@ export var searchReducer = (state = {}, action) => {
       return state
   };
 };
-
+export var chartReducer = (state = {}, action) => {
+  switch (action.type){
+    case 'START_CHART_FETCH':
+        return {
+          count: []
+        }
+    case 'COMPLETE_CHART_FETCH':
+    console.log("reducer count", action.count)
+      return {
+        ...state,
+        count: action.count
+      }
+    default:
+      return state
+  };
+};
 export var quotationsReducer = (state = [], action) => {
   switch (action.type){
     case 'ADD_QUOTATIONS':

@@ -42,6 +42,7 @@ export var Search = React.createClass({
     //   dispatch(actions.fetchQuotationWorkParts(this.refs.quotationWork.value));
     // }
 
+
     dispatch(actions.fetchSearchWorksList());
     dispatch(actions.fetchQuotationWorksList());
 
@@ -54,8 +55,10 @@ export var Search = React.createClass({
 		//dispatch(actions.fetchManifestationQuotations(searchText, quotationType, expressionId));
     dispatch(actions.clearManifestationQuotations());
 
+    dispatch(actions.fetchChart());
 	},
 	render: function(){
+    console.log('count from search comp',  this.props.chart.count);
     var _this = this;
     function displaySearchWorksList(){
       var searchWorks = _this.props.search.searchWorks;
