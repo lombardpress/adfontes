@@ -12,6 +12,7 @@ export var Search = React.createClass({
     var quotationWorkPart = this.refs.quotationWorkPart.value
     var expressionId = this.refs.expressionId.value;
     var expressionPart = this.refs.expressionPart.value;
+    var expressionLevel = e.target.options[e.target.selectedIndex].dataset.level ? e.target.options[e.target.selectedIndex].dataset.level : 1 ;
     var expressionAuthor = this.refs.expressionAuthor.value;
     var quotationAuthor = this.refs.quotationAuthor.value;
     //var expressionType = this.refs.expressionType.value;
@@ -22,6 +23,7 @@ export var Search = React.createClass({
       searchText,
       expressionId,
       expressionPart,
+      expressionLevel,
       expressionAuthor,
       quotationAuthor,
       quotationWork,
@@ -54,11 +56,12 @@ export var Search = React.createClass({
 		dispatch(actions.fetchQuotations());
 		//dispatch(actions.fetchManifestationQuotations(searchText, quotationType, expressionId));
     dispatch(actions.clearManifestationQuotations());
-
     dispatch(actions.fetchChart());
+
+
+
 	},
 	render: function(){
-    console.log('count from search comp',  this.props.chart.count);
     var _this = this;
     function displaySearchWorksList(){
       var searchWorks = _this.props.search.searchWorks;
@@ -126,7 +129,7 @@ export var Search = React.createClass({
         if (part){
           var parentid = part.parent.split("http://scta.info/resource/")[1];
           return(
-            <option value={parentid}>Current: {part.parent_title}</option>
+            <option value={parentid} data-level={part.parent_level}>Current: {part.parent_title}</option>
           )
         }
       }
@@ -139,7 +142,7 @@ export var Search = React.createClass({
           var grandparentid = part.grandparent.split("http://scta.info/resource/")[1];
           if (grandparentid != undefined){
             return(
-              <option value={grandparentid}>Up: {part.grandparent_title}</option>
+              <option value={grandparentid} data-level={part.grandparent_level}>Up: {part.grandparent_title}</option>
             )
           }
         }
@@ -152,7 +155,7 @@ export var Search = React.createClass({
           var id = part.childShortId ? part.childShortId : part.child.split("http://scta.info/resource/")[1];
           if (part.child){
             return(
-              <option value={id}>{part.child_title}</option>
+              <option value={id} data-level={part.child_level}>{part.child_title}</option>
               )
             }
           }

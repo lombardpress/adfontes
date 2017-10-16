@@ -70,7 +70,7 @@ class BarChart extends React.Component {
   //data.sort(sort)
 		//this filter is required to make sure count is recognized as integers not strings
 		// see: http://stackoverflow.com/questions/10709950/get-the-real-max-of-an-array-in-d3
-    console.log(data);
+
 	data.filter(function(d,i) {
 	  d.count = +d.count;
 	});
@@ -122,18 +122,18 @@ class BarChart extends React.Component {
 
 
 
-	var tooltip = d3.select('body').append('div')
-		.attr('class', 'tooltip')
-		.style('position', 'absolute')
-		.style('padding', '0 10px')
-		.style('background', 'white')
-		.style('opacity', 0)
+	// var tooltip = d3.select('body').append('div')
+	// 	.attr('class', 'tooltip')
+	// 	.style('position', 'absolute')
+	// 	.style('padding', '0 10px')
+	// 	.style('background', 'white')
+	// 	.style('opacity', 0)
 
     const node = this.node
     //var canvas = d3.select("div#" + chart).append("svg")
     var canvas = d3.select(node)
       //.attr("id", chart)
-		.style('background', '#E7E0CB')
+		//.style('background', '#E7E0CB')
 		.attr('width', width + margin.left + margin.right)
 		.attr('height', height + margin.top + margin.bottom)
 		.append("g")
@@ -175,7 +175,7 @@ class BarChart extends React.Component {
 
 		//canvas.transition()
     canvas.transition()
-			.attr("height", function (d) { console.log("transition", d); return yScale(d.count)})
+			.attr("height", function (d) {return yScale(d.count)})
 			.attr("y", function(d) { return height - yScale(d.count) })
 			.delay(function(d,i){return i * 10})
 			.duration(1000)
@@ -218,16 +218,17 @@ class BarChart extends React.Component {
 					.style({ stroke: "#000"})
 		}
 render() {
-  console.log("count from chart render", this.props.chart.count);
       return(
-
           <svg ref={node => this.node = node}
           width={500} height={500}>
           </svg>
 
+
     )
    }
 }
+//module.exports = BarChart;
+
 export default connect(
 	(state) => {
 		return state

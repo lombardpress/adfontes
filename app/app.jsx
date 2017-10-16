@@ -4,6 +4,8 @@ var {Provider} = require("react-redux");
 var {Route, Router, IndexRoute, hashHistory} = require("react-router");
 
 var TodoApp = require("TodoApp");
+var BarChart = require("BarChart");
+var Main = require("Main");
 
 var actions = require("actions");
 var store = require("configureStore").configure();
@@ -38,7 +40,7 @@ $(document).foundation();
 
 ReactDOM.render(
 	<Provider store={store}>
-		<TodoApp/>
+		<Main/>
 	</Provider>,
 	document.getElementById('app')
 );

@@ -296,21 +296,24 @@ export var fetchExpressionParts = () =>{
       currentNode = "";
     }
     var query = [
-        "SELECT ?grandparent ?grandparent_title ?parent_title ?parent ?child ?child_title ",
+        "SELECT ?grandparent ?grandparent_title ?grandparent_level ?parent_title ?parent ?parent_level ?child ?child_level ?child_title ",
         "WHERE { ",
         "BIND(<http://scta.info/resource/" + currentNode + "> AS ?parent)",
         "OPTIONAL {",
-          "?parent <http://purl.org/dc/elements/1.1/title> ?parent_title",
+          "?parent <http://purl.org/dc/elements/1.1/title> ?parent_title .",
+          "?parent <http://scta.info/property/level> ?parent_level .",
         "}",
         "OPTIONAL {",
         "?parent <http://purl.org/dc/terms/hasPart> ?child .",
         "?child <http://purl.org/dc/elements/1.1/title> ?child_title .",
+        "?child <http://scta.info/property/level> ?child_level .",
         "MINUS{?child <http://scta.info/property/structureType> <http://scta.info/resource/structureDivision> .}",
         "}",
         "OPTIONAL {",
         "?parent <http://purl.org/dc/terms/isPartOf> ?grandparent .",
         "?grandparent <http://scta.info/property/structureType> <http://scta.info/resource/structureCollection> .",
-        "?grandparent <http://purl.org/dc/elements/1.1/title> ?grandparent_title",
+        "?grandparent <http://purl.org/dc/elements/1.1/title> ?grandparent_title .",
+        "?grandparent <http://scta.info/property/level> ?grandparent_level .",
         "}",
         "}"
         ].join('');
@@ -321,10 +324,13 @@ export var fetchExpressionParts = () =>{
         var partInfo = {
           grandparent: result.grandparent ? result.grandparent.value : "",
           grandparent_title: result.grandparent_title ? result.grandparent_title.value : "",
+          grandparent_level: result.grandparent_level ? result.grandparent_level.value : "",
           parent: result.parent.value,
           parent_title: result.parent_title ? result.parent_title.value : "",
+          parent_level: result.parent_level ? result.parent_level.value : "",
           child: result.child ? result.child.value : "",
-          child_title: result.child_title ? result.child_title.value : ""
+          child_title: result.child_title ? result.child_title.value : "",
+          child_level: result.child_level ? result.child_level.value : "",
         }
         return partInfo
 
@@ -412,7 +418,12 @@ export var fetchWorkGroups = () =>{
 };
 
 ///Chart Actions
-
+export var toggleGraphDisplay = (current) => {
+  return{
+    type: "TOGGLE_GRAPH_DISPLAY",
+    current
+  };
+}
 export var startChartFetch = () => {
   return{
     type: "START_CHART_FETCH"
@@ -427,10 +438,9 @@ export var completeChartFetch = (count) => {
 export var fetchChart = () =>{
   return (dispatch, getState) => {
     var state = getState();
-    var level = 3;
-    var expressionId = state.search.searchParameters.expressionId 
-
-    "lombardsententia";
+    var level = parseInt(state.search.searchParameters.expressionLevel) + 1
+    //var expressionId = state.search.searchParameters.expressionPart ? state.search.searchParameters.expressionPart : state.search.searchParameters.expressionId
+    var expressionId = state.search.searchParameters.expressionId
     var query = [
       "SELECT ?ref ?reftitle ?totalOrderNumber (count(?element) as ?count) ",
       "WHERE {",
@@ -457,7 +467,6 @@ export var fetchChart = () =>{
           "count": result.count.value
         }
       });
-      console.log(count);
       dispatch(completeChartFetch(count));
     });
   }

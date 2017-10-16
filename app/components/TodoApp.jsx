@@ -1,9 +1,11 @@
 var React = require('react');
+var {connect} = require('react-redux');
 var uuid = require("node-uuid");
 var moment = require("moment");
 
 
 
+var actions = require('actions');
 import Search from "Search";
 import QuotationList from "QuotationList";
 import FocusedQuotation from "FocusedQuotation";
@@ -15,18 +17,26 @@ import BarChart from "BarChart";
 
 
 var TodoApp = React.createClass({
+	handleGraph: function(e){
+		e.preventDefault();
+		var {dispatch} = this.props;
+		dispatch(actions.toggleGraphDisplay(this.props.chart.visibile));
+	},
 	render: function(){
-		return (
-			<div>
-				<h3 className='page-title'>Scholastic Quotation Explorer</h3>
-				<div className='page-header'>
-					<p>A <a href="http://lombardpress.org">LombardPress</a> Publication | Powerd by Data from the <a href="https://scta.info">Scholastic Commentaries and Text Archive</a></p>
-					<p>Designed by <a href="http://jeffreycwitt.com">Jeffrey C. Witt</a></p>
-				</div>
-				<div className="wrapper">
-					<div className='search column1'>
-						<Search/>
+		var _this = this
+		function barGraphDisplay(){
+			if (_this.props.chart.visibile){
+				return(
+					<div className="chart">
+						<BarChart size={[500,500]}/>
 					</div>
+				)
+			}
+    }
+		function quotationDisplay(){
+			if (!_this.props.chart.visibile){
+				return(
+					<div>
 					<div id="CanonicalQuotationList" className="column2">
 						<CanonicalQuotationList/>
 					</div>
@@ -41,9 +51,19 @@ var TodoApp = React.createClass({
 						{/* <FocusedQuotation/>
 						<CanonicalQuotation/> */}
 					</div>
-					<div className="chart">
-						<BarChart size={[500,500]}/>
+				</div>
+				)
+			}
+    }
+		return (
+			<div>
+				<div className="wrapper">
+					<a href="#" onClick={this.handleGraph}>Toggle Historgram</a>
+					<div className='search column1'>
+						<Search/>
 					</div>
+					{quotationDisplay()}
+					{barGraphDisplay()}
 
 				</div>
 
@@ -52,4 +72,9 @@ var TodoApp = React.createClass({
 	}
 });
 
-module.exports = TodoApp;
+//module.exports = ;
+export default connect(
+  (state) => {
+		return state
+	}
+)(TodoApp);

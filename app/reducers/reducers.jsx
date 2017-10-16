@@ -84,18 +84,26 @@ export var searchReducer = (state = {}, action) => {
 };
 export var chartReducer = (state = {}, action) => {
   switch (action.type){
+    case 'TOGGLE_GRAPH_DISPLAY':
+        return {
+          ...state,
+          visibile: !action.current
+        }
     case 'START_CHART_FETCH':
         return {
+          ...state,
           count: []
         }
     case 'COMPLETE_CHART_FETCH':
-    console.log("reducer count", action.count)
       return {
         ...state,
         count: action.count
       }
     default:
-      return state
+      return {
+        ...state,
+        visible: false
+      }
   };
 };
 export var quotationsReducer = (state = [], action) => {
