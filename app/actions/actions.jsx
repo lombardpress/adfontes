@@ -1,7 +1,7 @@
 var axios = require('axios');
 
-//const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
-const sparqlEndpoint = "http://localhost:3030/ds/query"
+const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
+//const sparqlEndpoint = "http://localhost:3030/ds/query"
 
 ///search actions
 //===============
@@ -232,6 +232,7 @@ export var fetchQuotationWorkParts = () =>{
     else{
       currentNode = "";
     }
+
     var query = [
         "SELECT ?grandparent ?grandparent_title ?parent_title ?parent ?child ?child_title ",
         "WHERE { ",
@@ -251,23 +252,26 @@ export var fetchQuotationWorkParts = () =>{
         "}",
         "}"
         ].join('');
-  dispatch(startQuotationWorkPartsFetch());
-  axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
-    var results = res.data.results.bindings;
-    var parts = results.map((result) => {
-        var partInfo = {
-          grandparent: result.grandparent ? result.grandparent.value : "",
-          grandparent_title: result.grandparent_title ? result.grandparent_title.value : "",
-          parent: result.parent.value,
-          parent_title: result.parent_title ? result.parent_title.value : "",
-          child: result.child ? result.child.value : "",
-          child_title: result.child_title ? result.child_title.value : ""
-        }
-        return partInfo
+    //conditional here prevents running query if the node is blank
+    if (currentNode){
+    dispatch(startQuotationWorkPartsFetch());
+    axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
+      var results = res.data.results.bindings;
+      var parts = results.map((result) => {
+          var partInfo = {
+            grandparent: result.grandparent ? result.grandparent.value : "",
+            grandparent_title: result.grandparent_title ? result.grandparent_title.value : "",
+            parent: result.parent.value,
+            parent_title: result.parent_title ? result.parent_title.value : "",
+            child: result.child ? result.child.value : "",
+            child_title: result.child_title ? result.child_title.value : ""
+          }
+          return partInfo
 
+        });
+        dispatch(completeQuotationWorkPartsFetch(parts));
       });
-      dispatch(completeQuotationWorkPartsFetch(parts));
-    });
+    }
   }
 };
 
@@ -317,26 +321,29 @@ export var fetchExpressionParts = () =>{
         "}",
         "}"
         ].join('');
-  dispatch(startExpressionPartsFetch());
-  axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
-    var results = res.data.results.bindings;
-    var parts = results.map((result) => {
-        var partInfo = {
-          grandparent: result.grandparent ? result.grandparent.value : "",
-          grandparent_title: result.grandparent_title ? result.grandparent_title.value : "",
-          grandparent_level: result.grandparent_level ? result.grandparent_level.value : "",
-          parent: result.parent.value,
-          parent_title: result.parent_title ? result.parent_title.value : "",
-          parent_level: result.parent_level ? result.parent_level.value : "",
-          child: result.child ? result.child.value : "",
-          child_title: result.child_title ? result.child_title.value : "",
-          child_level: result.child_level ? result.child_level.value : "",
-        }
-        return partInfo
+  //conditional prevents running query if current node is blank
+  if (currentNode){
+    dispatch(startExpressionPartsFetch());
+    axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
+      var results = res.data.results.bindings;
+      var parts = results.map((result) => {
+          var partInfo = {
+            grandparent: result.grandparent ? result.grandparent.value : "",
+            grandparent_title: result.grandparent_title ? result.grandparent_title.value : "",
+            grandparent_level: result.grandparent_level ? result.grandparent_level.value : "",
+            parent: result.parent.value,
+            parent_title: result.parent_title ? result.parent_title.value : "",
+            parent_level: result.parent_level ? result.parent_level.value : "",
+            child: result.child ? result.child.value : "",
+            child_title: result.child_title ? result.child_title.value : "",
+            child_level: result.child_level ? result.child_level.value : "",
+          }
+          return partInfo
 
+        });
+        dispatch(completeExpressionPartsFetch(parts));
       });
-      dispatch(completeExpressionPartsFetch(parts));
-    });
+    }
   }
 };
 
@@ -438,7 +445,83 @@ export var completeChartFetch = (count) => {
 export var fetchChart = () =>{
   return (dispatch, getState) => {
     var state = getState();
-    var level = parseInt(state.search.searchParameters.expressionLevel) + 1
+    var level = parseInt(state.search.searchParameters.expressionLevel)
+    if (level === 1){
+      level = 2;
+    }
+
+
+    var quotationAuthorSparql = "";
+    if (state.search.searchParameters.quotationAuthor){
+      var searchShortId = (state.search.searchParameters.quotationAuthor);
+      quotationAuthorSparql = [
+        "{",
+          "?element <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+          "?isInstanceOf <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
+        "}",
+        "UNION",
+        "{",
+          "?element <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
+        "}"
+      ].join('');
+    }
+    var quotationWorkGroupSparql = "";
+    if (state.search.searchParameters.quotationWorkGroup){
+      var searchShortId = (state.search.searchParameters.quotationWorkGroup);
+      quotationWorkGroupSparql = [
+        "{",
+          "?element <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+          "?isInstanceOf <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "<http://scta.info/resource/" + state.search.searchParameters.quotationWorkGroup + "> <http://scta.info/property/hasExpression> ?source_toplevel_expression .",
+        "}",
+        "UNION",
+        "{",
+          "?element <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "<http://scta.info/resource/" + state.search.searchParameters.quotationWorkGroup + "> <http://scta.info/property/hasExpression> ?source_toplevel_expression .",
+        "}"
+      ].join('');
+    }
+
+
+    var quotationWorkSparql = "";
+    if (state.search.searchParameters.quotationWork || state.search.searchParameters.quotationWorkPart){
+      var searchShortId = (state.search.searchParameters.quotationWorkPart) ? state.search.searchParameters.quotationWorkPart : state.search.searchParameters.quotationWork
+      quotationWorkSparql = [
+      "{",
+        "?element <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+        "{",
+          "\n#check for quotation whose canonical source is a member of the search expression\n",
+          "?isInstanceOf  <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isMemberOf> <http://scta.info/resource/" + searchShortId + "> .",
+        "}",
+        "UNION",
+        "{",
+          "\n#check for quotation whose canonical source is search expression\n",
+          "?isInstanceOf  <http://scta.info/property/source> <http://scta.info/resource/" + searchShortId + "> .",
+        "}",
+      "}",
+      "UNION",
+      "{",
+        "\n#check for quotation whose source is a member the search expression\n",
+        "{",
+          "?element <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isMemberOf> <http://scta.info/resource/" + searchShortId + "> .",
+        "}",
+        "UNION",
+        "\n#check for quotation whose source is the search expression\n",
+        "{",
+          "?element <http://scta.info/property/source> <http://scta.info/resource/" + searchShortId + "> .",
+        "}",
+      "}"
+    ].join('');
+    }
+
     //var expressionId = state.search.searchParameters.expressionPart ? state.search.searchParameters.expressionPart : state.search.searchParameters.expressionId
     var expressionId = state.search.searchParameters.expressionId
     var query = [
@@ -451,8 +534,13 @@ export var fetchChart = () =>{
       "OPTIONAL {",
       "?ref <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
       "}",
+      "OPTIONAL {",
       "?element <http://scta.info/property/isMemberOf> ?ref .",
       "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+      quotationAuthorSparql,
+      quotationWorkGroupSparql,
+      quotationWorkSparql,
+      "}",
       "}",
       "group by ?ref ?reftitle ?totalOrderNumber ",
       "ORDER BY ?totalOrderNumber "

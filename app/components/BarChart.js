@@ -27,9 +27,14 @@ class BarChart extends React.Component {
        this.createBarChart(count)
      }
    }
+   componentWillUnmount(){
+     d3.selectAll(".tooltip").remove();
+   }
    createBarChart(count) {
      var svg = d3.select("svg");
      svg.selectAll("*").remove();
+     d3.selectAll(".tooltip").remove();
+
 
   //    console.log("value in createBarChart", count)
   //     const node = this.node
@@ -122,12 +127,12 @@ class BarChart extends React.Component {
 
 
 
-	// var tooltip = d3.select('body').append('div')
-	// 	.attr('class', 'tooltip')
-	// 	.style('position', 'absolute')
-	// 	.style('padding', '0 10px')
-	// 	.style('background', 'white')
-	// 	.style('opacity', 0)
+	var tooltip = d3.select('body').append('div')
+		.attr('class', 'tooltip')
+		.style('position', 'absolute')
+		.style('padding', '0 10px')
+		.style('background', 'white')
+		.style('opacity', 0)
 
     const node = this.node
     //var canvas = d3.select("div#" + chart).append("svg")

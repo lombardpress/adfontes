@@ -11,8 +11,8 @@ export var Search = React.createClass({
     var quotationWork = this.refs.quotationWork.value;
     var quotationWorkPart = this.refs.quotationWorkPart.value
     var expressionId = this.refs.expressionId.value;
-    var expressionPart = this.refs.expressionPart.value;
-    var expressionLevel = e.target.options[e.target.selectedIndex].dataset.level ? e.target.options[e.target.selectedIndex].dataset.level : 1 ;
+    var expressionPart = this.refs.expressionPart.value ? this.refs.expressionPart.value.split("/")[0] : this.refs.expressionPart.value
+    var expressionLevel = this.refs.expressionPart.value ? this.refs.expressionPart.value.split("/")[1] : 1 ;
     var expressionAuthor = this.refs.expressionAuthor.value;
     var quotationAuthor = this.refs.quotationAuthor.value;
     //var expressionType = this.refs.expressionType.value;
@@ -129,7 +129,7 @@ export var Search = React.createClass({
         if (part){
           var parentid = part.parent.split("http://scta.info/resource/")[1];
           return(
-            <option value={parentid} data-level={part.parent_level}>Current: {part.parent_title}</option>
+            <option value={parentid+ "/" + part.parent_level}>Current: {part.parent_title}</option>
           )
         }
       }
@@ -142,7 +142,7 @@ export var Search = React.createClass({
           var grandparentid = part.grandparent.split("http://scta.info/resource/")[1];
           if (grandparentid != undefined){
             return(
-              <option value={grandparentid} data-level={part.grandparent_level}>Up: {part.grandparent_title}</option>
+              <option value={grandparentid + "/" + part.grandparent_level}>Up: {part.grandparent_title}</option>
             )
           }
         }
@@ -155,7 +155,7 @@ export var Search = React.createClass({
           var id = part.childShortId ? part.childShortId : part.child.split("http://scta.info/resource/")[1];
           if (part.child){
             return(
-              <option value={id} data-level={part.child_level}>{part.child_title}</option>
+              <option value={id + "/" + part.child_level}>{part.child_title}</option>
               )
             }
           }
@@ -263,7 +263,7 @@ export var Search = React.createClass({
             </div>
             <div>
               <label>Filter by Expression Part
-                <select ref="expressionPart" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.expressionPart}>
+                <select ref="expressionPart" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.expressionPart + "/" + _this.props.search.searchParameters.expressionLevel}>
                   <option value="">All</option>
                   {displayExpressionPartsGrandparent()}
                   {displayExpressionPartsParent()}
