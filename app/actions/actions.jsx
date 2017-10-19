@@ -581,7 +581,6 @@ export var completeImagesFetch = (images) => {
 export var fetchImages = () =>{
   return (dispatch, getState) => {
     var state = getState();
-    console.log(state)
     var manifestation_id = state.paragraph.manifestation_id
     var query = [
       "SELECT ?url ",
@@ -599,7 +598,6 @@ export var fetchImages = () =>{
   dispatch(startImagesFetch());
   axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
     var results = res.data.results.bindings;
-    console.log("results", results)
     var images = results.map((result) => {
         return {
           "url": result.url.value,
@@ -832,6 +830,9 @@ export var fetchQuotations = () =>{
             "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ",
             "WHERE {",
             "<" + canonicalQuotationId + "> <http://scta.info/property/hasInstance> ?quotation .",
+            "OPTIONAL {",
+            "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+            "}",
             expressionIdSparql,
             quotationAuthorSparql,
             quotationWorkGroupSparql,
@@ -854,6 +855,9 @@ export var fetchQuotations = () =>{
           "WHERE {",
           "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "?quotation a <http://scta.info/resource/expression> .",
+          "OPTIONAL {",
+          "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+          "}",
           expressionIdSparql,
           quotationAuthorSparql,
           quotationWorkGroupSparql,

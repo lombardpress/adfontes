@@ -9,6 +9,7 @@ var actions = require('actions');
 class Image extends React.Component {
    constructor(props){
       super(props)
+      this.handleToggleImage = this.handleToggleImage.bind(this)
 
   }
    componentDidMount() {
@@ -17,18 +18,22 @@ class Image extends React.Component {
    componentDidUpdate(count) {
 
    }
+   handleToggleImage(e){
+    e.preventDefault();
+    var {dispatch} = this.props;
+ 		dispatch(actions.toggleImagesDisplay(this.props.images.visible));
+
+   }
    render(){
      var _this = this;
-     console.log("images data", _this.props.images);
      function showImages(){
        var images = _this.props.images;
-       console.log("length", images.images.length)
        if (images.visible && images.images.length > 0){
          return images.images.map(function(image){
            var imageUrl = image.url;
            return(
              <div>
-               TEST2
+               <button onClick={_this.handleToggleImage}>Remove Image</button>
              <img src={imageUrl + "/full/full/0/default.jpg"}/>
              </div>
              )
@@ -39,7 +44,6 @@ class Image extends React.Component {
      }
      return(
        <div className="images">
-         TEST1
          {showImages()}
        </div>
      )

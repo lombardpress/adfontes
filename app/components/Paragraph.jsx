@@ -67,7 +67,9 @@ export var Paragraph = React.createClass({
 				<p>Context Paragraph</p>
 				<div id="text">{text}</div>
 				<a href={manifestation_id}>{manifestation_id}</a>
-				<a onClick={this.handleShowImages}>Show Image</a>
+				<p>
+					<a onClick={this.handleShowImages}>Show Image</a>
+				</p>
 			</div>
 		)
 	}

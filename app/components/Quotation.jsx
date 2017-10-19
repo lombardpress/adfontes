@@ -58,6 +58,7 @@ export var Quotation = React.createClass({
 
 	},
 	render: function(){
+		
 		var {isInstanceOf, quotation, className, title, author, id} = this.props;
 
 		var className = isInstanceOf === null ? className + " isNotInstance" : className;

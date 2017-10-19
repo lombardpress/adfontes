@@ -25,7 +25,6 @@ export var ManifestationQuotationListItem = React.createClass({
 		//synchronize other columns
 		if (isManifestationOf != null){
 			// create canonicalQuotation
-			console.log(isManifestationOf);
 			var isManifestationOfObject = this.props.quotations.find((quotation) => {
 				return quotation.id === isManifestationOf;
 
