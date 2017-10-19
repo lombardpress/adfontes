@@ -560,6 +560,56 @@ export var fetchChart = () =>{
   }
 };
 
+///Chart Actions
+export var toggleImagesDisplay = (current) => {
+  return{
+    type: "TOGGLE_IMAGES_DISPLAY",
+    current
+  };
+}
+export var startImagesFetch = () => {
+  return{
+    type: "START_IMAGES_FETCH"
+  };
+};
+export var completeImagesFetch = (images) => {
+  return{
+    type: "COMPLETE_IMAGES_FETCH",
+    images
+  };
+};
+export var fetchImages = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    console.log(state)
+    var manifestation_id = state.paragraph.manifestation_id
+    var query = [
+      "SELECT ?url ",
+      "WHERE { ",
+      "<" + manifestation_id + "> <http://scta.info/property/hasSurface> ?surface .",
+      "?surface <http://scta.info/property/hasISurface> ?isurface .",
+      "?isurface <http://scta.info/property/hasCanvas> ?canvas .",
+      "?canvas <http://iiif.io/api/presentation/2#hasImageAnnotations> ?anno .",
+      "?canvas <http://iiif.io/api/presentation/2#hasImageAnnotations> ?anno .",
+      "?anno <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?imgres .",
+      "?imgres <http://www.w3.org/ns/oa#hasBody> ?body .",
+      "?body <http://rdfs.org/sioc/services#has_service> ?url .",
+      "}"
+    ].join('');
+  dispatch(startImagesFetch());
+  axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+    console.log("results", results)
+    var images = results.map((result) => {
+        return {
+          "url": result.url.value,
+        }
+      });
+      dispatch(completeImagesFetch(images));
+    });
+  }
+};
+
 
 // Quotation Actions
 // ==================

@@ -14,18 +14,19 @@ import CanonicalQuotationList from "CanonicalQuotationList";
 import ManifestationQuotationList from "ManifestationQuotationList";
 import Paragraph from "Paragraph";
 import BarChart from "BarChart";
+import Images from "Images";
 
 
 var TodoApp = React.createClass({
 	handleGraph: function(e){
 		e.preventDefault();
 		var {dispatch} = this.props;
-		dispatch(actions.toggleGraphDisplay(this.props.chart.visibile));
+		dispatch(actions.toggleGraphDisplay(this.props.chart.visible));
 	},
 	render: function(){
 		var _this = this
 		function barGraphDisplay(){
-			if (_this.props.chart.visibile){
+			if (_this.props.chart.visible){
 				return(
 					<div className="chart">
 						<BarChart size={[500,500]}/>
@@ -33,8 +34,15 @@ var TodoApp = React.createClass({
 				)
 			}
     }
+		function imagesDisplay(){
+			if (_this.props.images.visible){
+				return(
+					<Images/>
+				)
+			}
+    }
 		function quotationDisplay(){
-			if (!_this.props.chart.visibile){
+			if (!_this.props.chart.visible && !_this.props.images.visible){
 				return(
 					<div>
 					<div id="CanonicalQuotationList" className="column2">
@@ -64,6 +72,7 @@ var TodoApp = React.createClass({
 					</div>
 					{quotationDisplay()}
 					{barGraphDisplay()}
+					{imagesDisplay()}
 
 				</div>
 

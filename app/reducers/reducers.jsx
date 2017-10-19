@@ -87,7 +87,7 @@ export var chartReducer = (state = {}, action) => {
     case 'TOGGLE_GRAPH_DISPLAY':
         return {
           ...state,
-          visibile: !action.current
+          visible: !action.current
         }
     case 'START_CHART_FETCH':
         return {
@@ -106,6 +106,32 @@ export var chartReducer = (state = {}, action) => {
       }
   };
 };
+
+export var imagesReducer = (state = {}, action) => {
+  switch (action.type){
+    case 'TOGGLE_IMAGES_DISPLAY':
+        return {
+          ...state,
+          visible: !action.current
+        }
+    case 'START_IMAGES_FETCH':
+        return {
+          ...state,
+          images: []
+        }
+    case 'COMPLETE_IMAGES_FETCH':
+      return {
+        ...state,
+        images: action.images
+      }
+    default:
+      return {
+        ...state,
+        visible: false
+      }
+  };
+};
+
 export var quotationsReducer = (state = [], action) => {
   switch (action.type){
     case 'ADD_QUOTATIONS':

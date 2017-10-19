@@ -1,9 +1,16 @@
 var React = require('react');
 var {connect} = require('react-redux');
+var actions = require('actions');
 
 
 
 export var Paragraph = React.createClass({
+	handleShowImages: function(e){
+		e.preventDefault();
+		var {dispatch} = this.props;
+		dispatch(actions.fetchImages());
+		dispatch(actions.toggleImagesDisplay(this.props.images.visible));
+	},
 	render: function(){
 
     var {paragraph} = this.props;
@@ -60,6 +67,7 @@ export var Paragraph = React.createClass({
 				<p>Context Paragraph</p>
 				<div id="text">{text}</div>
 				<a href={manifestation_id}>{manifestation_id}</a>
+				<a onClick={this.handleShowImages}>Show Image</a>
 			</div>
 		)
 	}
