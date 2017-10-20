@@ -18,13 +18,8 @@ import Images from "Images";
 
 
 var TodoApp = React.createClass({
-	handleGraph: function(e){
-		e.preventDefault();
-		var {dispatch} = this.props;
-		dispatch(actions.toggleGraphDisplay(this.props.chart.visible));
-	},
 	render: function(){
-		var _this = this
+		var _this = this;
 		function barGraphDisplay(){
 			if (_this.props.chart.visible){
 				return(
@@ -37,7 +32,12 @@ var TodoApp = React.createClass({
 		function imagesDisplay(){
 			if (_this.props.images.visible){
 				return(
+					<div>
 					<Images/>
+						<div className="column5">
+							<Paragraph/>
+						</div>
+					</div>
 				)
 			}
     }
@@ -66,7 +66,6 @@ var TodoApp = React.createClass({
 		return (
 			<div>
 				<div className="wrapper">
-					<a href="#" onClick={this.handleGraph}>Toggle Historgram</a>
 					<div className='search column1'>
 						<Search/>
 					</div>

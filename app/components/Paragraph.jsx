@@ -12,7 +12,7 @@ export var Paragraph = React.createClass({
 		dispatch(actions.toggleImagesDisplay(this.props.images.visible));
 	},
 	render: function(){
-
+		var _this = this;
     var {paragraph} = this.props;
 		var {expression_id, manifestation_id, paragraph_text} = paragraph
 
@@ -30,6 +30,18 @@ export var Paragraph = React.createClass({
 		var parent = document.createElement("div");
 		parent.appendChild(fragment);
 		var text =  parent.innerHTML;
+
+		function showImageToggle(){
+
+			if (paragraph.expression_id){
+				return(
+					<p>
+						<a onClick={_this.handleShowImages}>Toggle Image</a>
+					</p>
+				)
+			}
+
+		}
 
 
 
@@ -67,9 +79,7 @@ export var Paragraph = React.createClass({
 				<p>Context Paragraph</p>
 				<div id="text">{text}</div>
 				<a href={manifestation_id}>{manifestation_id}</a>
-				<p>
-					<a onClick={this.handleShowImages}>Show Image</a>
-				</p>
+				{showImageToggle()}
 			</div>
 		)
 	}

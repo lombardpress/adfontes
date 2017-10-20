@@ -100,10 +100,7 @@ export var chartReducer = (state = {}, action) => {
         count: action.count
       }
     default:
-      return {
-        ...state,
-        visible: false
-      }
+      return state
   };
 };
 
@@ -114,6 +111,11 @@ export var imagesReducer = (state = {}, action) => {
           ...state,
           visible: !action.current
         }
+    case 'TOGGLE_GRAPH_DISPLAY':
+      return {
+        ...state,
+        visible: false
+      }
     case 'START_IMAGES_FETCH':
         return {
           ...state,
@@ -125,10 +127,7 @@ export var imagesReducer = (state = {}, action) => {
         images: action.images
       }
     default:
-      return {
-        ...state,
-        visible: false
-      }
+      return state
   };
 };
 

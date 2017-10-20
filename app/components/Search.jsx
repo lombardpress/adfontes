@@ -61,6 +61,11 @@ export var Search = React.createClass({
 
 
 	},
+  handleGraph: function(e){
+		e.preventDefault();
+		var {dispatch} = this.props;
+		dispatch(actions.toggleGraphDisplay(this.props.chart.visible));
+	},
 	render: function(){
     var _this = this;
     function displaySearchWorksList(){
@@ -193,6 +198,7 @@ export var Search = React.createClass({
     return(
       <div>
         <p>Search Parameters</p>
+        <p><a href="#" onClick={this.handleGraph}>Toggle Historgram</a></p>
         <form onSubmit={this.handleOnShowQuotationsWithoutAssociation}>
           <div>
             <div>

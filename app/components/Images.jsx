@@ -32,11 +32,8 @@ class Image extends React.Component {
          return images.images.map(function(image){
            var imageUrl = image.url;
            return(
-             <div>
-               <button onClick={_this.handleToggleImage}>Remove Image</button>
              <img src={imageUrl + "/full/full/0/default.jpg"}/>
-             </div>
-             )
+           )
            }
          )
 

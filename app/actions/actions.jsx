@@ -550,9 +550,9 @@ export var fetchChart = () =>{
     var results = res.data.results.bindings;
     var count = results.map((result) => {
         return {
-          "item": result.ref.value,
-          "title": result.reftitle.value,
-          "count": result.count.value
+          "item": result.ref ? result.ref.value : "",
+          "title": result.reftitle ? result.reftitle.value : "",
+          "count": result.count ? result.count.value : ""
         }
       });
       dispatch(completeChartFetch(count));
