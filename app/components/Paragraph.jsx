@@ -14,8 +14,7 @@ export var Paragraph = React.createClass({
 	render: function(){
 		var _this = this;
     var {paragraph} = this.props;
-		var {expression_id, manifestation_id, paragraph_text} = paragraph
-
+		var {expression_id, manifestation_id, paragraph_text, review} = paragraph
 		var domParser = new DOMParser();
 		var xsltProcessor = new XSLTProcessor();
 
@@ -41,6 +40,18 @@ export var Paragraph = React.createClass({
 				)
 			}
 
+		}
+		console.log("review", review);
+		function showReview(){
+			if (review){
+				var reviewLink  = "http://dll-review-registry.scta.info/reviews/" + review["id"] + ".html";
+				var ipfsGatewayLink  = "http://gateway.scta.info/ipfs/" + review["ipfs-hash"];
+				return(
+					<p>
+						<a href={reviewLink} target="_blank"><img src={review["badge-url"]}/></a> Content extracted from reviewed data source <a href={ipfsGatewayLink} target="_blank">{review["ipfs-hash"]}</a>
+					</p>
+				)
+			}
 		}
 
 
@@ -80,6 +91,7 @@ export var Paragraph = React.createClass({
 				<div id="text">{text}</div>
 				<a href={manifestation_id}>{manifestation_id}</a>
 				{showImageToggle()}
+				{showReview()}
 			</div>
 		)
 	}

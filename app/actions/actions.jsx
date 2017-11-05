@@ -1204,22 +1204,26 @@ export var fetchParagraph = () =>{
 
       if (idType === "expression"){
         query = [
-            "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ",
+            "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ?transcription_item_file ",
             "WHERE { ",
             "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?expression_paragraph .",
             "?expression_paragraph <http://scta.info/property/hasCanonicalManifestation> ?manifestation_paragraph .",
             "?manifestation_paragraph <http://scta.info/property/hasCanonicalTranscription> ?transcription_paragraph .",
+            "?transcription_paragraph <http://scta.info/property/isPartOfStructureItem> ?transcription_item .",
+            "?transcription_item <http://scta.info/property/hasDocument> ?transcription_item_file .",
             "?transcription_paragraph <http://scta.info/property/hasXML> ?xml_url .",
             "}"
           ].join('');
         }
       else if (idType === "manifestation"){
         query = [
-            "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ",
+            "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ?transcription_item_file ",
             "WHERE { ",
             "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?manifestation_paragraph . ",
             "?manifestation_paragraph <http://scta.info/property/isManifestationOf> ?expression_paragraph .",
             "?manifestation_paragraph <http://scta.info/property/hasCanonicalTranscription> ?transcription_paragraph .",
+            "?transcription_paragraph <http://scta.info/property/isPartOfStructureItem> ?transcription_item .",
+            "?transcription_item <http://scta.info/property/hasDocument> ?transcription_item_file .",
             "?transcription_paragraph <http://scta.info/property/hasXML> ?xml_url .",
             "}"
           ].join('');
@@ -1233,11 +1237,39 @@ export var fetchParagraph = () =>{
             expression_id: results.expression_paragraph.value,
             manifestation_id: results.manifestation_paragraph.value,
             transcription_id: results.transcription_paragraph.value,
+            transcription_item_file: results.transcription_item_file ? results.transcription_item_file.value : "",
             paragraph_text: res2.data
           }
           dispatch(completeParagraphFetch(paragraph));
+          dispatch(fetchReview());
         });
       });
-    }
+    };
   };
-}
+};
+export var startReviewFetch = () => {
+  return{
+    type: "START_REVIEW_FETCH"
+  };
+};
+export var completeReviewFetch = (review) => {
+  return{
+    type: "COMPLETE_REVIEW_FETCH",
+    review
+  };
+};
+export var fetchReview = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+
+    if (state.paragraph.transcription_item_file){
+      var url = state.paragraph.transcription_item_file;
+      var reviewUrl = "http://dll-review-registry.scta.info/api/v1/reviews?url=" + url + "&society=MAA";
+      dispatch(startReviewFetch());
+      axios.get(reviewUrl).then(function(res){
+        var review = res.data[0];
+        dispatch(completeReviewFetch(review));
+      });
+    };
+  };
+};
