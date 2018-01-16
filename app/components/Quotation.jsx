@@ -58,8 +58,8 @@ export var Quotation = React.createClass({
 
 	},
 	render: function(){
-		
-		var {isInstanceOf, quotation, className, title, author, id} = this.props;
+
+		var {isInstanceOf, quotation, className, title, author, id, refText, citation} = this.props;
 
 		var className = isInstanceOf === null ? className + " isNotInstance" : className;
 
@@ -69,6 +69,8 @@ export var Quotation = React.createClass({
 				{quotation}
 				</p>
 				<a href={id} target="_blank" className="quotation-citation">{author}, {title}</a>
+				<a href={id} target="_blank" className="quotation-citation">Original Ref: {refText}</a>
+				<a href={id} target="_blank" className="quotation-citation">Modern Citation: {citation}</a>
 			</div>
 
 

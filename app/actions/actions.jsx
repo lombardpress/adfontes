@@ -1,5 +1,6 @@
 var axios = require('axios');
 
+//const sparqlEndpoint = "http://sparql-docker.scta.info/ds/query"
 const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
 //const sparqlEndpoint = "http://localhost:3030/ds/query"
 
@@ -827,7 +828,7 @@ export var fetchQuotations = () =>{
     if (state.canonicalQuotation){
       var canonicalQuotationId = state.canonicalQuotation.id;
       var query = [
-            "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ",
+            "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ?citation ?ref ?refText ",
             "WHERE {",
             "<" + canonicalQuotationId + "> <http://scta.info/property/hasInstance> ?quotation .",
             "OPTIONAL {",
@@ -846,12 +847,19 @@ export var fetchQuotations = () =>{
             "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
             "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
             "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
+            "OPTIONAL {",
+              "?quotation <http://scta.info/property/citation> ?citation . ",
+            "}",
+            "OPTIONAL {",
+              "?ref <http://scta.info/property/isReferenceTo> ?quotation . ",
+              "?ref <http://scta.info/property/structureElementText> ?refText . ",
+            "}",
             "}"
           ].join('');
     }
     else{
       var query = [
-          "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ",
+          "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ?citation ?ref ?refText ",
           "WHERE {",
           "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "?quotation a <http://scta.info/resource/expression> .",
@@ -871,6 +879,13 @@ export var fetchQuotations = () =>{
           "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
           "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
           "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
+          "OPTIONAL {",
+            "?quotation <http://scta.info/property/citation> ?citation . ",
+          "}",
+          "OPTIONAL {",
+            "?ref <http://scta.info/property/isReferenceTo> ?quotation . ",
+            "?ref <http://scta.info/property/structureElementText> ?refText . ",
+          "}",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
           "ORDER BY ?quotation_text ",

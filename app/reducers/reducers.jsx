@@ -155,7 +155,9 @@ export var quotationsReducer = (state = [], action) => {
           title: quotation.toplevel_expression_title.value,
           author: quotation.author_title.value,
           focused: false,
-          isInstanceOf: quotation.isInstanceOf ? quotation.isInstanceOf.value : null
+          isInstanceOf: quotation.isInstanceOf ? quotation.isInstanceOf.value : null,
+          citation: quotation.citation ? quotation.citation.value : null,
+          refText: quotation.refText ? quotation.refText.value : null,
         }
       });
     case 'CHANGE_QUOTATIONS_FOCUS':
