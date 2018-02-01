@@ -1,8 +1,8 @@
 var axios = require('axios');
 
 //const sparqlEndpoint = "http://sparql-docker.scta.info/ds/query"
-const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
-//const sparqlEndpoint = "http://localhost:3030/ds/query"
+//const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
+const sparqlEndpoint = "http://localhost:3030/ds/query"
 
 ///search actions
 //===============
@@ -1017,7 +1017,8 @@ export var fetchQuotations = () =>{
               "?ref <http://scta.info/property/isReferenceTo> ?quotation . ",
               "?ref <http://scta.info/property/structureElementText> ?refText . ",
             "}",
-            "}"
+            "}",
+            "LIMIT 100"
           ].join('');
     }
     else{
@@ -1053,10 +1054,10 @@ export var fetchQuotations = () =>{
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
           "ORDER BY ?quotation_text ",
-          "LIMIT 1000"
+          "LIMIT 100"
         ].join('');
       }
-
+      console.log(query);
     dispatch(startQuotationsFetch());
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -1162,6 +1163,8 @@ export var fetchCanonicalQuotations = () =>{
     let expressionAuthorTypeSparql = "";
     if (state.search.searchParameters.expressionAuthorType){
       expressionAuthorTypeSparql = [
+      "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
       "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?expressionAuthor . ",
       "?expressionAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + ">  . "
       ].join('');
@@ -1170,8 +1173,8 @@ export var fetchCanonicalQuotations = () =>{
     var authorSparql = "";
     if (state.search.searchParameters.expressionAuthor){
       authorSparql = [
-      // "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
-      // "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
+      "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
       "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
       ].join('');
     }
@@ -1294,7 +1297,8 @@ export var fetchCanonicalQuotations = () =>{
           "}",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
-          "ORDER BY ?citation "
+          "ORDER BY ?citation ",
+          "LIMIT 100"
         ].join('');
     dispatch(startQuotationsFetch());
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
@@ -1362,7 +1366,7 @@ export var fetchManifestationQuotations = () =>{
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
           "ORDER BY ?isInstanceOf ",
-          "LIMIT 1000"
+          "LIMIT 100"
         ].join('');
       }
 

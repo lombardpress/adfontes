@@ -75,6 +75,7 @@ export var Search = React.createClass({
     dispatch(actions.clearCanonicalQuotations());
     dispatch(actions.clearQuotations());
 
+    dispatch(actions.fetchExpressionParts());
     //dispatch(actions.fetchCanonicalQuotations());
     dispatch(actions.fetchQuotationAuthors());
     dispatch(actions.fetchExpressionAuthors());
