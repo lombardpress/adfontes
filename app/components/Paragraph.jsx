@@ -41,7 +41,7 @@ export var Paragraph = React.createClass({
 			}
 
 		}
-		console.log("review", review);
+		
 		function showReview(){
 			if (review){
 				var reviewLink  = "http://dll-review-registry.scta.info/reviews/" + review["id"] + ".html";

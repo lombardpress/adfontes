@@ -1,11 +1,16 @@
 var axios = require('axios');
 
 //const sparqlEndpoint = "http://sparql-docker.scta.info/ds/query"
-const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
-//const sparqlEndpoint = "http://localhost:3030/ds/query"
+//const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
+const sparqlEndpoint = "http://localhost:3030/ds/query"
 
 ///search actions
 //===============
+export var clearSearchParameters = () => {
+  return {
+    type: "CLEAR_SEARCH_PARAMETERS",
+  };
+};
 export var setSearchParameters = (searchParameters) => {
   return {
     type: "SET_SEARCH_PARAMETERS",
@@ -32,6 +37,14 @@ export var fetchSearchWorksList = () =>{
       "<http://scta.info/resource/" + state.search.searchParameters.workGroup + "> <http://scta.info/property/hasExpression> ?expression ."
       ].join('');
     }
+    let expressionAuthorTypeSparql = ""
+    if (state.search.searchParameters.expressionAuthorType){
+      expressionAuthorTypeSparql = [
+      "?expression <http://www.loc.gov/loc.terms/relators/AUT> ?expressionAuthor . ",
+      "?expressionAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + "> ."
+      ].join('');
+    }
+
     var authorSparql = ""
     if (state.search.searchParameters.expressionAuthor){
       authorSparql = [
@@ -44,6 +57,7 @@ export var fetchSearchWorksList = () =>{
           "?expression a <http://scta.info/resource/expression> .",
           "?expression a ?type .",
           "?expression <http://scta.info/property/level> '1' . ",
+          expressionAuthorTypeSparql,
           workGroupSparql,
           authorSparql,
           "?expression <http://scta.info/property/shortId> ?expressionShortId .",
@@ -77,24 +91,34 @@ export var fetchSearchWorksList = () =>{
     });
   }
 };
-export var startAuthorsFetch = () => {
+
+//Begin Quotations Authors Fetch
+export var startQuotationAuthorsFetch = () => {
   return{
-    type: "START_AUTHORS_FETCH"
+    type: "START_QUOTATION_AUTHORS_FETCH"
   };
 };
-export var completeAuthorsFetch = (authors) => {
+export var completeQuotationAuthorsFetch = (authors) => {
   return{
-    type: "COMPLETE_AUTHORS_FETCH",
+    type: "COMPLETE_QUOTATION_AUTHORS_FETCH",
     authors
   };
 };
-export var fetchAuthors = () =>{
+export var fetchQuotationAuthors = () =>{
   return (dispatch, getState) => {
     var state = getState();
+    let quotationAuthorTypeSparql = "";
+    if (state.search.searchParameters.quotationAuthorType){
+
+      quotationAuthorTypeSparql = [
+      "?author <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.quotationAuthorType + "> ."
+      ].join('');
+    }
     var query = [
         "SELECT DISTINCT ?author ?authorTitle ?authorShortId ",
         "WHERE { ",
         "?author a <http://scta.info/resource/person> .",
+        quotationAuthorTypeSparql,
         "?resource a <http://scta.info/resource/expression> .",
         "?resource <http://scta.info/property/level> '1' .",
         "?resource <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
@@ -103,7 +127,7 @@ export var fetchAuthors = () =>{
         "}",
         "ORDER BY ?authorTitle"].join('');
 
-  dispatch(startAuthorsFetch());
+  dispatch(startQuotationAuthorsFetch());
   axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
     var results = res.data.results.bindings;
     var authors = results.map((result) => {
@@ -115,10 +139,63 @@ export var fetchAuthors = () =>{
         return authorInfo
 
       });
-      dispatch(completeAuthorsFetch(authors));
+      dispatch(completeQuotationAuthorsFetch(authors));
     });
   }
 };
+// End Quotation Authors Fetch
+// Begin Expression Authors Fetch
+export var startExpressionAuthorsFetch = () => {
+  return{
+    type: "START_EXPRESSION_AUTHORS_FETCH"
+  };
+};
+export var completeExpressionAuthorsFetch = (authors) => {
+  return{
+    type: "COMPLETE_EXPRESSION_AUTHORS_FETCH",
+    authors
+  };
+};
+export var fetchExpressionAuthors = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    let expressionAuthorTypeSparql = "";
+    if (state.search.searchParameters.expressionAuthorType){
+
+      expressionAuthorTypeSparql = [
+      "?author <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + "> ."
+      ].join('');
+    }
+    var query = [
+        "SELECT DISTINCT ?author ?authorTitle ?authorShortId ",
+        "WHERE { ",
+        "?author a <http://scta.info/resource/person> .",
+        expressionAuthorTypeSparql,
+        "?resource a <http://scta.info/resource/expression> .",
+        "?resource <http://scta.info/property/level> '1' .",
+        "?resource <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
+        "?author <http://scta.info/property/shortId> ?authorShortId .",
+        "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+        "}",
+        "ORDER BY ?authorTitle"].join('');
+
+  dispatch(startExpressionAuthorsFetch());
+  axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+    var authors = results.map((result) => {
+        var authorInfo = {
+          author: result.author.value,
+          authorShortId: result.authorShortId.value,
+          authorTitle: result.authorTitle.value,
+        }
+        return authorInfo
+
+      });
+      dispatch(completeExpressionAuthorsFetch(authors));
+    });
+  }
+};
+// END Expression Authors Actions
 export var startQuotationWorksListFetch = () => {
   return{
     type: "START_QUOTATION_WORKS_LIST_FETCH"
@@ -143,6 +220,13 @@ export var fetchQuotationWorksList = () =>{
     if (state.search.searchParameters.quotationAuthor){
       quotationAuthorSparql = [
       "?expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.quotationAuthor + "> ."
+      ].join('');
+    }
+    let quotationAuthorTypeSparql = ""
+    if (state.search.searchParameters.quotationAuthorType){
+      quotationAuthorTypeSparql = [
+      "?expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
+      "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.quotationAuthorType + "> ."
       ].join('');
     }
 
@@ -175,6 +259,7 @@ export var fetchQuotationWorksList = () =>{
         "?expression a <http://scta.info/resource/expression> .",
         "?expression a ?type .",
         "?expression <http://scta.info/property/level> '1' . ",
+        quotationAuthorTypeSparql,
         quotationWorkGroupSparql,
         quotationAuthorSparql,
         "?expression <http://scta.info/property/shortId> ?expressionShortId .",
@@ -424,6 +509,47 @@ export var fetchWorkGroups = () =>{
     });
   }
 };
+// Author types fetch
+
+export var startAuthorTypesFetch = () => {
+  return{
+    type: "START_AUTHOR_TYPES_FETCH"
+  };
+};
+export var completeAuthorTypesFetch = (authorTypes) => {
+  return{
+    type: "COMPLETE_AUTHOR_TYPES_FETCH",
+    authorTypes
+  };
+};
+export var fetchAuthorTypes = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    var query = [
+      "SELECT ?authorType ?authorTypeTitle ?authorTypeShortId ",
+      "WHERE { ",
+      "?authorType a <http://scta.info/resource/personType> .",
+      "?authorType <http://scta.info/property/shortId> ?authorTypeShortId .",
+      "?authorType <http://purl.org/dc/elements/1.1/title> ?authorTypeTitle .",
+      "}",
+      "ORDER BY ?authorTypeTitle"].join('');
+  dispatch(startAuthorTypesFetch());
+  axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+    var authorTypes = results.map((result) => {
+      var authorTypeInfo = {
+          authorType: result.authorType.value,
+          authorTypeShortId: result.authorTypeShortId.value,
+          authorTypeTitle: result.authorTypeTitle.value
+        }
+        return authorTypeInfo
+      });
+      dispatch(completeAuthorTypesFetch(authorTypes));
+    });
+  }
+};
+
+
 
 ///Chart Actions
 export var toggleGraphDisplay = (current) => {
@@ -618,6 +744,11 @@ export var addQuotations = (quotations) => {
     quotations
   };
 };
+export var clearQuotations = () => {
+  return{
+    type: "CLEAR_QUOTATIONS"
+  };
+};
 export var startQuotationsFetch = () => {
   return{
     type: "START_QUOTATIONS_FETCH"
@@ -651,12 +782,42 @@ export var fetchQuotations = () =>{
       ].join('');
 
     }
+    let expressionAuthorTypeSparql = ""
+    if (state.search.searchParameters.expressionAuthorType){
+      expressionAuthorTypeSparql = [
+      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?expressionAuthor .",
+      "?expressionAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + "> ."
+      ].join('');
+    }
+
     var authorSparql = "";
     if (state.search.searchParameters.expressionAuthor){
       authorSparql = [
       "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
       ].join('');
     }
+
+    var quotationAuthorTypeSparql = "";
+    if (state.search.searchParameters.quotationAuthorType){
+      var searchShortId = state.search.searchParameters.quotationAuthorType;
+      quotationAuthorTypeSparql = [
+        "{",
+          "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+          "?isInstanceOf <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
+          "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + searchShortId + ">  . ",
+        "}",
+        "UNION",
+        "{",
+          "?quotation <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
+          "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + searchShortId + ">  . ",
+        "}"
+      ].join('');
+    }
+
     var quotationAuthorSparql = "";
     if (state.search.searchParameters.quotationAuthor){
       var searchShortId = (state.search.searchParameters.quotationAuthor);
@@ -835,6 +996,7 @@ export var fetchQuotations = () =>{
             "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
             "}",
             expressionIdSparql,
+            quotationAuthorTypeSparql,
             quotationAuthorSparql,
             quotationWorkGroupSparql,
             //quotationTypeSparql,
@@ -842,6 +1004,7 @@ export var fetchQuotations = () =>{
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
+            expressionAuthorTypeSparql,
             workGroupSparql,
             authorSparql,
             "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
@@ -867,13 +1030,14 @@ export var fetchQuotations = () =>{
           "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
           "}",
           expressionIdSparql,
+          quotationAuthorTypeSparql,
           quotationAuthorSparql,
           quotationWorkGroupSparql,
           //quotationTypeSparql,
           quotationWorkSparql,
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
-          quotationAuthorSparql,
+          expressionAuthorTypeSparql,
           workGroupSparql,
           authorSparql,
           "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
@@ -892,6 +1056,7 @@ export var fetchQuotations = () =>{
           "LIMIT 1000"
         ].join('');
       }
+
     dispatch(startQuotationsFetch());
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -994,12 +1159,31 @@ export var fetchCanonicalQuotations = () =>{
       "?quotationInstance <http://scta.info/property/isMemberOf> <http://scta.info/resource/" + searchShortId + "> .",
       ].join('');
     }
+    let expressionAuthorTypeSparql = "";
+    if (state.search.searchParameters.expressionAuthorType){
+      expressionAuthorTypeSparql = [
+      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?expressionAuthor . ",
+      "?expressionAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + ">  . "
+      ].join('');
+    }
+
     var authorSparql = "";
     if (state.search.searchParameters.expressionAuthor){
       authorSparql = [
       // "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
       // "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
       "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
+      ].join('');
+    }
+
+    let quotationAuthorTypeSparql = "";
+    if (state.search.searchParameters.quotationAuthorType){
+      const searchShortId = state.search.searchParameters.quotationAuthorType;
+      quotationAuthorTypeSparql = [
+        "?quotation <http://scta.info/property/source> ?source .",
+        "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+        "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor .",
+        "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + searchShortId + ">  . ",
       ].join('');
     }
 
@@ -1012,6 +1196,7 @@ export var fetchCanonicalQuotations = () =>{
         "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
       ].join('');
     }
+
     var quotationWorkGroupSparql = "";
     if (state.search.searchParameters.quotationWorkGroup){
       var searchShortId = (state.search.searchParameters.quotationWorkGroup);
@@ -1095,8 +1280,10 @@ export var fetchCanonicalQuotations = () =>{
           "?quotation <http://scta.info/property/quotation> ?quotation_text .",
           quotationInstanceSparql,
           topLevelExpressionSparql,
+          expressionAuthorTypeSparql,
           authorSparql,
           workGroupSparql,
+          quotationAuthorTypeSparql,
           quotationAuthorSparql,
           quotationWorkGroupSparql,
           quotationWorkSparql,

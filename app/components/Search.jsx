@@ -14,7 +14,9 @@ export var Search = React.createClass({
     var expressionPart = this.refs.expressionPart.value ? this.refs.expressionPart.value.split("/")[0] : this.refs.expressionPart.value
     var expressionLevel = this.refs.expressionPart.value ? this.refs.expressionPart.value.split("/")[1] : 1 ;
     var expressionAuthor = this.refs.expressionAuthor.value;
+    var expressionAuthorType = this.refs.expressionAuthorType.value;
     var quotationAuthor = this.refs.quotationAuthor.value;
+    var quotationAuthorType = this.refs.quotationAuthorType.value;
     //var expressionType = this.refs.expressionType.value;
     var workGroup = this.refs.workGroup.value;
 
@@ -29,6 +31,8 @@ export var Search = React.createClass({
       quotationWork,
       quotationWorkPart,
       quotationWorkGroup,
+      quotationAuthorType,
+      expressionAuthorType,
       //expressionType,
       workGroup
     }
@@ -48,6 +52,9 @@ export var Search = React.createClass({
     dispatch(actions.fetchSearchWorksList());
     dispatch(actions.fetchQuotationWorksList());
 
+    dispatch(actions.fetchQuotationAuthors());
+    dispatch(actions.fetchExpressionAuthors());
+
 		if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
 		dispatch(actions.clearFocusedQuotation());
 		dispatch(actions.clearParagraph());
@@ -61,6 +68,27 @@ export var Search = React.createClass({
 
 
 	},
+  handleClearFilters: function(e){
+    e.preventDefault();
+    var {dispatch, search} = this.props;
+    dispatch(actions.clearSearchParameters());
+    dispatch(actions.clearCanonicalQuotations());
+    dispatch(actions.clearQuotations());
+
+    //dispatch(actions.fetchCanonicalQuotations());
+    dispatch(actions.fetchQuotationAuthors());
+    dispatch(actions.fetchExpressionAuthors());
+    dispatch(actions.fetchSearchWorksList());
+    //store.dispatch(actions.fetchExpressionTypes());
+    dispatch(actions.fetchQuotationWorksList());
+    dispatch(actions.fetchWorkGroups());
+    dispatch(actions.fetchAuthorTypes());
+    //dispatch(actions.fetchManifestationQuotations(searchText, quotationType, expressionId));
+    dispatch(actions.clearManifestationQuotations());
+
+
+
+  },
   handleGraph: function(e){
 		e.preventDefault();
 		var {dispatch} = this.props;
@@ -168,8 +196,17 @@ export var Search = React.createClass({
       }
     }
 
-    function displayAuthorsList(){
-      var authors = _this.props.search.authors;
+    function displayQuotationAuthorsList(){
+      var authors = _this.props.search.quotationAuthors;
+      return authors.map((author) => {
+        return(
+          <option value={author.authorShortId}>{author.authorTitle}</option>
+          )
+        }
+      )
+    }
+    function displayExpressionAuthorsList(){
+      var authors = _this.props.search.expressionAuthors;
       return authors.map((author) => {
         return(
           <option value={author.authorShortId}>{author.authorTitle}</option>
@@ -195,6 +232,24 @@ export var Search = React.createClass({
         }
       )
     }
+    function displayQuotationAuthorTypes(){
+      const authorTypes = _this.props.search.authorTypes;
+      return authorTypes.map((authorType) => {
+        return(
+          <option value={authorType.authorTypeShortId}>{authorType.authorTypeTitle}</option>
+          )
+        }
+      )
+    }
+    function displayExpressionAuthorTypes(){
+      const authorTypes = _this.props.search.authorTypes;
+      return authorTypes.map((authorType) => {
+        return(
+          <option value={authorType.authorTypeShortId}>{authorType.authorTypeTitle}</option>
+          )
+        }
+      )
+    }
     return(
       <div>
         <p>Search Parameters</p>
@@ -202,23 +257,32 @@ export var Search = React.createClass({
         <form onSubmit={this.handleOnShowQuotationsWithoutAssociation}>
           <div>
             <div>
-              <label>Search Text
-                <input type="text" ref="searchText" placeholder="search text" onChange={this.handleOnShowQuotationsWithoutAssociation}/>
+              <label>
+                <input type="text" ref="searchText" placeholder="search quotation text" onChange={this.handleOnShowQuotationsWithoutAssociation}/>
               </label>
             </div>
             <div>
-              <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict Search to Selected Canonical Quotation</label>
+              <button id="clearFilter" onClick={this.handleClearFilters}>Clear Filters</button>
+              <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict to Canonical Quotation</label>
             </div>
             <div>
-              <label>Filter by Quotation Author
-                <select ref="quotationAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+              <label>Filter by Quotation Author Type
+                <select ref="quotationAuthorType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
-                  {displayAuthorsList()}
+                  {displayQuotationAuthorTypes()}
                 </select>
               </label>
             </div>
             <div>
-              <label>Filter by quotation Work Group
+              <label>Filter by Quotation Author
+                <select ref="quotationAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.quotationAuthor}>
+                  <option value="">All</option>
+                  {displayQuotationAuthorsList()}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by Quotation Work Group
                 <select ref="quotationWorkGroup" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
                   {displayWorkGroupsList()}
@@ -244,10 +308,18 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label>Filter by Expression Author
-                <select ref="expressionAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+              <label>Filter by Expression Author Type
+                <select ref="expressionAuthorType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="">All</option>
-                  {displayAuthorsList()}
+                  {displayExpressionAuthorTypes()}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by Expression Author
+                <select ref="expressionAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.expressionAuthor}>
+                  <option value="">All</option>
+                  {displayExpressionAuthorsList()}
                 </select>
               </label>
             </div>
@@ -286,12 +358,6 @@ export var Search = React.createClass({
               </label>
             </div> */}
           </div>
-          {/*
-            <div className="small-3 columns">
-              <br/>
-              <button className="button expanded">Search</button>
-            </div> */}
-
         </form>
       </div>
 

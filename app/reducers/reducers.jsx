@@ -3,6 +3,11 @@ var moment = require('moment');
 
 export var searchReducer = (state = {}, action) => {
   switch (action.type){
+    case 'CLEAR_SEARCH_PARAMETERS':
+      return {
+        ...state,
+        searchParameters: []
+        }
     case 'SET_SEARCH_PARAMETERS':
       return {
         ...state,
@@ -18,15 +23,25 @@ export var searchReducer = (state = {}, action) => {
         ...state,
         searchWorks: action.listOfWorks
       }
-    case 'START_AUTHORS_FETCH':
+    case 'START_QUOTATION_AUTHORS_FETCH':
         return {
           ...state,
-          authors: []
+          quotationAuthors: []
         }
-    case 'COMPLETE_AUTHORS_FETCH':
+    case 'COMPLETE_QUOTATION_AUTHORS_FETCH':
       return {
         ...state,
-        authors: action.authors
+        quotationAuthors: action.authors
+      }
+    case 'START_EXPRESSION_AUTHORS_FETCH':
+        return {
+          ...state,
+          expressionAuthors: []
+        }
+    case 'COMPLETE_EXPRESSION_AUTHORS_FETCH':
+      return {
+        ...state,
+        expressionAuthors: action.authors
       }
     case 'START_QUOTATION_WORKS_LIST_FETCH':
         return {
@@ -77,6 +92,16 @@ export var searchReducer = (state = {}, action) => {
       return {
         ...state,
         workGroups: action.workGroups
+      }
+    case 'START_AUTHOR_TYPES_FETCH':
+        return {
+          ...state,
+          authorTypes: []
+        }
+    case 'COMPLETE_AUTHOR_TYPES_FETCH':
+      return {
+        ...state,
+        authorTypes: action.authorTypes
       }
     default:
       return state
@@ -138,15 +163,15 @@ export var quotationsReducer = (state = [], action) => {
         ...state,
         ...action.quotations
       ];
-    case 'CLEAR_QUOTATIONS_FOCUS':
-      return state.map((quotation) => {
-        return{
-          ...quotation,
-          focused: false
-        }
-      });
+    case 'ADD_QUOTATIONS':
+      return [
+        ...state,
+        ...action.quotations
+      ];
+    case 'CLEAR_QUOTATIONS':
+      return [];
     case 'START_QUOTATIONS_FETCH':
-      return []
+      return [];
     case 'COMPLETE_QUOTATIONS_FETCH':
       return action.quotations.map((quotation)=>{
         return {

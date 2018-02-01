@@ -20,12 +20,14 @@ store.subscribe(() => {
 //var state = store.getState();
 
 store.dispatch(actions.setSearchParameters({}));
-store.dispatch(actions.fetchCanonicalQuotations());
-store.dispatch(actions.fetchAuthors());
+//store.dispatch(actions.fetchCanonicalQuotations());
+store.dispatch(actions.fetchQuotationAuthors());
+store.dispatch(actions.fetchExpressionAuthors());
 store.dispatch(actions.fetchSearchWorksList());
 //store.dispatch(actions.fetchExpressionTypes());
 store.dispatch(actions.fetchQuotationWorksList());
 store.dispatch(actions.fetchWorkGroups());
+store.dispatch(actions.fetchAuthorTypes());
 
 
 
