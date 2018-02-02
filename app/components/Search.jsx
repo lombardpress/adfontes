@@ -38,35 +38,66 @@ export var Search = React.createClass({
     }
 
     dispatch(actions.setSearchParameters(searchParameters));
-
+    //search filters options update
     dispatch(actions.fetchQuotationWorkParts());
     dispatch(actions.fetchExpressionParts());
-    // if (this.refs.quotationWorkPart.value){
-    //   dispatch(actions.fetchQuotationWorkParts(this.refs.quotationWorkPart.value));
-    // }
-    // else if (this.refs.quotationWork.value){
-    //   dispatch(actions.fetchQuotationWorkParts(this.refs.quotationWork.value));
-    // }
-
-
     dispatch(actions.fetchSearchWorksList());
     dispatch(actions.fetchQuotationWorksList());
-
     dispatch(actions.fetchQuotationAuthors());
     dispatch(actions.fetchExpressionAuthors());
 
-		if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
+    // actually quotation query Actions
+    // comment these out, if you want to add search button and turn off automatic
+    // on change search <button id="runQuery" onClick={this.handleRunQuery}>Search</button>
+    if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
 		dispatch(actions.clearFocusedQuotation());
 		dispatch(actions.clearParagraph());
-		//dispatch(actions.clearCanonicalQuotationsFocus());
 		if (!retainCanonical) dispatch(actions.fetchCanonicalQuotations());
 		dispatch(actions.fetchQuotations());
-		//dispatch(actions.fetchManifestationQuotations(searchText, quotationType, expressionId));
-    dispatch(actions.clearManifestationQuotations());
+		dispatch(actions.clearManifestationQuotations());
     dispatch(actions.fetchChart());
+},
+  handleRunQuery: function(e){
+		e.preventDefault();
+		var {dispatch, search} = this.props;
+		var searchText = this.refs.searchText.value;
+    var quotationWorkGroup = this.refs.quotationWorkGroup.value;
+    var quotationWork = this.refs.quotationWork.value;
+    var quotationWorkPart = this.refs.quotationWorkPart.value
+    var expressionId = this.refs.expressionId.value;
+    var expressionPart = this.refs.expressionPart.value ? this.refs.expressionPart.value.split("/")[0] : this.refs.expressionPart.value
+    var expressionLevel = this.refs.expressionPart.value ? this.refs.expressionPart.value.split("/")[1] : 1 ;
+    var expressionAuthor = this.refs.expressionAuthor.value;
+    var expressionAuthorType = this.refs.expressionAuthorType.value;
+    var quotationAuthor = this.refs.quotationAuthor.value;
+    var quotationAuthorType = this.refs.quotationAuthorType.value;
+    //var expressionType = this.refs.expressionType.value;
+    var workGroup = this.refs.workGroup.value;
 
+    var retainCanonical = this.refs.retainCanonical.checked;
+    var searchParameters = {
+      searchText,
+      expressionId,
+      expressionPart,
+      expressionLevel,
+      expressionAuthor,
+      quotationAuthor,
+      quotationWork,
+      quotationWorkPart,
+      quotationWorkGroup,
+      quotationAuthorType,
+      expressionAuthorType,
+      //expressionType,
+      workGroup
+    }
 
-
+    if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
+		dispatch(actions.clearFocusedQuotation());
+    dispatch(actions.clearManifestationQuotations());
+		dispatch(actions.clearParagraph());
+		if (!retainCanonical) dispatch(actions.fetchCanonicalQuotations());
+		dispatch(actions.fetchQuotations());
+		dispatch(actions.fetchChart());
 	},
   handleClearFilters: function(e){
     e.preventDefault();
@@ -253,18 +284,25 @@ export var Search = React.createClass({
     }
     return(
       <div>
-        <p>Search Parameters</p>
-        <p><a href="#" onClick={this.handleGraph}>Toggle Historgram</a></p>
         <form onSubmit={this.handleOnShowQuotationsWithoutAssociation}>
           <div>
+            <div>
+              {
+                // turn this on, if you want  add search button turn off automatic
+                // on change search
+                <button id="runQuery" onClick={this.handleRunQuery}>Search</button>
+              }
+
+              <button id="clearFilter" onClick={this.handleClearFilters}>Clear Filters</button>
+            </div>
+            <p>Search Parameters</p>
+            <div>
+              <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict to Can. Quotation</label>
+            </div>
             <div>
               <label>
                 <input type="text" ref="searchText" placeholder="search quotation text" onChange={this.handleOnShowQuotationsWithoutAssociation}/>
               </label>
-            </div>
-            <div>
-              <button id="clearFilter" onClick={this.handleClearFilters}>Clear Filters</button>
-              <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict to Canonical Quotation</label>
             </div>
             <div>
               <label>Filter by Quotation Author Type
@@ -360,6 +398,7 @@ export var Search = React.createClass({
             </div> */}
           </div>
         </form>
+        <p><a href="#" onClick={this.handleGraph}>Toggle Historgram</a></p>
       </div>
 
 
