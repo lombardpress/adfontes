@@ -286,16 +286,16 @@ export var Search = React.createClass({
       <div>
         <form onSubmit={this.handleOnShowQuotationsWithoutAssociation}>
           <div>
+            <p>Search Parameters</p>
             <div>
               {
                 // turn this on, if you want  add search button turn off automatic
                 // on change search
-                <button id="runQuery" onClick={this.handleRunQuery}>Search</button>
+                <button id="runQuery" onClick={this.handleRunQuery}>Run Search</button>
               }
 
               <button id="clearFilter" onClick={this.handleClearFilters}>Clear Filters</button>
             </div>
-            <p>Search Parameters</p>
             <div>
               <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict to Can. Quotation</label>
             </div>
