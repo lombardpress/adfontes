@@ -1,6 +1,8 @@
 var React = require('react');
 var {connect} = require('react-redux');
 var actions = require('actions');
+//import CETEI from '../../node_modules/CETEIcean/src/CETEI';
+var cetei = require("../../node_modules/CETEIcean/src/CETEI");
 
 
 
@@ -10,6 +12,21 @@ export var Paragraph = React.createClass({
 		var {dispatch} = this.props;
 		dispatch(actions.fetchImages());
 		dispatch(actions.toggleImagesDisplay(this.props.images.visible));
+	},
+	componentDidUpdate: function(){
+		var _this = this;
+
+		console.log(this.props.paragraph.paragraph_text);
+		const htmlText = new cetei()
+		if (this.props.paragraph.paragraph_text){
+			htmlText.makeHTML5(this.props.paragraph.paragraph_text, function(data){
+
+				// Append to component's DOM
+        _this.refs.text.appendChild(data)
+			});
+		}
+
+
 	},
 	render: function(){
 		var _this = this;
@@ -41,7 +58,7 @@ export var Paragraph = React.createClass({
 			}
 
 		}
-		
+
 		function showReview(){
 			if (review){
 				var reviewLink  = "http://dll-review-registry.scta.info/reviews/" + review["id"] + ".html";
@@ -54,41 +71,12 @@ export var Paragraph = React.createClass({
 			}
 		}
 
-
-
-
-
-
-		// xslt conversion
-		// function loadXMLDoc(filename) {
-    //     if (window.ActiveXObject) {
-    //          xhttp = new ActiveXObject("Msxml2.XMLHTTP");
-    //     } else {
-    //          xhttp = new XMLHttpRequest();
-    //     }
-    //     xhttp.open("GET", filename, false);
-    //     xhttp.send("");
-    //     return xhttp.responseXML;
-    //  }
-		//
-    //  xml = loadXMLDoc("test.xml");
-    //  xsl = loadXMLDoc("test.xsl");
-    //  if (document.implementation && document.implementation.createDocument) {
-    //     xsltProcessor = new XSLTProcessor();
-    //     xsltProcessor.importStylesheet(xsl);
-    //     resultDocument = xsltProcessor.transformToFragment(xml, document);
-    //     document.getElementById('container').appendChild(resultDocument);
-    //  }
-
-
-
-
 		return(
 
 
 			<div>
 				<p>Context Paragraph</p>
-				<div id="text">{text}</div>
+				<div id="text" ref="text"/>
 				<a href={manifestation_id}>{manifestation_id}</a>
 				{showImageToggle()}
 				{showReview()}

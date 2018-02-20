@@ -10,6 +10,7 @@
   "author": "Jeff",
   "license": "MIT",
   "dependencies": {
+    "CETEIcean": "^0.4.0",
     "axios": "^0.11.1",
     "d3": "3.5.17",
     "d3-array": "1.2.1",

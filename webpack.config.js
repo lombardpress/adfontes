@@ -53,7 +53,8 @@ module.exports = {
 			path.resolve(__dirname, './node_modules/foundation-sites/scss')
 		]
 	},
-	devtool: 'cheap-module-eval-source-map'
+	devtool: 'cheap-module-eval-source-map',
+
 
 	// "cheap-source-map" can be used instead of above
 	// which currently has bugs
