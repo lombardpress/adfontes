@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 var {connect} = require('react-redux');
 var actions = require('actions');
+var cetei = require("../../node_modules/CETEIcean/src/CETEI");
 
 
 

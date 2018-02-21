@@ -1057,7 +1057,7 @@ export var fetchQuotations = () =>{
           "LIMIT 100"
         ].join('');
       }
-      
+
     dispatch(startQuotationsFetch());
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
@@ -1475,6 +1475,88 @@ export var fetchReview = () =>{
       axios.get(reviewUrl).then(function(res){
         var review = res.data[0];
         dispatch(completeReviewFetch(review));
+      });
+    };
+  };
+};
+
+// Full text actions
+
+//paragraph actions
+
+export var toggleFullTextDisplay = (current) => {
+  return{
+    type: "TOGGLE_FULL_TEXT_DISPLAY",
+    current
+  };
+}
+export var clearFullText = () => {
+  return{
+    type: "CLEAR_FULL_TEXT"
+  };
+};
+
+export var startFullTextFetch = () => {
+  return{
+    type: "START_FULL_TEXT_FETCH"
+  };
+};
+export var completeFullTextFetch = (text) => {
+  return{
+    type: "COMPLETE_FULL_TEXT_FETCH",
+    text
+  };
+};
+export var fetchFullText = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+
+    if (state.focusedQuotation){
+      var quotationId = state.focusedQuotation.id;
+      //var expressionQuotationId = quotationid;
+      var query = "";
+      var idType = state.focusedQuotation.type
+
+      if (idType === "expression"){
+        query = [
+            "SELECT ?expression_item ?manifestation_item ?transcription_item ?xml_url ?transcription_item_file ",
+            "WHERE { ",
+            "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?expression_block .",
+            "?expression_block <http://scta.info/property/isPartOfStructureItem> ?expression_item .",
+            "?expression_item <http://scta.info/property/hasCanonicalManifestation> ?manifestation_item .",
+            "?manifestation_item <http://scta.info/property/hasCanonicalTranscription> ?transcription_item .",
+            "?transcription_item <http://scta.info/property/hasDocument> ?transcription_item_file .",
+            "?transcription_item <http://scta.info/property/hasXML> ?xml_url .",
+            "}"
+          ].join('');
+        }
+      else if (idType === "manifestation"){
+        query = [
+            "SELECT ?expression_item ?manifestation_item ?transcription_item ?xml_url ?transcription_item_file ",
+            "WHERE { ",
+            "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?manifestation_block . ",
+            "?manifestation_block <http://scta.info/property/isPartOfStructureItem> ?manifestation_item .",
+            "?manifestation_item <http://scta.info/property/isManifestationOf> ?expression_item .",
+            "?manifestation_item <http://scta.info/property/hasCanonicalTranscription> ?transcription_item .",
+            "?transcription_item <http://scta.info/property/hasDocument> ?transcription_item_file .",
+            "?transcription_item <http://scta.info/property/hasXML> ?xml_url .",
+            "}"
+          ].join('');
+      }
+      dispatch(startFullTextFetch());
+      axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
+        var results = res.data.results.bindings[0];
+        axios.get(results.xml_url.value).then(function(res2){
+          var text = {
+            expression_id: results.expression_item.value,
+            manifestation_id: results.manifestation_item.value,
+            transcription_id: results.transcription_item.value,
+            transcription_item_file: results.transcription_item_file ? results.transcription_item_file.value : "",
+            text: res2.data
+          }
+          dispatch(completeFullTextFetch(text));
+          dispatch(fetchReview());
+        });
       });
     };
   };

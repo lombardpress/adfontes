@@ -15,6 +15,7 @@ import ManifestationQuotationList from "ManifestationQuotationList";
 import Paragraph from "Paragraph";
 import BarChart from "BarChart";
 import Images from "Images";
+import FullText from "FullText";
 
 
 var TodoApp = React.createClass({
@@ -41,8 +42,17 @@ var TodoApp = React.createClass({
 				)
 			}
     }
+		function fullTextDisplay(){
+			if (_this.props.fullText.visible){
+				return(
+					<div className="full-text-wrapper">
+					<FullText/>
+					</div>
+				)
+			}
+    }
 		function quotationDisplay(){
-			if (!_this.props.chart.visible && !_this.props.images.visible){
+			if (!_this.props.chart.visible && !_this.props.images.visible && !_this.props.fullText.visible){
 				return(
 					<div>
 					<div id="CanonicalQuotationList" className="column2">
@@ -72,6 +82,7 @@ var TodoApp = React.createClass({
 					{quotationDisplay()}
 					{barGraphDisplay()}
 					{imagesDisplay()}
+					{fullTextDisplay()}
 
 				</div>
 

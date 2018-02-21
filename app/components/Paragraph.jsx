@@ -13,16 +13,27 @@ export var Paragraph = React.createClass({
 		dispatch(actions.fetchImages());
 		dispatch(actions.toggleImagesDisplay(this.props.images.visible));
 	},
+	handleShowFullText: function(e){
+		e.preventDefault();
+		var {dispatch} = this.props;
+		console.log("function firing")
+		dispatch(actions.fetchFullText());
+		dispatch(actions.toggleFullTextDisplay(this.props.fullText.visible));
+	},
 	componentDidUpdate: function(){
 		var _this = this;
-
-		console.log(this.props.paragraph.paragraph_text);
 		const htmlText = new cetei()
 		if (this.props.paragraph.paragraph_text){
 			htmlText.makeHTML5(this.props.paragraph.paragraph_text, function(data){
+				// get id of quote
+				const quoteid = _this.props.focusedQuotation.id.split("/").pop();
+				// find quote in text if there and change class to highlighted
+				if (data.querySelector("#" + quoteid)){
+					data.querySelector("#" + quoteid).setAttribute("class", "highlighted");
+				}
+				//load text in div
+				_this.refs.text.replaceChild(data, _this.refs.text.childNodes[0]);
 
-				// Append to component's DOM
-        _this.refs.text.appendChild(data)
 			});
 		}
 
@@ -30,6 +41,7 @@ export var Paragraph = React.createClass({
 	},
 	render: function(){
 		var _this = this;
+		console.log(this.props);
     var {paragraph} = this.props;
 		var {expression_id, manifestation_id, paragraph_text, review} = paragraph
 		var domParser = new DOMParser();
@@ -58,6 +70,17 @@ export var Paragraph = React.createClass({
 			}
 
 		}
+		function showFullTextToggle(){
+
+			if (paragraph.expression_id){
+				return(
+					<p>
+						<a onClick={_this.handleShowFullText}>Show Full Text</a>
+					</p>
+				)
+			}
+
+		}
 
 		function showReview(){
 			if (review){
@@ -76,9 +99,10 @@ export var Paragraph = React.createClass({
 
 			<div>
 				<p>Context Paragraph</p>
-				<div id="text" ref="text"/>
+				<div id="text" ref="text"><div/></div>
 				<a href={manifestation_id}>{manifestation_id}</a>
 				{showImageToggle()}
+				{showFullTextToggle()}
 				{showReview()}
 			</div>
 		)
