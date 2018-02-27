@@ -36,33 +36,41 @@
 .column1, .column2, .column3, .column4, .column5{
   position: fixed;
   overflow: scroll;
-  height: calc(100% - 200px);
+  height: calc(100% - 125px);
   margin-bottom: 100px;
   padding: 1%;
   //border: .5px solid $light-color;
+  border-right: solid .25rem lighten($theme-color, 20%);
+  background-color: lighten($theme-color, 30%);
 
 }
 .column1{
-  width: 15%;
+  width: 16%;
   left: 0%;
-  border-right: 1px solid gray
+  //border-right: 1px solid gray;
+
+
 }
 .column2 {
-  width:19%;
-  left: 17%;
+  width:21%;
+  left: 16%;
+
 }
 .column3{
-  width: 19%;
-  left: 36%;
+  width: 21%;
+  left: 37%;
+
 
 }
 .column4{
-  width: 19%;
-  left: 55%;
+  width: 21%;
+  left: 58%;
+
 }
 .column5{
-  width: 19%;
-  left: 74%;
+  width: 21%;
+  left: 79%;
+
 }
 
 .quotation-citation{

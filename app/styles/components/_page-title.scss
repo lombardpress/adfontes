@@ -1,9 +1,17 @@
 .page-title {
   margin: 0;
-  padding: 1rem 0;
+  padding: .25rem 0;
   text-align: center;
+  background-color: $theme-color;
+  border-bottom: .5rem solid darken($theme-color, 10%);
+  color: white;
 }
 .page-header{
+  width: 100%;
   font-size: 14px;
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  padding: .25rem 2rem;
+  position:fixed; bottom:0; z-index:100000
 }
