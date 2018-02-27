@@ -2,7 +2,7 @@ var React = require('react');
 var {connect} = require('react-redux');
 var actions = require('actions');
 //import CETEI from '../../node_modules/CETEIcean/src/CETEI';
-var cetei = require("../../node_modules/CETEIcean/src/CETEI");
+var cetei = require("../vendor/CETEI");
 
 
 
@@ -20,7 +20,15 @@ export var Paragraph = React.createClass({
 		dispatch(actions.fetchFullText());
 		dispatch(actions.toggleFullTextDisplay(this.props.fullText.visible));
 	},
+	componentDidMount: function(){
+		var _this = this;
+		this.addTEICustom()
+	},
 	componentDidUpdate: function(){
+		var _this = this;
+		this.addTEICustom()
+	},
+	addTEICustom(){
 		var _this = this;
 		const htmlText = new cetei()
 		if (this.props.paragraph.paragraph_text){
@@ -36,8 +44,6 @@ export var Paragraph = React.createClass({
 
 			});
 		}
-
-
 	},
 	render: function(){
 		var _this = this;

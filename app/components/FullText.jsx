@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 var {connect} = require('react-redux');
 var actions = require('actions');
 
-var cetei = require("../../node_modules/CETEIcean/src/CETEI");
+var cetei = require("../vendor/CETEI");
 
 
 class FullText extends React.Component {
@@ -44,7 +44,7 @@ class FullText extends React.Component {
 
      return(
        <div className="full-text">
-         <button onClick={this.handleToggleFullText}>Hide Text</button>
+         <button id="hide-full-text" onClick={this.handleToggleFullText}>Hide Text</button>
          <div ref="text"><div/></div>
 
        </div>
