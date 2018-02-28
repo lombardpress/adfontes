@@ -1,6 +1,9 @@
 var redux = require('redux');
 var thunk = require('redux-thunk').default;
-var {searchReducer, quotationsReducer, focusedQuotationReducer, canonicalQuotationReducer, canonicalQuotationsReducer, manifestationQuotationsReducer, paragraphReducer, chartReducer, imagesReducer, fullTextReducer} = require('reducers');
+var {quotationsReducer, focusedQuotationReducer, canonicalQuotationReducer, canonicalQuotationsReducer, manifestationQuotationsReducer, paragraphReducer, fullTextReducer} = require('reducers');
+var {searchReducer} = require('searchReducer');
+import {chartReducer} from "chartReducer";
+import {imagesReducer} from "imagesReducer";
 
 export var configure = (initialState = {}) => {
   var reducer = redux.combineReducers({

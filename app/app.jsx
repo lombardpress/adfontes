@@ -28,6 +28,7 @@ store.dispatch(actions.fetchSearchWorksList());
 store.dispatch(actions.fetchQuotationWorksList());
 store.dispatch(actions.fetchWorkGroups());
 store.dispatch(actions.fetchAuthorTypes());
+store.dispatch(actions.fetchChart());
 
 
 

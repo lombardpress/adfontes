@@ -577,6 +577,13 @@ export var fetchChart = () =>{
       level = 2;
     }
 
+    let expressionWorkGroupSparql = "";
+    if (state.search.searchParameters.workGroup){
+      const workGroup = state.search.searchParameters.workGroup;
+      expressionWorkGroupSparql = [
+        "?ref <http://purl.org/dc/terms/isPartOf> <http://scta.info/resource/" + workGroup + ">  . "
+      ].join('');
+    }
 
     var quotationAuthorSparql = "";
     if (state.search.searchParameters.quotationAuthor){
@@ -650,28 +657,56 @@ export var fetchChart = () =>{
     }
 
     //var expressionId = state.search.searchParameters.expressionPart ? state.search.searchParameters.expressionPart : state.search.searchParameters.expressionId
-    var expressionId = state.search.searchParameters.expressionId
-    var query = [
-      "SELECT ?ref ?reftitle ?totalOrderNumber (count(?element) as ?count) ",
-      "WHERE {",
-      "?ref a <http://scta.info/resource/expression> .",
-      "?ref <http://scta.info/property/isMemberOf> <http://scta.info/resource/" + expressionId + "> .",
-      "?ref <http://scta.info/property/level> '" + level + "' .",
-      "?ref <http://purl.org/dc/elements/1.1/title> ?reftitle .",
-      "OPTIONAL {",
-      "?ref <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
-      "}",
-      "OPTIONAL {",
-      "?element <http://scta.info/property/isMemberOf> ?ref .",
-      "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
-      quotationAuthorSparql,
-      quotationWorkGroupSparql,
-      quotationWorkSparql,
-      "}",
-      "}",
-      "group by ?ref ?reftitle ?totalOrderNumber ",
-      "ORDER BY ?totalOrderNumber "
-    ].join('');
+    if (state.search.searchParameters.expressionId){
+      // query for quote frequency within a given expression
+      var expressionId = state.search.searchParameters.expressionId
+      var query = [
+        "SELECT ?ref ?reftitle ?totalOrderNumber (count(?element) as ?count) ",
+        "WHERE {",
+        "?ref a <http://scta.info/resource/expression> .",
+        "?ref <http://scta.info/property/isMemberOf> <http://scta.info/resource/" + expressionId + "> .",
+        "?ref <http://scta.info/property/level> '" + level + "' .",
+        "?ref <http://purl.org/dc/elements/1.1/title> ?reftitle .",
+        "OPTIONAL {",
+        "?ref <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
+        "}",
+        "OPTIONAL {",
+        "?element <http://scta.info/property/isMemberOf> ?ref .",
+        "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+        quotationAuthorSparql,
+        quotationWorkGroupSparql,
+        quotationWorkSparql,
+        "}",
+        "}",
+        "group by ?ref ?reftitle ?totalOrderNumber ",
+        "ORDER BY ?totalOrderNumber "
+      ].join('');
+    }
+    else {
+      // query for quote frequency across top level expressions
+      var query = [
+        "SELECT ?ref ?reftitle ?totalOrderNumber (count(?element) as ?count) ",
+        "WHERE {",
+        "?ref a <http://scta.info/resource/expression> .",
+        "?ref <http://scta.info/property/level> '1' .",
+        expressionWorkGroupSparql,
+        "?ref <http://purl.org/dc/elements/1.1/title> ?reftitle .",
+        "OPTIONAL {",
+        "?ref <http://scta.info/property/totalOrderNumber> ?totalOrderNumber .",
+        "}",
+        "OPTIONAL {",
+        "?element <http://scta.info/property/isMemberOf> ?ref .",
+        "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+        quotationAuthorSparql,
+        quotationWorkGroupSparql,
+        quotationWorkSparql,
+        "}",
+        "}",
+        "group by ?ref ?reftitle ?totalOrderNumber ",
+        "ORDER BY ?totalOrderNumber "
+      ].join('');
+    }
+
   dispatch(startChartFetch());
   axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
     var results = res.data.results.bindings;
