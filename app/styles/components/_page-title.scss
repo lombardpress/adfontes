@@ -12,6 +12,8 @@
   text-align: center;
   display: flex;
   justify-content: space-between;
-  padding: .25rem 2rem;
+  padding: 1rem 2rem .25rem 2rem;
+  border-top: .5rem solid darken($theme-color, 10%);
+  margin-top: 0;
   position:fixed; bottom:0; z-index:100000
 }

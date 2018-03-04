@@ -5,13 +5,20 @@
     height: calc(100% - 125px);
     left: 16%;
     width: 84%;
-    padding: 3%;
     margin-bottom: 100px;
   }
 #hide-full-text {
-  position: fixed;
-  background-color: black;
-  color: white;
-  padding: 5px;
+}
 
+#text-tool-bar{
+  padding: 5px;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  background-color: lighten($theme-color, 30%);
+  color: $theme-color;
+  width: 100%;
+}
+#text{
+  padding: 3%;
 }

@@ -43,9 +43,12 @@ class FullText extends React.Component {
      var _this = this;
 
      return(
-       <div className="full-text">
-         <button id="hide-full-text" onClick={this.handleToggleFullText}>Hide Text</button>
-         <div ref="text"><div/></div>
+       <div className="full-text-wrapper">
+         <div id="text-tool-bar">
+           <button id="hide-full-text" onClick={this.handleToggleFullText}>Hide Text</button>
+         </div>
+         <div id="text" ref="text"><div/>
+       </div>
 
        </div>
      )

@@ -45,9 +45,7 @@ var TodoApp = React.createClass({
 		function fullTextDisplay(){
 			if (_this.props.fullText.visible){
 				return(
-					<div className="full-text-wrapper">
 					<FullText/>
-					</div>
 				)
 			}
     }
