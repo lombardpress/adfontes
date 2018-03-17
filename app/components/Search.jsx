@@ -8,6 +8,7 @@ export var Search = React.createClass({
 		var {dispatch, search} = this.props;
 		var searchText = this.refs.searchText.value;
     var quotationWorkGroup = this.refs.quotationWorkGroup.value;
+    var quotationExpressionType = this.refs.quotationExpressionType.value;
     var quotationWork = this.refs.quotationWork.value;
     var quotationWorkPart = this.refs.quotationWorkPart.value
     var expressionId = this.refs.expressionId.value;
@@ -17,7 +18,7 @@ export var Search = React.createClass({
     var expressionAuthorType = this.refs.expressionAuthorType.value;
     var quotationAuthor = this.refs.quotationAuthor.value;
     var quotationAuthorType = this.refs.quotationAuthorType.value;
-    //var expressionType = this.refs.expressionType.value;
+    var expressionType = this.refs.expressionType.value;
     var workGroup = this.refs.workGroup.value;
 
     var retainCanonical = this.refs.retainCanonical.checked;
@@ -28,12 +29,13 @@ export var Search = React.createClass({
       expressionLevel,
       expressionAuthor,
       quotationAuthor,
+      quotationExpressionType,
       quotationWork,
       quotationWorkPart,
       quotationWorkGroup,
       quotationAuthorType,
       expressionAuthorType,
-      //expressionType,
+      expressionType,
       workGroup
     }
 
@@ -45,6 +47,9 @@ export var Search = React.createClass({
     dispatch(actions.fetchQuotationWorksList());
     dispatch(actions.fetchQuotationAuthors());
     dispatch(actions.fetchExpressionAuthors());
+    //fetch expression types, should adjust based on types that would apply for a select work group author or expression
+    // there are no filters for this yet
+    //dispatch(actions.fetchExpressionTypes());
 
     // actually quotation query Actions
     // comment these out, if you want to add search button and turn off automatic
@@ -71,7 +76,8 @@ export var Search = React.createClass({
     var expressionAuthorType = this.refs.expressionAuthorType.value;
     var quotationAuthor = this.refs.quotationAuthor.value;
     var quotationAuthorType = this.refs.quotationAuthorType.value;
-    //var expressionType = this.refs.expressionType.value;
+    var expressionType = this.refs.expressionType.value;
+    var quotationExpressionType = this.refs.quotationExpressionType.value;
     var workGroup = this.refs.workGroup.value;
 
     var retainCanonical = this.refs.retainCanonical.checked;
@@ -82,12 +88,13 @@ export var Search = React.createClass({
       expressionLevel,
       expressionAuthor,
       quotationAuthor,
+      quotationExpressionType,
       quotationWork,
       quotationWorkPart,
       quotationWorkGroup,
       quotationAuthorType,
       expressionAuthorType,
-      //expressionType,
+      expressionType,
       workGroup
     }
 
@@ -255,6 +262,15 @@ export var Search = React.createClass({
         }
       )
     }
+    function displayQuotationExpressionTypeList(){
+      var quotationExpressionTypes = _this.props.search.quotationExpressionTypes;
+      return quotationExpressionTypes.map((type) => {
+        return(
+          <option value={type.quotationExpressionTypeShortId}>{type.quotationExpressionTypeTitle}</option>
+          )
+        }
+      )
+    }
     function displayWorkGroupsList(){
       var workGroups = _this.props.search.workGroups;
       return workGroups.map((workGroup) => {
@@ -329,7 +345,15 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label>Filter by Quotation Work
+              <label>Filter by Quotation Expression Type
+                <select ref="quotationExpressionType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayQuotationExpressionTypeList()}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by Quotation Expression
                 <select ref="quotationWork" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.quotationWork}>
                   <option value="">All</option>
                   {displayQuotationWorksList()}
@@ -337,7 +361,7 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
-              <label>Filter by Quotation Work Part
+              <label>Filter by Quotation Expression Part
                 <select ref="quotationWorkPart" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.quotationWorkPart}>
                   <option value="">All</option>
                   {displayQuotationWorkPartsGrandparent()}
@@ -371,6 +395,14 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
+              <label>Filter by Expression Type
+                <select ref="expressionType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="">All</option>
+                  {displayExpressionTypeList()}
+                </select>
+              </label>
+            </div>
+            <div>
               <label>Filter by Expression Title
                 <select ref="expressionId" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.expressionId}>
                   <option value="">All</option>
@@ -388,14 +420,6 @@ export var Search = React.createClass({
                 </select>
               </label>
             </div>
-            {/* temporarily commenting out <div>
-              <label>Filter by Expression Type
-                <select ref="expressionType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
-                  <option value="">All</option>
-                  {displayExpressionTypeList()}
-                </select>
-              </label>
-            </div> */}
           </div>
         </form>
         <p><a href="#" onClick={this.handleGraph}>Toggle Historgram</a></p>

@@ -80,6 +80,16 @@ export var searchReducer = (state = {}, action) => {
         ...state,
         expressionTypes: action.expressionTypes
       }
+    case 'START_QUOTATION_EXPRESSION_TYPE_FETCH':
+        return {
+          ...state,
+          quotationExpressionTypes: []
+        }
+    case 'COMPLETE_QUOTATION_EXPRESSION_TYPE_FETCH':
+      return {
+        ...state,
+        quotationExpressionTypes: action.quotationExpressionTypes
+      }
     case 'START_WORK_GROUPS_FETCH':
         return {
           ...state,

@@ -433,6 +433,46 @@ export var fetchExpressionParts = () =>{
   }
 };
 
+export var startQuotationExpressionTypeFetch = () => {
+  return{
+    type: "START_QUOTATION_EXPRESSION_TYPE_FETCH"
+  };
+};
+export var completeQuotationExpressionTypeFetch = (quotationExpressionTypes) => {
+  return{
+    type: "COMPLETE_QUOTATION_EXPRESSION_TYPE_FETCH",
+    quotationExpressionTypes
+  };
+};
+export var fetchQuotationExpressionTypes = () =>{
+  return (dispatch, getState) => {
+    var state = getState();
+    var query = [
+        "SELECT ?quotationExpressionType ?quotationExpressionTypeTitle ?quotationExpressionTypeShortId ",
+        "WHERE { ",
+        "?quotationExpressionType a <http://scta.info/resource/expressionType> .",
+        "?quotationExpressionType <http://scta.info/property/shortId> ?quotationExpressionTypeShortId .",
+        "?quotationExpressionType <http://purl.org/dc/elements/1.1/title> ?quotationExpressionTypeTitle .",
+        "}",
+        "ORDER BY ?quotationExpressionTypeTitle"].join('');
+
+  dispatch(startQuotationExpressionTypeFetch());
+  axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
+    var results = res.data.results.bindings;
+
+    var quotationExpressionTypes = results.map((result) => {
+      var quotationExpressionTypeInfo = {
+          quotationExpressionType: result.quotationExpressionType.value,
+          quotationExpressionTypeShortId: result.quotationExpressionTypeShortId.value,
+          quotationExpressionTypeTitle: result.quotationExpressionTypeTitle.value
+        }
+        return quotationExpressionTypeInfo
+      });
+      dispatch(completeQuotationExpressionTypeFetch(quotationExpressionTypes));
+    });
+  }
+};
+
 
 export var startExpressionTypeFetch = () => {
   return{
@@ -449,7 +489,7 @@ export var fetchExpressionTypes = () =>{
   return (dispatch, getState) => {
     var state = getState();
     var query = [
-        "SELECT ?expressionType ?expressionTypeTitle ?expressionTypeShortId",
+        "SELECT ?expressionType ?expressionTypeTitle ?expressionTypeShortId ",
         "WHERE { ",
         "?expressionType a <http://scta.info/resource/expressionType> .",
         "?expressionType <http://scta.info/property/shortId> ?expressionTypeShortId .",
@@ -463,7 +503,7 @@ export var fetchExpressionTypes = () =>{
     var expressionTypes = results.map((result) => {
       var expressionTypeInfo = {
           expressionType: result.expressionType.value,
-          expressionTypeShortId: result.expressionTypeShortId,
+          expressionTypeShortId: result.expressionTypeShortId.value,
           expressionTypeTitle: result.expressionTypeTitle.value
         }
         return expressionTypeInfo
@@ -889,96 +929,7 @@ export var fetchQuotations = () =>{
         "}"
       ].join('');
     }
-    // var quotationTypeSparql = "";
-    // if (state.search.searchParameters.quotationType != "" ){
-    //   var quotationTypeSparql = [
-    //     "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-    //     "?isInstanceOf <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.searchParameters.quotationType + "> ."
-    //   ].join('');
-    // }
-    // else if (state.search.searchParameters.quotationType != "" && state.canonicalQuotation){
-    //   var quotationTypeSparql = [
-    //     "?isInstanceOf <http://scta.info/property/quotationType>	<http://scta.info/resource/" + state.search.searchParameters.quotationType + "> ."
-    //   ].join('');
-    // }
-    // else if (state.search.searchParameters.quotationWork){
-    //  var quotationTypeSparql = "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf ."
-    // }
-    // else{
-    //   var quotationTypeSparql = [
-    //   "OPTIONAL {",
-    //     "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-    //   "}"
-    // ].join('');
-    // }
 
-    // var quotationWorkSparql = "";
-    // if (state.search.searchParameters.quotationWork){
-    //   quotationWorkSparql = [
-    //   "?isInstanceOf <http://scta.info/property/fromBiblicalBook> <http://scta.info/resource/" + state.search.searchParameters.quotationWork + "> .",
-    //   ].join('');
-    // }
-
-    //OLD QUERY THIS QUERY IS AN EXAMPLE OF WHAT WAS REQUIRED BEFORE THE isMemberOf Property was added. It is replaced by the query below
-    // var quotationWorkSparql = "";
-    // if (state.search.searchParameters.quotationWork || state.search.searchParameters.quotationWorkPart){
-    //   var searchShortId = (state.search.searchParameters.quotationWorkPart) ? state.search.searchParameters.quotationWorkPart : state.search.searchParameters.quotationWork
-    //   quotationWorkSparql = [
-    //   "{",
-    //     "{",
-    //     "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-    //       "{",
-    //         "\n#check for quotation whose canonical source is part of an item and the item is descendant of the search expression\n",
-    //         "{?isInstanceOf  <http://scta.info/property/source> ?source .",
-    //         "?source <http://scta.info/property/isPartOfStructureItem> ?item .",
-    //         "<http://scta.info/resource/" + searchShortId + "> <http://scta.info/property/hasStructureItem> ?item .}",
-    //         "UNION",
-    //         "\n#check for quotation whose canonical source is part of an item and the item is the search expression\n",
-    //         "{?isInstanceOf  <http://scta.info/property/source> ?source .",
-    //         "?source <http://scta.info/property/isPartOfStructureItem> <http://scta.info/resource/" + searchShortId + "> .}",
-    //       "}",
-    //       "UNION",
-    //       "{",
-    //         "\n#check for quotation whose canonical source is an item (e.g. bible-rom) and the item is a descendent of the search expression (e.g. bible)\n",
-    //         "?isInstanceOf  <http://scta.info/property/source> ?source .",
-    //         "?source <http://scta.info/property/structureType> <http://scta.info/resource/structureItem> .",
-    //         "<http://scta.info/resource/" + searchShortId + "> <http://scta.info/property/hasStructureItem> ?source .",
-    //       "}",
-    //     "}",
-    //     "UNION",
-    //     "{",
-    //       "{",
-    //         "\n#check for quotation whose source is part of an item and the item is a descendent of the search expression\n",
-    //         "{?quotation <http://scta.info/property/source> ?source .",
-    //         "?source <http://scta.info/property/isPartOfStructureItem> ?item .",
-    //         "<http://scta.info/resource/" + searchShortId + "> <http://scta.info/property/hasStructureItem> ?item . }",
-    //         "UNION",
-    //         "\n#check for quotation whose source is an item and the item search expression\n",
-    //         "{?quotation <http://scta.info/property/source> ?source .",
-    //         "?source <http://scta.info/property/isPartOfStructureItem> <http://scta.info/resource/" + searchShortId + "> .}",
-    //       "}",
-    //       "UNION",
-    //       "{",
-    //         "\n#check for quotation whose source is an item (e.g. bible-rom) and the item is a descendent of the search expression (e.g bible)\n",
-    //         "?quotation <http://scta.info/property/source> ?source .",
-    //         "?source <http://scta.info/property/structureType> <http://scta.info/resource/structureItem> .",
-    //         "<http://scta.info/resource/" + searchShortId + "> <http://scta.info/property/hasStructureItem> ?source .",
-    //       "}",
-    //     "}",
-    //   "}",
-    //   "UNION",
-    //   "{",
-    //     "{",
-    //       "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-    //       "?isInstanceOf <http://scta.info/property/source> <http://scta.info/resource/" + searchShortId + "> .",
-    //     "}",
-    //     "UNION",
-    //     "{",
-    //       "?quotation <http://scta.info/property/source> <http://scta.info/resource/" + searchShortId + "> .",
-    //     "}",
-    //   "}"
-    // ].join('');
-    // }
 
     //NEW QUERY
     var quotationWorkSparql = "";
@@ -1014,12 +965,59 @@ export var fetchQuotations = () =>{
     ].join('');
     }
 
+    //NEW QUERY
+    let quotationExpressionTypeSparql = "";
+    if (state.search.searchParameters.quotationExpressionType){
+      const quotationExpressionTypeShortId = state.search.searchParameters.quotationExpressionType;
+      quotationExpressionTypeSparql = [
+      "{",
+        "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+        "{",
+          "\n#check for quotation whose canonical source is a member an expression with the designated type\n",
+          "?isInstanceOf  <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isMemberOf> ?memberOf .",
+          "?memberOf <http://scta.info/property/expressionType> <http://scta.info/resource/" + quotationExpressionTypeShortId + "> .",
+        "}",
+        "UNION",
+        "{",
+          "\n#check for quotation whose canonical source is has designated type\n",
+          "?isInstanceOf  <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/expressionType> <http://scta.info/resource/" + quotationExpressionTypeShortId + "> .",
+        "}",
+      "}",
+      "UNION",
+      "{",
+        "\n#check for quotation whose source is a member the search expression\n",
+        "{",
+          "?quotation <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isMemberOf> ?memberOf .",
+          "?memberOf <http://scta.info/property/expressionType> <http://scta.info/resource/" + quotationExpressionTypeShortId + "> .",
+        "}",
+        "UNION",
+        "\n#check for quotation whose source is the search expression\n",
+        "{",
+          "?quotation <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/expressionType> <http://scta.info/resource/" + quotationExpressionTypeShortId + "> .",
+        "}",
+      "}"
+    ].join('');
+    }
+
     var workGroupSparql = "";
     if (state.search.searchParameters.workGroup){
       workGroupSparql = [
       "<http://scta.info/resource/" + state.search.searchParameters.workGroup + "> <http://scta.info/property/hasExpression> ?toplevel_expression .",
       ].join('');
     }
+
+    var expressionTypeSparql = "";
+    if (state.search.searchParameters.expressionType){
+      expressionTypeSparql = [
+        "?quotation <http://scta.info/property/isMemberOf> ?expressionIsmemberOf .",
+        "?expressionIsmemberOf <http://scta.info/property/expressionType> <http://scta.info/resource/" + state.search.searchParameters.expressionType + "> .",
+      ].join('');
+    }
+
     var query = ""
     if (state.canonicalQuotation){
       var canonicalQuotationId = state.canonicalQuotation.id;
@@ -1034,11 +1032,12 @@ export var fetchQuotations = () =>{
             quotationAuthorTypeSparql,
             quotationAuthorSparql,
             quotationWorkGroupSparql,
-            //quotationTypeSparql,
             quotationWorkSparql,
+            quotationExpressionTypeSparql,
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
+            expressionTypeSparql,
             expressionAuthorTypeSparql,
             workGroupSparql,
             authorSparql,
@@ -1069,10 +1068,11 @@ export var fetchQuotations = () =>{
           quotationAuthorTypeSparql,
           quotationAuthorSparql,
           quotationWorkGroupSparql,
-          //quotationTypeSparql,
           quotationWorkSparql,
+          quotationExpressionTypeSparql,
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
+          expressionTypeSparql,
           expressionAuthorTypeSparql,
           workGroupSparql,
           authorSparql,
@@ -1245,47 +1245,10 @@ export var fetchCanonicalQuotations = () =>{
       ].join('');
     }
 
-
-    // var quotationWorkSparql = "";
-    // if (state.search.searchParameters.quotationWork){
-    //   quotationWorkSparql = [
-    //   "?quotation <http://scta.info/property/fromBiblicalBook> <http://scta.info/resource/" + state.search.searchParameters.quotationWork + "> .",
-    //   ].join('');
-    //
-    // }
     var quotationWorkSparql = "";
     if (state.search.searchParameters.quotationWork || state.search.searchParameters.quotationWorkPart){
       var searchShortId = (state.search.searchParameters.quotationWorkPart) ? state.search.searchParameters.quotationWorkPart : state.search.searchParameters.quotationWork
 
-    //OLD QUERY  -- THIS QUERY IS AN EXAMPLE OF WHAT WAS REQUIRED BEFORE THE isMemberOf PROPERTY WAS ADDED.
-    // It is replaced by the query below it
-
-    //   quotationWorkSparql = [
-    //   "{",
-    //     "{",
-    //       "\n#check for canonical quotation whose source is part of an item and the item is a descendent of the search expression\n",
-    //       "{?quotation <http://scta.info/property/source> ?source .",
-    //       "?source <http://scta.info/property/isPartOfStructureItem> ?item . ",
-    //       "<http://scta.info/resource/" + searchShortId + "> <http://scta.info/property/hasStructureItem> ?item .}",
-    //       "UNION",
-    //       "\n#check for canonical quotation whose source is part of an item and the item is the search expression\n",
-    //       "{?quotation <http://scta.info/property/source> ?source .",
-    //       "?source <http://scta.info/property/isPartOfStructureItem> <http://scta.info/resource/" + searchShortId + "> . }",
-    //     "}",
-    //     "UNION",
-    //     "{",
-    //     "\n#check for canonical quotation whose source is an item (e.g. bible-rom) and the item is a descendent of the search expression (e.g bible)\n",
-    //     "?quotation <http://scta.info/property/source> ?source .",
-    //     "?source <http://scta.info/property/structureType> <http://scta.info/resource/structureItem> .",
-    //     "<http://scta.info/resource/" + searchShortId + "> <http://scta.info/property/hasStructureItem> ?source .",
-    //     "}",
-    //   "}",
-    //   "UNION",
-    //   "{",
-    //     "?quotation <http://scta.info/property/source> <http://scta.info/resource/" + searchShortId + "> .",
-    //   "}"
-    // ].join('');
-    // }
 
     quotationWorkSparql = [
       "{",
@@ -1301,6 +1264,26 @@ export var fetchCanonicalQuotations = () =>{
       ].join('');
     }
 
+    let quotationExpressionTypeSparql = "";
+    if (state.search.searchParameters.quotationExpressionType){
+      const quotationExpressionTypeShortId = state.search.searchParameters.quotationExpressionType
+
+      quotationExpressionTypeSparql = [
+        "{",
+          "\n#check for canonical quotation whose source is memberOf the search expression\n",
+          "?quotation <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/isMemberOf> ?memberOf .",
+          "?memberOf <http://scta.info/property/expressionType> <http://scta.info/resource/" + quotationExpressionTypeShortId + "> . ",
+        "}",
+        "UNION",
+        "\n#check for canonical quotation whose source IS the search expression\n",
+        "{",
+          "?quotation <http://scta.info/property/source> ?source .",
+          "?source <http://scta.info/property/expressionType> <http://scta.info/resource/" + quotationExpressionTypeShortId + "> .",
+        "}"
+        ].join('');
+      }
+
   var workGroupSparql = "";
     if (state.search.searchParameters.workGroup){
       workGroupSparql = [
@@ -1311,11 +1294,23 @@ export var fetchCanonicalQuotations = () =>{
 
     }
 
+    let expressionTypeSparql = "";
+    if (state.search.searchParameters.expressionType){
+      expressionTypeSparql = [
+
+        "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+        "?quotationInstance <http://scta.info/property/isMemberOf> ?expressionIsMemberOf .",
+        "?expressionIsMemberOf <http://scta.info/property/expressionType> <http://scta.info/resource/" + state.search.searchParameters.expressionType + "> .",
+      ].join('');
+    }
+
+
     var query = [
           "SELECT DISTINCT ?quotation ?citation ?quotation_text ",
           "WHERE {",
           "?quotation a <http://scta.info/resource/quotation> .",
           "?quotation <http://scta.info/property/quotation> ?quotation_text .",
+          expressionTypeSparql,
           quotationInstanceSparql,
           topLevelExpressionSparql,
           expressionAuthorTypeSparql,
@@ -1325,15 +1320,15 @@ export var fetchCanonicalQuotations = () =>{
           quotationAuthorSparql,
           quotationWorkGroupSparql,
           quotationWorkSparql,
+          quotationExpressionTypeSparql,
           expressionIdSparql,
-          //quotationTypeSparql,
           "OPTIONAL { ",
           "?quotation <http://scta.info/property/citation> ?citation .",
           "}",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
           "ORDER BY ?citation ",
-          "LIMIT 100"
+          "LIMIT 1000"
         ].join('');
     dispatch(startQuotationsFetch());
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
