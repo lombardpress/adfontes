@@ -44,6 +44,10 @@ export var Paragraph = React.createClass({
 
 			});
 		}
+		else{
+			const emptyTextNode = document.createTextNode("");
+			_this.refs.text.replaceChild(emptyTextNode, _this.refs.text.childNodes[0]);
+		}
 	},
 	render: function(){
 		var _this = this;
