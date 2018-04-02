@@ -61,6 +61,7 @@ export var fetchSearchWorksList = () =>{
           workGroupSparql,
           authorSparql,
           "?expression <http://scta.info/property/shortId> ?expressionShortId .",
+          "?expression <http://scta.info/property/shortId> ?expressionShortId .",
           "?expression <http://purl.org/dc/elements/1.1/title> ?expressionTitle .",
           "?expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
           "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",

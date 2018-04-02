@@ -33,7 +33,7 @@ class Image extends React.Component {
          return images.images.map(function(image){
            var imageUrl = image.url;
            return(
-             <img src={imageUrl + "/full/full/0/default.jpg"}/>
+             <img src={imageUrl + "/full/1000,/0/default.jpg"}/>
            )
            }
          )

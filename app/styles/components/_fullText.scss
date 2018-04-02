@@ -22,3 +22,27 @@
 #text{
   padding: 3%;
 }
+
+
+tei-ref {
+  text-decoration: none;
+}
+
+tei-bibl {
+  display: inline;
+  color: #5f0000;
+}
+tei-bibl::before {
+  content: "(";
+}
+tei-bibl::after {
+  content: ")";
+}
+
+
+tei-quote::before {
+  content: open-quote;
+}
+tei-quote::after {
+  content: close-quote;
+}

@@ -5,7 +5,7 @@ var test =  {
     // @href is piped through the rw (rewrite) function before insertion
     "ptr": ["<a href=\"$rw@target\">$@target</a>"],
     // wraps the content of the <ref> in an HTML link
-    "ref": ["<a href=\"$rw@target\">","</a>"],
+    //"ref": ["<a href=\"$rw@target\">","</a>"],
     "graphic": function(elt) {
       let content = new Image();
       content.src = this.rw(elt.getAttribute("url"));
