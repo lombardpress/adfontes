@@ -772,10 +772,10 @@ tei-layoutDesc {
 tei-lb {
   /* Empty Rule Set */
 }
-tei-lb:after {
-  content: '\a';
-  white-space: pre;
-}
+// tei-lb:after {
+//   content: '\a';
+//   white-space: pre;
+// }
 tei-lbl {
   /* Empty Rule Set */
 }
