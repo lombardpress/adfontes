@@ -5,11 +5,11 @@ export var imagesReducer = (state = {}, action) => {
           ...state,
           visible: !action.current
         }
-    case 'TOGGLE_GRAPH_DISPLAY':
-      return {
-        ...state,
-        visible: false
-      }
+    // case 'TOGGLE_GRAPH_DISPLAY':
+    //   return {
+    //     ...state,
+    //     visible: false
+    //   }
     case 'START_IMAGES_FETCH':
         return {
           ...state,

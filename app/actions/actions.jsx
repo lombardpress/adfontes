@@ -617,6 +617,7 @@ export var fetchChart = () =>{
     if (level === 1){
       level = 2;
     }
+    var searchText = state.search.searchParameters.searchText || "";
 
     let expressionWorkGroupSparql = "";
     if (state.search.searchParameters.workGroup){
@@ -714,10 +715,12 @@ export var fetchChart = () =>{
         "OPTIONAL {",
         "?element <http://scta.info/property/isMemberOf> ?ref .",
         "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+        "?element <http://scta.info/property/structureElementText> ?quotation_text .",
         quotationAuthorSparql,
         quotationWorkGroupSparql,
         quotationWorkSparql,
         "}",
+        "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
         "}",
         "group by ?ref ?reftitle ?totalOrderNumber ",
         "ORDER BY ?totalOrderNumber "
@@ -738,10 +741,12 @@ export var fetchChart = () =>{
         "OPTIONAL {",
         "?element <http://scta.info/property/isMemberOf> ?ref .",
         "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+        "?element <http://scta.info/property/structureElementText> ?quotation_text .",
         quotationAuthorSparql,
         quotationWorkGroupSparql,
         quotationWorkSparql,
         "}",
+        "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
         "}",
         "group by ?ref ?reftitle ?totalOrderNumber ",
         "ORDER BY ?totalOrderNumber "

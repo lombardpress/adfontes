@@ -16,8 +16,8 @@ export var Paragraph = React.createClass({
 	handleShowFullText: function(e){
 		e.preventDefault();
 		var {dispatch} = this.props;
-		console.log("function firing")
 		dispatch(actions.fetchFullText());
+		dispatch(actions.toggleImagesDisplay(true));
 		dispatch(actions.toggleFullTextDisplay(this.props.fullText.visible));
 	},
 	componentDidMount: function(){
