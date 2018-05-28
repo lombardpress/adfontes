@@ -793,7 +793,7 @@ export var fetchImages = () =>{
     var query = [
       "SELECT ?url ",
       "WHERE { ",
-      "<" + manifestation_id + "> <http://scta.info/property/hasSurface> ?surface .",
+      "<" + manifestation_id + "> <http://scta.info/property/isOnSurface> ?surface .",
       "?surface <http://scta.info/property/hasISurface> ?isurface .",
       "?isurface <http://scta.info/property/hasCanvas> ?canvas .",
       "?canvas <http://iiif.io/api/presentation/2#hasImageAnnotations> ?anno .",
