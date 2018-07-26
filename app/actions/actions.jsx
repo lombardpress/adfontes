@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const sparqlEndpoint = "http://sparql-docker.scta.info/ds/query"
+const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
 //const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
 //const sparqlEndpoint = "http://localhost:3030/ds/query"
 
