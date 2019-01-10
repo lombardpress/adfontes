@@ -133,6 +133,10 @@ export var Search = React.createClass({
     dispatch(actions.fetchAuthorTypes());
     //dispatch(actions.fetchManifestationQuotations(searchText, quotationType, expressionId));
     dispatch(actions.clearManifestationQuotations());
+    this.refs.quotationAuthorDateAfter.value = "";
+    this.refs.quotationAuthorDateBefore.value = "";
+    this.refs.expressionAuthorDateAfter.value = "";
+    this.refs.expressionAuthorDateBefore.value = "";
 
 
 
