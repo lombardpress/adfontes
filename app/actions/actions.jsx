@@ -115,19 +115,35 @@ export var fetchQuotationAuthors = () =>{
       "?author <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.quotationAuthorType + "> ."
       ].join('');
     }
+    // Begin Author date sparql filters
+    let quotationAuthorDateSparql = "";
+    if (state.search.searchParameters.quotationAuthorDateAfter || state.search.searchParameters.quotationAuthorDateBefore){
+      quotationAuthorDateSparql = "?author <http://scta.info/property/dateOfBirth> ?dateOfBirth ."
+    }
+    let quotationAuthorDateAfterSparqlFilter = "";
+    if (state.search.searchParameters.quotationAuthorDateAfter){
+      quotationAuthorDateAfterSparqlFilter = "FILTER (?dateOfBirth >= '" + state.search.searchParameters.quotationAuthorDateAfter + "')."
+    }
+    let quotationAuthorDateBeforeSparqlFilter = "";
+    if (state.search.searchParameters.quotationAuthorDateBefore){
+      quotationAuthorDateBeforeSparqlFilter = "FILTER (?dateOfBirth <= '" + state.search.searchParameters.quotationAuthorDateBefore + "')."
+    }
+    // END author date sparql filter
     var query = [
         "SELECT DISTINCT ?author ?authorTitle ?authorShortId ",
         "WHERE { ",
         "?author a <http://scta.info/resource/person> .",
         quotationAuthorTypeSparql,
+        quotationAuthorDateSparql,
         "?resource a <http://scta.info/resource/expression> .",
         "?resource <http://scta.info/property/level> '1' .",
         "?resource <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
         "?author <http://scta.info/property/shortId> ?authorShortId .",
         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+        quotationAuthorDateAfterSparqlFilter,
+        quotationAuthorDateBeforeSparqlFilter,
         "}",
         "ORDER BY ?authorTitle"].join('');
-
   dispatch(startQuotationAuthorsFetch());
   axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
     var results = res.data.results.bindings;
@@ -167,16 +183,36 @@ export var fetchExpressionAuthors = () =>{
       "?author <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + "> ."
       ].join('');
     }
+
+    // Begin expression author filter
+    let expressionAuthorDateSparql = "";
+    if (state.search.searchParameters.expressionAuthorDateAfter || state.search.searchParameters.expressionAuthorDateBefore){
+      expressionAuthorDateSparql = "?author <http://scta.info/property/dateOfBirth> ?dateOfBirth ."
+    }
+
+    let expressionAuthorDateAfterSparqlFilter = "";
+    if (state.search.searchParameters.expressionAuthorDateAfter){
+      expressionAuthorDateAfterSparqlFilter = "FILTER (?dateOfBirth >= '" + state.search.searchParameters.expressionAuthorDateAfter + "')."
+    }
+
+    let expressionAuthorDateBeforeSparqlFilter = "";
+    if (state.search.searchParameters.expressionAuthorDateBefore){
+      expressionAuthorDateBeforeSparqlFilter = "FILTER (?dateOfBirth <= '" + state.search.searchParameters.expressionAuthorDateBefore + "')."
+    }
+    // End expression author filter
     var query = [
         "SELECT DISTINCT ?author ?authorTitle ?authorShortId ",
         "WHERE { ",
         "?author a <http://scta.info/resource/person> .",
         expressionAuthorTypeSparql,
+        expressionAuthorDateSparql,
         "?resource a <http://scta.info/resource/expression> .",
         "?resource <http://scta.info/property/level> '1' .",
         "?resource <http://www.loc.gov/loc.terms/relators/AUT> ?author .",
         "?author <http://scta.info/property/shortId> ?authorShortId .",
         "?author <http://purl.org/dc/elements/1.1/title> ?authorTitle .",
+        expressionAuthorDateAfterSparqlFilter,
+        expressionAuthorDateBeforeSparqlFilter,
         "}",
         "ORDER BY ?authorTitle"].join('');
 
@@ -850,11 +886,6 @@ export var fetchQuotations = () =>{
   return (dispatch, getState) => {
     var state = getState();
     var searchText = state.search.searchParameters.searchText || "";
-    ///
-    // var quotationTypeSparql = ""
-    // if (quotationType != ""){
-    //   var quotationTypeSparql = "?quotation <http://scta.info/property/quotationType>	<http://scta.info/resource/" + quotationType + "> ."
-    // }
     var expressionIdSparql = "";
     if (state.search.searchParameters.expressionId || state.search.searchParameters.expressionPart){
       var searchShortId = (state.search.searchParameters.expressionPart) ? state.search.searchParameters.expressionPart : state.search.searchParameters.expressionId
@@ -863,60 +894,93 @@ export var fetchQuotations = () =>{
       ].join('');
 
     }
+// BEGIN Expression author queries
     let expressionAuthorTypeSparql = ""
     if (state.search.searchParameters.expressionAuthorType){
-      expressionAuthorTypeSparql = [
-      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?expressionAuthor .",
-      "?expressionAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + "> ."
-      ].join('');
+      expressionAuthorTypeSparql = "?author <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + "> ."
     }
+
+    //Begin expression author date filter for expression author
+    let expressionAuthorDateSparql = "";
+    if (state.search.searchParameters.expressionAuthorDateAfter || state.search.searchParameters.expressionAuthorDateBefore){
+      expressionAuthorDateSparql = "?author <http://scta.info/property/dateOfBirth> ?dateOfBirth ."
+    }
+    let expressionAuthorDateAfterSparqlFilter = "";
+    if (state.search.searchParameters.expressionAuthorDateAfter){
+      expressionAuthorDateAfterSparqlFilter = "FILTER (?dateOfBirth >= '" + state.search.searchParameters.expressionAuthorDateAfter + "')."
+    }
+    let expressionAuthorDateBeforeSparqlFilter = "";
+    if (state.search.searchParameters.expressionAuthorDateBefore){
+        expressionAuthorDateBeforeSparqlFilter = "FILTER (?dateOfBirth <= '" + state.search.searchParameters.expressionAuthorDateBefore + "')."
+    }
+    //END expression author date filter for expression author
 
     var authorSparql = "";
     if (state.search.searchParameters.expressionAuthor){
-      authorSparql = [
-      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
-      ].join('');
+      authorSparql = "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> ."
     }
 
+    var expressionAuthorCoreSparql = [
+      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
+      expressionAuthorTypeSparql,
+      expressionAuthorDateSparql,
+      authorSparql,
+      "?author <http://purl.org/dc/elements/1.1/title> ?author_title . "
+      ].join('');
+// End expression author queries
+
+
+//BEGIN Quotation Author Queries
     var quotationAuthorTypeSparql = "";
     if (state.search.searchParameters.quotationAuthorType){
       var searchShortId = state.search.searchParameters.quotationAuthorType;
-      quotationAuthorTypeSparql = [
-        "{",
-          "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-          "?isInstanceOf <http://scta.info/property/source> ?source .",
-          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
-          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
-          "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + searchShortId + ">  . ",
-        "}",
-        "UNION",
-        "{",
-          "?quotation <http://scta.info/property/source> ?source .",
-          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
-          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
-          "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + searchShortId + ">  . ",
-        "}"
-      ].join('');
+      quotationAuthorTypeSparql = "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + searchShortId + ">  . ";
     }
+
+    //Begin quotation author date filter for expression author
+    let quotationAuthorDateSparql = "";
+    if (state.search.searchParameters.quotationAuthorDateAfter || state.search.searchParameters.quotationAuthorDateBefore){
+      quotationAuthorDateSparql =
+          "?quotationAuthor <http://scta.info/property/dateOfBirth> ?quotationAuthorDateOfBirth ."
+    }
+    let quotationAuthorDateAfterSparqlFilter = "";
+    if (state.search.searchParameters.quotationAuthorDateAfter){
+      quotationAuthorDateAfterSparqlFilter = "FILTER (?quotationAuthorDateOfBirth >= '" + state.search.searchParameters.quotationAuthorDateAfter + "')."
+    }
+    let quotationAuthorDateBeforeSparqlFilter = "";
+    if (state.search.searchParameters.quotationAuthorDateBefore){
+        quotationAuthorDateBeforeSparqlFilter = "FILTER (?quotationAuthorDateOfBirth <= '" + state.search.searchParameters.quotationAuthorDateBefore + "')."
+    }
+    //END quotation author date filter for expression author
 
     var quotationAuthorSparql = "";
     if (state.search.searchParameters.quotationAuthor){
       var searchShortId = (state.search.searchParameters.quotationAuthor);
-      quotationAuthorSparql = [
-        "{",
-          "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-          "?isInstanceOf <http://scta.info/property/source> ?source .",
-          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
-          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
-        "}",
-        "UNION",
-        "{",
-          "?quotation <http://scta.info/property/source> ?source .",
-          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
-          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
-        "}"
-      ].join('');
+      quotationAuthorSparql = "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . "
     }
+    var quotationAuthorCoreSparql = [
+      "{",
+        "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+        "?isInstanceOf <http://scta.info/property/source> ?source .",
+        "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+        "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
+        quotationAuthorTypeSparql,
+        quotationAuthorDateSparql,
+        quotationAuthorSparql,
+      "}",
+      "UNION",
+      "{",
+        "?quotation <http://scta.info/property/source> ?source .",
+        "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+        "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
+        quotationAuthorTypeSparql,
+        quotationAuthorDateSparql,
+        quotationAuthorSparql,
+      "}"
+    ].join('');
+
+// END Quotation Author Queries for Quotations List
+
     var quotationWorkGroupSparql = "";
     if (state.search.searchParameters.quotationWorkGroup){
       var searchShortId = (state.search.searchParameters.quotationWorkGroup);
@@ -1035,8 +1099,7 @@ export var fetchQuotations = () =>{
             "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
             "}",
             expressionIdSparql,
-            quotationAuthorTypeSparql,
-            quotationAuthorSparql,
+            quotationAuthorCoreSparql,
             quotationWorkGroupSparql,
             quotationWorkSparql,
             quotationExpressionTypeSparql,
@@ -1044,12 +1107,9 @@ export var fetchQuotations = () =>{
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
             expressionTypeSparql,
-            expressionAuthorTypeSparql,
             workGroupSparql,
-            authorSparql,
             "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
-            "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
-            "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
+            expressionAuthorCoreSparql,
             "OPTIONAL {",
               "?quotation <http://scta.info/property/citation> ?citation . ",
             "}",
@@ -1057,6 +1117,10 @@ export var fetchQuotations = () =>{
               "?ref <http://scta.info/property/isReferenceTo> ?quotation . ",
               "?ref <http://scta.info/property/structureElementText> ?refText . ",
             "}",
+            expressionAuthorDateAfterSparqlFilter,
+            expressionAuthorDateBeforeSparqlFilter,
+            quotationAuthorDateAfterSparqlFilter,
+            quotationAuthorDateBeforeSparqlFilter,
             "}",
             "LIMIT 100"
           ].join('');
@@ -1071,20 +1135,17 @@ export var fetchQuotations = () =>{
           "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
           "}",
           expressionIdSparql,
-          quotationAuthorTypeSparql,
-          quotationAuthorSparql,
+          quotationAuthorCoreSparql,
           quotationWorkGroupSparql,
           quotationWorkSparql,
           quotationExpressionTypeSparql,
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
           "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
           expressionTypeSparql,
-          expressionAuthorTypeSparql,
           workGroupSparql,
           authorSparql,
           "?toplevel_expression <http://purl.org/dc/elements/1.1/title> ?toplevel_expression_title . ",
-          "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?author . ",
-          "?author <http://purl.org/dc/elements/1.1/title> ?author_title . ",
+          expressionAuthorCoreSparql,
           "OPTIONAL {",
             "?quotation <http://scta.info/property/citation> ?citation . ",
           "}",
@@ -1092,6 +1153,10 @@ export var fetchQuotations = () =>{
             "?ref <http://scta.info/property/isReferenceTo> ?quotation . ",
             "?ref <http://scta.info/property/structureElementText> ?refText . ",
           "}",
+          expressionAuthorDateAfterSparqlFilter,
+          expressionAuthorDateBeforeSparqlFilter,
+          quotationAuthorDateAfterSparqlFilter,
+          quotationAuthorDateBeforeSparqlFilter,
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
           "ORDER BY ?quotation_text ",
@@ -1201,45 +1266,80 @@ export var fetchCanonicalQuotations = () =>{
       "?quotationInstance <http://scta.info/property/isMemberOf> <http://scta.info/resource/" + searchShortId + "> .",
       ].join('');
     }
+
+//END Expression author sparql for canonical quotations
     let expressionAuthorTypeSparql = "";
     if (state.search.searchParameters.expressionAuthorType){
-      expressionAuthorTypeSparql = [
-      "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
-      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
-      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?expressionAuthor . ",
-      "?expressionAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + ">  . "
-      ].join('');
+      expressionAuthorTypeSparql = "?expressionAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthorType + ">  . "
     }
+    //Begin expression author date filter for expression author
+    let expressionAuthorDateSparql = "";
+    if (state.search.searchParameters.expressionAuthorDateAfter || state.search.searchParameters.expressionAuthorDateBefore){
+      expressionAuthorDateSparql =
+          "?expressionAuthor <http://scta.info/property/dateOfBirth> ?expressionAuthorDateOfBirth ."
+    }
+    let expressionAuthorDateAfterSparqlFilter = "";
+    if (state.search.searchParameters.expressionAuthorDateAfter){
+      expressionAuthorDateAfterSparqlFilter = "FILTER (?expressionAuthorDateOfBirth >= '" + state.search.searchParameters.expressionAuthorDateAfter + "')."
+    }
+    let expressionAuthorDateBeforeSparqlFilter = "";
+    if (state.search.searchParameters.expressionAuthorDateBefore){
+        expressionAuthorDateBeforeSparqlFilter = "FILTER (?expressionAuthorDateOfBirth <= '" + state.search.searchParameters.expressionAuthorDateBefore + "')."
+    }
+    //END expression author date filter for expression author
 
     var authorSparql = "";
     if (state.search.searchParameters.expressionAuthor){
-      authorSparql = [
-      "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
-      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
-      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> .",
-      ].join('');
+      authorSparql = "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + state.search.searchParameters.expressionAuthor + "> ."
     }
 
+    var expressionAuthorCoreSparql = [
+      "?quotation <http://scta.info/property/hasInstance> ?quotationInstance .",
+      "?quotationInstance <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression .",
+      "?toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?expressionAuthor . ",
+      expressionAuthorTypeSparql,
+      expressionAuthorDateSparql,
+      authorSparql
+    ].join('');
+
+//END Expression author sparql for canonical quotations
+
+//BEGIN Quotation author sparql for canonical quotations
     let quotationAuthorTypeSparql = "";
     if (state.search.searchParameters.quotationAuthorType){
       const searchShortId = state.search.searchParameters.quotationAuthorType;
-      quotationAuthorTypeSparql = [
-        "?quotation <http://scta.info/property/source> ?source .",
-        "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
-        "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor .",
-        "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + searchShortId + ">  . ",
-      ].join('');
+      quotationAuthorTypeSparql = "?quotationAuthor <http://scta.info/property/personType> <http://scta.info/resource/" + searchShortId + ">  . "
     }
-
+    //Begin quotation author date filter for expression author
+    let quotationAuthorDateSparql = "";
+    if (state.search.searchParameters.quotationAuthorDateAfter || state.search.searchParameters.quotationAuthorDateBefore){
+      quotationAuthorDateSparql =
+          "?quotationAuthor <http://scta.info/property/dateOfBirth> ?quotationAuthorDateOfBirth ."
+    }
+    let quotationAuthorDateAfterSparqlFilter = "";
+    if (state.search.searchParameters.quotationAuthorDateAfter){
+      quotationAuthorDateAfterSparqlFilter = "FILTER (?quotationAuthorDateOfBirth >= '" + state.search.searchParameters.quotationAuthorDateAfter + "')."
+    }
+    let quotationAuthorDateBeforeSparqlFilter = "";
+    if (state.search.searchParameters.quotationAuthorDateBefore){
+        quotationAuthorDateBeforeSparqlFilter = "FILTER (?quotationAuthorDateOfBirth <= '" + state.search.searchParameters.quotationAuthorDateBefore + "')."
+    }
+    //END quotation author date filter for expression author
     var quotationAuthorSparql = "";
     if (state.search.searchParameters.quotationAuthor){
       var searchShortId = (state.search.searchParameters.quotationAuthor);
-      quotationAuthorSparql = [
-        "?quotation <http://scta.info/property/source> ?source .",
-        "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
-        "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . ",
-      ].join('');
+      quotationAuthorSparql = "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . "
     }
+    var quotationAuthorCoreSparql = [
+      "?quotation <http://scta.info/property/source> ?source .",
+      "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+      "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor .",
+      quotationAuthorTypeSparql,
+      quotationAuthorDateSparql,
+      quotationAuthorSparql
+    ].join('');
+
+//END Quotation author sparql for canonical quotations
 
     var quotationWorkGroupSparql = "";
     if (state.search.searchParameters.quotationWorkGroup){
@@ -1319,11 +1419,9 @@ export var fetchCanonicalQuotations = () =>{
           expressionTypeSparql,
           quotationInstanceSparql,
           topLevelExpressionSparql,
-          expressionAuthorTypeSparql,
-          authorSparql,
+          expressionAuthorCoreSparql,
           workGroupSparql,
-          quotationAuthorTypeSparql,
-          quotationAuthorSparql,
+          quotationAuthorCoreSparql,
           quotationWorkGroupSparql,
           quotationWorkSparql,
           quotationExpressionTypeSparql,
@@ -1331,6 +1429,10 @@ export var fetchCanonicalQuotations = () =>{
           "OPTIONAL { ",
           "?quotation <http://scta.info/property/citation> ?citation .",
           "}",
+          quotationAuthorDateAfterSparqlFilter,
+          quotationAuthorDateBeforeSparqlFilter,
+          expressionAuthorDateBeforeSparqlFilter,
+          expressionAuthorDateAfterSparqlFilter,
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
           "ORDER BY ?citation ",

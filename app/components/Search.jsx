@@ -20,6 +20,10 @@ export var Search = React.createClass({
     var quotationAuthorType = this.refs.quotationAuthorType.value;
     var expressionType = this.refs.expressionType.value;
     var workGroup = this.refs.workGroup.value;
+    var quotationAuthorDateAfter = this.refs.quotationAuthorDateAfter.value;
+    var quotationAuthorDateBefore = this.refs.quotationAuthorDateBefore.value;
+    var expressionAuthorDateAfter = this.refs.expressionAuthorDateAfter.value;
+    var expressionAuthorDateBefore = this.refs.expressionAuthorDateBefore.value;
 
     var retainCanonical = this.refs.retainCanonical.checked;
     var searchParameters = {
@@ -36,7 +40,12 @@ export var Search = React.createClass({
       quotationAuthorType,
       expressionAuthorType,
       expressionType,
-      workGroup
+      workGroup,
+      quotationAuthorDateAfter,
+      quotationAuthorDateBefore,
+      expressionAuthorDateAfter,
+      expressionAuthorDateBefore
+
     }
 
     dispatch(actions.setSearchParameters(searchParameters));
@@ -329,6 +338,14 @@ export var Search = React.createClass({
               </label>
             </div>
             <div>
+              <label>Filter by Quotation Author Birth Date:
+                <br/>
+                After <input ref="quotationAuthorDateAfter" onBlur={this.handleOnShowQuotationsWithoutAssociation} placeholder="e.g. 1200"/>
+                <br/>
+                Before <input ref="quotationAuthorDateBefore" onBlur={this.handleOnShowQuotationsWithoutAssociation} placeholder="e.g. 1400"/>
+              </label>
+            </div>
+            <div>
               <label>Filter by Quotation Author
                 <select ref="quotationAuthor" onChange={this.handleOnShowQuotationsWithoutAssociation} value={_this.props.search.searchParameters.quotationAuthor}>
                   <option value="">All</option>
@@ -376,6 +393,14 @@ export var Search = React.createClass({
                   <option value="">All</option>
                   {displayExpressionAuthorTypes()}
                 </select>
+              </label>
+            </div>
+            <div>
+              <label>Filter by Expression Author Birth Date:
+                <br/>
+                After <input ref="expressionAuthorDateAfter" onBlur={this.handleOnShowQuotationsWithoutAssociation} placeholder="e.g. 1200"/>
+                <br/>
+                Before <input ref="expressionAuthorDateBefore" onBlur={this.handleOnShowQuotationsWithoutAssociation} placeholder="e.g. 1400"/>
               </label>
             </div>
             <div>

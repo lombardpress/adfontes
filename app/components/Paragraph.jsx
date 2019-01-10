@@ -51,8 +51,7 @@ export var Paragraph = React.createClass({
 	},
 	render: function(){
 		var _this = this;
-		console.log(this.props);
-    var {paragraph} = this.props;
+		var {paragraph} = this.props;
 		var {expression_id, manifestation_id, paragraph_text, review} = paragraph
 		var domParser = new DOMParser();
 		var xsltProcessor = new XSLTProcessor();
