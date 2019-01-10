@@ -25,6 +25,7 @@ export var quotationsReducer = (state = [], action) => {
           isInstanceOf: quotation.isInstanceOf ? quotation.isInstanceOf.value : null,
           citation: quotation.citation ? quotation.citation.value : null,
           refText: quotation.refText ? quotation.refText.value : null,
+          refType: quotation.refType ? quotation.refType.value.split("/resource/").reverse()[0] : null,
         }
       });
     case 'CHANGE_QUOTATIONS_FOCUS':

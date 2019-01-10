@@ -24,6 +24,7 @@ export var Search = React.createClass({
     var quotationAuthorDateBefore = this.refs.quotationAuthorDateBefore.value;
     var expressionAuthorDateAfter = this.refs.expressionAuthorDateAfter.value;
     var expressionAuthorDateBefore = this.refs.expressionAuthorDateBefore.value;
+    var structureElementType = this.refs.structureElementType.value;
 
     var retainCanonical = this.refs.retainCanonical.checked;
     var searchParameters = {
@@ -44,7 +45,8 @@ export var Search = React.createClass({
       quotationAuthorDateAfter,
       quotationAuthorDateBefore,
       expressionAuthorDateAfter,
-      expressionAuthorDateBefore
+      expressionAuthorDateBefore,
+      structureElementType
 
     }
 
@@ -329,8 +331,17 @@ export var Search = React.createClass({
               <label><input id="checkbox1" ref="retainCanonical" type="checkbox"/>Restrict to Can. Quotation</label>
             </div>
             <div>
+              <label>Filter by Quotation/ReferenceType
+                <select ref="structureElementType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
+                  <option value="structureElementQuote">Quotations</option>
+                  <option value="structureElementRef">References</option>
+                  <option value="">All</option>
+                </select>
+              </label>
+            </div>
+            <div>
               <label>
-                <input type="text" ref="searchText" placeholder="search quotation text" onChange={this.handleOnShowQuotationsWithoutAssociation}/>
+                <input type="text" ref="searchText" placeholder="search quotation text" onBlur={this.handleOnShowQuotationsWithoutAssociation}/>
               </label>
             </div>
             <div>

@@ -1164,6 +1164,21 @@ export var fetchQuotations = () =>{
       ].join('');
     }
 
+    var structureElementTypeSparql = "";
+    if (state.search.searchParameters.structureElementType === "structureElementRef"){
+      structureElementTypeSparql = "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> ."
+    }
+    else if (state.search.searchParameters.structureElementType === "structureElementQuote"){
+      structureElementTypeSparql = "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> ."
+    }
+    else{
+      structureElementTypeSparql = [
+        "{?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .}",
+        "UNION",
+        "{?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .}"
+      ].join('');
+    }
+
     var query = ""
     if (state.canonicalQuotation){
       var canonicalQuotationId = state.canonicalQuotation.id;
@@ -1180,7 +1195,7 @@ export var fetchQuotations = () =>{
             quotationWorkSparql,
             quotationExpressionTypeSparql,
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
-            "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
+            //"?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
             "?quotation <http://scta.info/property/isPartOfTopLevelExpression> ?toplevel_expression . ",
             expressionTypeSparql,
             workGroupSparql,
@@ -1203,9 +1218,10 @@ export var fetchQuotations = () =>{
     }
     else{
       var query = [
-          "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ?citation ?ref ?refText ",
+          "SELECT ?quotation ?isInstanceOf ?quotation_text ?toplevel_expression_title ?author_title ?citation ?ref ?refText ?refType ",
           "WHERE {",
-          "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+          structureElementTypeSparql,
+          "?quotation <http://scta.info/property/structureElementType> ?refType . ",
           "?quotation a <http://scta.info/resource/expression> .",
           "OPTIONAL {",
           "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",

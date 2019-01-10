@@ -15,9 +15,11 @@ export var QuotationList = React.createClass({
 
       return quotations.map( (quotation) => {
 				var quotationClass = quotation.focused ? "quotation focused" : "quotation"
+				var refType = quotation.refType
+				var classes = quotationClass + " " + quotation.refType
         return (
 
-          <Quotation className={quotationClass} key={quotation.id} {...quotation}/>
+          <Quotation className={classes} key={quotation.id} {...quotation}/>
         );
       });
     };
