@@ -234,8 +234,22 @@ render() {
 }
 //module.exports = BarChart;
 
+// export default connect(
+// 	(state) => {
+// 		return state
+// 	}
+// )(BarChart);
+
+const mapStateToProps = state => (
+  {
+    chart: state.chart,
+  }
+);
+
+const mapDispatchToProps = dispatch => ({
+
+});
 export default connect(
-	(state) => {
-		return state
-	}
+  mapStateToProps,
+  mapDispatchToProps,
 )(BarChart);

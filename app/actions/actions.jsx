@@ -863,7 +863,8 @@ export var fetchChart = () =>{
         "}",
         "OPTIONAL {",
         "?element <http://scta.info/property/isMemberOf> ?ref .",
-        "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+        //"?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+        structureElementTypeSparql,
         "?element <http://scta.info/property/structureElementText> ?quotation_text .",
         quotationAuthorCoreSparql,
         quotationWorkGroupSparql,
@@ -1325,7 +1326,6 @@ export var fetchQuotations = () =>{
           "LIMIT 100"
         ].join('');
       }
-console.log(query)
     dispatch(startQuotationsFetch());
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
