@@ -725,26 +725,33 @@ export var fetchChart = () =>{
         var searchShortId = (state.search.searchParameters.quotationAuthor);
         quotationAuthorSparql = "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . "
       }
-      var quotationAuthorCoreSparql = [
-        "{",
-          "?element <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
-          "?isInstanceOf <http://scta.info/property/source> ?source .",
-          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
-          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
-          quotationAuthorTypeSparql,
-          quotationAuthorDateSparql,
-          quotationAuthorSparql,
-        "}",
-        "UNION",
-        "{",
-          "?element <http://scta.info/property/source> ?source .",
-          "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
-          "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
-          quotationAuthorTypeSparql,
-          quotationAuthorDateSparql,
-          quotationAuthorSparql,
-        "}"
-      ].join('');
+      var quotationAuthorCoreSparql = ""
+      if (state.search.searchParameters.quotationAuthorDateAfter
+        || state.search.searchParameters.quotationAuthorDateBefore
+        || state.search.searchParameters.quotationAuthor
+        || state.search.searchParameters.quotationAuthorType
+      ){
+        var quotationAuthorCoreSparql = [
+          "{",
+            "?element <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
+            "?isInstanceOf <http://scta.info/property/source> ?source .",
+            "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+            "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
+            quotationAuthorTypeSparql,
+            quotationAuthorDateSparql,
+            quotationAuthorSparql,
+          "}",
+          "UNION",
+          "{",
+            "?element <http://scta.info/property/source> ?source .",
+            "?source <http://scta.info/property/isPartOfTopLevelExpression> ?source_toplevel_expression . ",
+            "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> ?quotationAuthor . ",
+            quotationAuthorTypeSparql,
+            quotationAuthorDateSparql,
+            quotationAuthorSparql,
+          "}"
+        ].join('');
+      }
 
 // END Quotation Author Queries for Quotations List
 
@@ -803,6 +810,43 @@ export var fetchChart = () =>{
     ].join('');
     }
 
+    //BEGIN condition for choosing ref quote or combo
+        var structureElementTypeSparql = "";
+        if (state.search.searchParameters.structureElementType === "structureElementRef"){
+          structureElementTypeSparql = [
+            "{?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .}",
+            "MINUS",
+            "{?element <http://scta.info/property/isReferenceTo> ?isReferenceTo . }",
+            ].join('');
+        }
+        else if (state.search.searchParameters.structureElementType === "structureElementRefDup"){
+          structureElementTypeSparql = "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> ."
+        }
+        else if (state.search.searchParameters.structureElementType === "structureElementQuote"){
+          structureElementTypeSparql = "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> ."
+        }
+        else if (state.search.searchParameters.structureElementType === "allDup"){
+          structureElementTypeSparql = [
+            "{?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .}",
+            "UNION",
+            "{?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> . }"
+          ].join('');
+        }
+        else{
+          structureElementTypeSparql = [
+            "{?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .}",
+            "UNION",
+            "{{?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .}",
+            "MINUS",
+            "{?element <http://scta.info/property/isReferenceTo> ?isReferenceTo . }",
+
+            "}"
+          ].join('');
+        }
+    //END condition for choosing ref quote or combo
+
+
+
     //var expressionId = state.search.searchParameters.expressionPart ? state.search.searchParameters.expressionPart : state.search.searchParameters.expressionId
     if (state.search.searchParameters.expressionId){
       // query for quote frequency within a given expression
@@ -848,7 +892,8 @@ export var fetchChart = () =>{
         "}",
         "OPTIONAL {",
         "?element <http://scta.info/property/isMemberOf> ?ref .",
-        "?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+        //"?element <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
+        structureElementTypeSparql,
         "?element <http://scta.info/property/structureElementText> ?quotation_text .",
         quotationAuthorCoreSparql,
         quotationWorkGroupSparql,
@@ -1034,6 +1079,12 @@ export var fetchQuotations = () =>{
       var searchShortId = (state.search.searchParameters.quotationAuthor);
       quotationAuthorSparql = "?source_toplevel_expression <http://www.loc.gov/loc.terms/relators/AUT> <http://scta.info/resource/" + searchShortId + ">  . "
     }
+    var quotationAuthorCoreSparql = ""
+    if (state.search.searchParameters.quotationAuthorDateAfter
+      || state.search.searchParameters.quotationAuthorDateBefore
+      || state.search.searchParameters.quotationAuthor
+      || state.search.searchParameters.quotationAuthorType
+    ){
     var quotationAuthorCoreSparql = [
       "{",
         "?quotation <http://scta.info/property/isInstanceOf> ?isInstanceOf .",
@@ -1054,6 +1105,7 @@ export var fetchQuotations = () =>{
         quotationAuthorSparql,
       "}"
     ].join('');
+    }
 
 // END Quotation Author Queries for Quotations List
 
@@ -1163,22 +1215,40 @@ export var fetchQuotations = () =>{
         "?expressionIsmemberOf <http://scta.info/property/expressionType> <http://scta.info/resource/" + state.search.searchParameters.expressionType + "> .",
       ].join('');
     }
-
+//BEGIN condition for choosing ref quote or combo
     var structureElementTypeSparql = "";
     if (state.search.searchParameters.structureElementType === "structureElementRef"){
+      structureElementTypeSparql = [
+        "{?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .}",
+        "MINUS",
+        "{?quotation <http://scta.info/property/isReferenceTo> ?isReferenceTo . }",
+        ].join('');
+    }
+    else if (state.search.searchParameters.structureElementType === "structureElementRefDup"){
       structureElementTypeSparql = "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> ."
     }
     else if (state.search.searchParameters.structureElementType === "structureElementQuote"){
       structureElementTypeSparql = "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> ."
     }
+    else if (state.search.searchParameters.structureElementType === "allDup"){
+      structureElementTypeSparql = [
+        "{?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .}",
+        "UNION",
+        "{?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> . }"
+      ].join('');
+    }
     else{
       structureElementTypeSparql = [
         "{?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .}",
         "UNION",
-        "{?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .}"
+        "{{?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementRef> .}",
+        "MINUS",
+        "{?quotation <http://scta.info/property/isReferenceTo> ?isReferenceTo . }",
+
+        "}"
       ].join('');
     }
-
+//END condition for choosing ref quote or combo
     var query = ""
     if (state.canonicalQuotation){
       var canonicalQuotationId = state.canonicalQuotation.id;
@@ -1255,7 +1325,7 @@ export var fetchQuotations = () =>{
           "LIMIT 100"
         ].join('');
       }
-
+console.log(query)
     dispatch(startQuotationsFetch());
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings

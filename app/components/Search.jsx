@@ -335,7 +335,10 @@ export var Search = React.createClass({
                 <select ref="structureElementType" onChange={this.handleOnShowQuotationsWithoutAssociation}>
                   <option value="structureElementQuote">Quotations</option>
                   <option value="structureElementRef">References</option>
+                  <option value="structureElementRefDup">References (With Quotation Overlap)</option>
                   <option value="">All</option>
+                  <option value="allDup">All (with quotation overlap)</option>
+
                 </select>
               </label>
             </div>
