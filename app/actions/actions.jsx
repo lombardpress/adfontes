@@ -1,7 +1,7 @@
 var axios = require('axios');
 
-const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
-//const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
+//const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
+const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
 //const sparqlEndpoint = "http://localhost:3030/ds/query"
 
 ///search actions
@@ -961,6 +961,7 @@ export var fetchImages = () =>{
       "?body <http://rdfs.org/sioc/services#has_service> ?url .",
       "}"
     ].join('');
+
   dispatch(startImagesFetch());
   axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
     var results = res.data.results.bindings;
