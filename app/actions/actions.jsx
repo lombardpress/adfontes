@@ -1,7 +1,7 @@
 var axios = require('axios');
 
-//const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
-const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
+const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
+//const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
 //const sparqlEndpoint = "http://localhost:3030/ds/query"
 
 ///search actions
@@ -366,11 +366,11 @@ export var fetchQuotationWorkParts = () =>{
         "OPTIONAL {",
         "?parent <http://purl.org/dc/terms/hasPart> ?child .",
         "?child <http://purl.org/dc/elements/1.1/title> ?child_title .",
-        "MINUS{?child <http://scta.info/property/structureType> <http://scta.info/resource/structureDivision> .}",
+        //"MINUS{?child <http://scta.info/property/structureType> <http://scta.info/resource/structureDivision> .}",
         "}",
         "OPTIONAL {",
         "?parent <http://purl.org/dc/terms/isPartOf> ?grandparent .",
-        "?grandparent <http://scta.info/property/structureType> <http://scta.info/resource/structureCollection> .",
+        //"?grandparent <http://scta.info/property/structureType> <http://scta.info/resource/structureCollection> .",
         "?grandparent <http://purl.org/dc/elements/1.1/title> ?grandparent_title",
         "}",
         "}"
@@ -434,11 +434,11 @@ export var fetchExpressionParts = () =>{
         "?parent <http://purl.org/dc/terms/hasPart> ?child .",
         "?child <http://purl.org/dc/elements/1.1/title> ?child_title .",
         "?child <http://scta.info/property/level> ?child_level .",
-        "MINUS{?child <http://scta.info/property/structureType> <http://scta.info/resource/structureDivision> .}",
+        //"MINUS{?child <http://scta.info/property/structureType> <http://scta.info/resource/structureDivision> .}",
         "}",
         "OPTIONAL {",
         "?parent <http://purl.org/dc/terms/isPartOf> ?grandparent .",
-        "?grandparent <http://scta.info/property/structureType> <http://scta.info/resource/structureCollection> .",
+        //"?grandparent <http://scta.info/property/structureType> <http://scta.info/resource/structureCollection> .",
         "?grandparent <http://purl.org/dc/elements/1.1/title> ?grandparent_title .",
         "?grandparent <http://scta.info/property/level> ?grandparent_level .",
         "}",
