@@ -7,27 +7,31 @@ export var QuotationList = React.createClass({
 	render: function(){
     var {quotations, focusedQuotation} = this.props;
     var renderQuotations = () => {
-      if (quotations.length === 0){
+			if (quotations === "fetching"){
+				return <p>Fetching...</p>
+			}
+			else if (quotations.length === 0){
         return(
             <p className="container__message">No Quotations</p>
         );
       }
+			else {
+				return quotations.map( (quotation) => {
+					var quotationClass = quotation.focused ? "quotation focused" : "quotation"
+					var refType = quotation.refType
+					var classes = quotationClass + " " + quotation.refType
+	        return (
 
-      return quotations.map( (quotation) => {
-				var quotationClass = quotation.focused ? "quotation focused" : "quotation"
-				var refType = quotation.refType
-				var classes = quotationClass + " " + quotation.refType
-        return (
-
-          <Quotation className={classes} key={quotation.id} {...quotation}/>
-        );
-      });
+	          <Quotation className={classes} key={quotation.id} {...quotation}/>
+	        );
+	      });
+			}
     };
 
 		return(
 			<div>
 				<p>List of Expression Quotations</p>
-				<p>Count {quotations.length}</p>
+				{this.props.quotations !== "fetching" && <p>Count {quotations.length}</p>}
 				{renderQuotations()}
 			</div>
 		)

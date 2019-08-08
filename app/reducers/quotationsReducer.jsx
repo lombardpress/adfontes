@@ -13,7 +13,8 @@ export var quotationsReducer = (state = [], action) => {
     case 'CLEAR_QUOTATIONS':
       return [];
     case 'START_QUOTATIONS_FETCH':
-      return [];
+      //return [];
+      return "fetching";
     case 'COMPLETE_QUOTATIONS_FETCH':
       return action.quotations.map((quotation)=>{
         return {

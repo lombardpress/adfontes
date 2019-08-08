@@ -65,13 +65,14 @@ export var Search = React.createClass({
     // actually quotation query Actions
     // comment these out, if you want to add search button and turn off automatic
     // on change search <button id="runQuery" onClick={this.handleRunQuery}>Search</button>
-    if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
-		dispatch(actions.clearFocusedQuotation());
-		dispatch(actions.clearParagraph());
-		if (!retainCanonical) dispatch(actions.fetchCanonicalQuotations());
-		dispatch(actions.fetchQuotations());
-		dispatch(actions.clearManifestationQuotations());
-    dispatch(actions.fetchChart());
+
+      // if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
+  		// dispatch(actions.clearFocusedQuotation());
+  		// dispatch(actions.clearParagraph());
+  		// if (!retainCanonical) dispatch(actions.fetchCanonicalQuotations());
+  		// dispatch(actions.fetchQuotations());
+  		// dispatch(actions.clearManifestationQuotations());
+      // dispatch(actions.fetchChart());
 },
   handleRunQuery: function(e){
 		e.preventDefault();
