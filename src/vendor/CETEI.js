@@ -544,4 +544,4 @@ try {
 }
 
 
-module.exports = CETEI;
+export default CETEI;

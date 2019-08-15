@@ -1,8 +1,9 @@
 import React from 'react';
+import cetei from "../vendor/CETEI"
 var {connect} = require('react-redux');
 var actions = require('../actions/actions');
 //import CETEI from '../../node_modules/CETEIcean/src/CETEI';
-var cetei = require("../vendor/CETEI");
+
 
 
 

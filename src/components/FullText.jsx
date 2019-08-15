@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import $ from 'jquery';
+import cetei from "../vendor/CETEI"
 var {connect} = require('react-redux');
 var actions = require('../actions/actions');
 
-var cetei = require("../vendor/CETEI");
+//var cetei = require("../vendor/CETEI");
 
 
 class FullText extends React.Component {
