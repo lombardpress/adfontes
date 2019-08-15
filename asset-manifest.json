@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/adfontes/static/css/main.81ae4fb5.chunk.css",
+    "main.js": "/adfontes/static/js/main.732c67f3.chunk.js",
+    "main.js.map": "/adfontes/static/js/main.732c67f3.chunk.js.map",
+    "runtime~main.js": "/adfontes/static/js/runtime~main.eb45c678.js",
+    "runtime~main.js.map": "/adfontes/static/js/runtime~main.eb45c678.js.map",
+    "static/css/2.22a7d4ef.chunk.css": "/adfontes/static/css/2.22a7d4ef.chunk.css",
+    "static/js/2.f6790025.chunk.js": "/adfontes/static/js/2.f6790025.chunk.js",
+    "static/js/2.f6790025.chunk.js.map": "/adfontes/static/js/2.f6790025.chunk.js.map",
+    "index.html": "/adfontes/index.html",
+    "precache-manifest.8b58632e2079c99d6af8e9c8fa5cbc56.js": "/adfontes/precache-manifest.8b58632e2079c99d6af8e9c8fa5cbc56.js",
+    "service-worker.js": "/adfontes/service-worker.js",
+    "static/css/2.22a7d4ef.chunk.css.map": "/adfontes/static/css/2.22a7d4ef.chunk.css.map",
+    "static/css/main.81ae4fb5.chunk.css.map": "/adfontes/static/css/main.81ae4fb5.chunk.css.map"
+  }
+}
