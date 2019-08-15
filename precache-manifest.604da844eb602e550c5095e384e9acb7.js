@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "acf8823baf2c34fa8122564315016842",
+    "revision": "037ce686a55be34e10675bf2adc7da8a",
     "url": "/adfontes/index.html"
   },
   {
-    "revision": "7baa02cd1b2e3b366357",
+    "revision": "4af9949891be8dbacaee",
     "url": "/adfontes/static/css/2.22a7d4ef.chunk.css"
   },
   {
-    "revision": "9883001b0fcf1640011b",
+    "revision": "81fc6d78e612b55069b7",
     "url": "/adfontes/static/css/main.81ae4fb5.chunk.css"
   },
   {
-    "revision": "7baa02cd1b2e3b366357",
-    "url": "/adfontes/static/js/2.f6790025.chunk.js"
+    "revision": "4af9949891be8dbacaee",
+    "url": "/adfontes/static/js/2.dd7151dc.chunk.js"
   },
   {
-    "revision": "9883001b0fcf1640011b",
-    "url": "/adfontes/static/js/main.732c67f3.chunk.js"
+    "revision": "81fc6d78e612b55069b7",
+    "url": "/adfontes/static/js/main.57202000.chunk.js"
   },
   {
     "revision": "80b1d8c634162bfaefb0",
