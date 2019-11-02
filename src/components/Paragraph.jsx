@@ -1,8 +1,12 @@
 import React from 'react';
 import cetei from "../vendor/CETEI"
+import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
+import Citation from '@bit/jeffreycwitt.lbp.citation';
 var {connect} = require('react-redux');
 var actions = require('../actions/actions');
+
 //import CETEI from '../../node_modules/CETEIcean/src/CETEI';
+
 
 
 
@@ -11,10 +15,27 @@ class Paragraph extends React.Component{
   constructor(props){
     super(props)
     this.handleShowImages = this.handleShowImages.bind(this)
+    this.handleImageWrapperWraperClick = this.handleImageWrapperWraperClick.bind(this)
     this.handleShowFullText = this.handleShowFullText.bind(this)
     this.runQueryForSource = this.runQueryForSource.bind(this)
     this.addTEICustom = this.addTEICustom.bind(this)
     this.handleClearFilters = this.handleClearFilters
+    this.state = {
+      imageSize: 200,
+      imageFocus: false
+    }
+  }
+  handleImageWrapperWraperClick(){
+    this.setState((prevState) => {
+      const imageSize = prevState.imageSize === 200 ? 725 : 200
+      const imageFocus = prevState.imageFocus ? false : true
+      return{
+        imageSize,
+        imageFocus
+      }
+    })
+
+
   }
   handleShowImages(e){
     e.preventDefault();
@@ -137,7 +158,7 @@ class Paragraph extends React.Component{
       paragraph = this.props.paragraph;
     }
     //var {paragraph} = this.props;
-    var {expression_id, manifestation_id, paragraph_text, review} = paragraph
+    var {expression_id, manifestation_id, transcription_id, manifestations, paragraph_text, review} = paragraph
     // var domParser = new DOMParser();
     // var xsltProcessor = new XSLTProcessor();
     //
@@ -190,23 +211,52 @@ class Paragraph extends React.Component{
     function showLbpLink(){
 
     }
-
+    let newManifestations = []
+    if (manifestations && manifestations.constructor === Array) {
+      newManifestations = manifestations.map((m) => {
+        return {
+          manifestation: m,
+          manifestationTitle: m.split("/resource/")[1],
+          transcription:""
+        }
+      })
+    }
+    else if (typeof manifestations === "string")
+    {
+      newManifestations = [{
+        manifestation: manifestations,
+        manifestationTitle: manifestations.split("/resource/")[1],
+        transcription:""
+      }]
+    }
     return(
 
 
       <div>
         <p>Context Paragraph</p>
         <div id="text" ref="text"><div/></div>
-        {manifestation_id && <p><a href={manifestation_id}>{manifestation_id}</a></p>}
-        {manifestation_id && <p><a href={"http://sctalab.lombardpress.org/#/text?resourceid=" + manifestation_id} target="_blank">View in LbpWeb</a></p>}
-        {
+        {manifestation_id &&
+          <div id="imageWrapperWrapper" className={this.state.imageFocus ? "iww-big" : "iww-small"} >
+          <button onClick={this.handleImageWrapperWraperClick}>toggle</button>
+          <Surface3Wrapper
+           manifestations={newManifestations}
+           focusedManifestation={manifestation_id}
+           width={this.state.imageSize}
+         />
+         </div>
           //showImageToggle()
         }
         {showFullTextToggle()}
+        {manifestation_id && <p><a href={"http://sctalab.lombardpress.org/#/text?resourceid=" + manifestation_id} target="_blank">View in LbpWeb</a></p>}
         {
         //  showReview()
         }
         {(this.props.type === "source" && this.props.focusedQuotation.source) && <p onClick={() => {this.runQueryForSource(this.props.sourceParagraph.expression_id.split("/resource/")[1])}}>Search Quotations of this Passage Only</p>}
+        {
+          // no longer needed since citation component is in place
+          //manifestation_id && <p><a href={manifestation_id}>{manifestation_id}</a></p>
+        }
+        {manifestation_id && <Citation tresourceid={transcription_id}/>}
       </div>
     )
   }

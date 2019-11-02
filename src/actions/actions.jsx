@@ -1717,48 +1717,71 @@ export var fetchParagraph = () =>{
 
       if (idType === "expression"){
         query = [
-            "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ?transcription_item_file ",
-            "WHERE { ",
+          "CONSTRUCT",
+          "{",
+            "?expression_paragraph <http://scta.info/property/hasDefaultManifestation> ?manifestation_paragraph ;",
+            "<http://scta.info/property/hasManifestations> ?manifestations ;",
+            "<http://scta.info/property/hasDefaultTranscription> ?transcription_paragraph ;",
+            "<http://scta.info/property/isPartOfStructureItem> ?transcription_item ;",
+            "<http://scta.info/property/hasDocument> ?transcription_item_file ;",
+            "<http://scta.info/property/hasXML> ?xml_url .",
+          "}",
+          "WHERE { ",
             "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?expression_paragraph .",
             "?expression_paragraph <http://scta.info/property/hasCanonicalManifestation> ?manifestation_paragraph .",
-            "?manifestation_paragraph <http://scta.info/property/hasCanonicalTranscription> ?transcription_paragraph .",
-            "?transcription_paragraph <http://scta.info/property/isPartOfStructureItem> ?transcription_item .",
-            "?transcription_item <http://scta.info/property/hasDocument> ?transcription_item_file .",
-            "?transcription_paragraph <http://scta.info/property/hasXML> ?xml_url .",
-            "}"
-          ].join('');
-        }
-      else if (idType === "manifestation"){
-        query = [
-            "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ?transcription_item_file ",
-            "WHERE { ",
-            "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?manifestation_paragraph . ",
+            "?expression_paragraph <http://scta.info/property/hasManifestation> ?manifestations .",
             "?manifestation_paragraph <http://scta.info/property/isManifestationOf> ?expression_paragraph .",
             "?manifestation_paragraph <http://scta.info/property/hasCanonicalTranscription> ?transcription_paragraph .",
             "?transcription_paragraph <http://scta.info/property/isPartOfStructureItem> ?transcription_item .",
             "?transcription_item <http://scta.info/property/hasDocument> ?transcription_item_file .",
             "?transcription_paragraph <http://scta.info/property/hasXML> ?xml_url .",
-            "}"
+          "}"
           ].join('');
+        }
+      else if (idType === "manifestation"){
+        query = [
+          "CONSTRUCT",
+          "{",
+            "?expression_paragraph <http://scta.info/property/hasDefaultManifestation> ?manifestation_paragraph ;",
+             "<http://scta.info/property/hasManifestations> ?manifestations ;",
+             "<http://scta.info/property/hasDefaultTranscription> ?transcription_paragraph ;",
+             "<http://scta.info/property/isPartOfStructureItem> ?transcription_item ;",
+             "<http://scta.info/property/hasDocument> ?transcription_item_file ;",
+             "<http://scta.info/property/hasXML> ?xml_url .",
+          "}",
+          "WHERE { ",
+            "<" + quotationId + "> <http://scta.info/property/isPartOfStructureBlock> ?manifestation_paragraph . ",
+            "?manifestation_paragraph <http://scta.info/property/isManifestationOf> ?expression_paragraph .",
+            "?expression_paragraph <http://scta.info/property/hasManifestation> ?manifestations .",
+            "?manifestation_paragraph <http://scta.info/property/hasCanonicalTranscription> ?transcription_paragraph .",
+            "?transcription_paragraph <http://scta.info/property/isPartOfStructureItem> ?transcription_item .",
+            "?transcription_item <http://scta.info/property/hasDocument> ?transcription_item_file .",
+            "?transcription_paragraph <http://scta.info/property/hasXML> ?xml_url .",
+          "}"
+        ].join('');
       }
 
       dispatch(startParagraphFetch());
       axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
-        var results = res.data.results.bindings[0];
+        var results = res.data
         if (results){
-          axios.get(results.xml_url.value).then(function(res2){
+          axios.get(results.hasXML).then(function(res2){
             var paragraph = {
-              expression_id: results.expression_paragraph.value,
-              manifestation_id: results.manifestation_paragraph.value,
-              transcription_id: results.transcription_paragraph.value,
-              transcription_item_file: results.transcription_item_file ? results.transcription_item_file.value : "",
+              expression_id: results["@id"],
+              manifestations: results.hasManifestations,
+              manifestation_id: results.hasDefaultManifestation,
+              transcription_id: results.hasDefaultTranscription,
+              transcription_item_file: results.hasDocument,
               paragraph_text: res2.data
             }
             dispatch(completeParagraphFetch(paragraph));
             dispatch(fetchReview());
           });
         }
-      });
+      }).catch((err) => {
+        console.log("error:", err)
+      })
+      ;
     };
   };
 };
@@ -1816,10 +1839,19 @@ export var fetchSourceParagraph = () =>{
       var sourceParagraphid = state.focusedQuotation.source;
       //var expressionQuotationId = quotationid;
       var query = [
-          "SELECT ?expression_paragraph ?manifestation_paragraph ?transcription_paragraph ?xml_url ?transcription_item_file ",
+        "CONSTRUCT",
+        "{",
+          "?expression_paragraph <http://scta.info/property/hasDefaultManifestation> ?manifestation_paragraph ;",
+           "<http://scta.info/property/hasManifestations> ?manifestations ;",
+           "<http://scta.info/property/hasDefaultTranscription> ?transcription_paragraph ;",
+           "<http://scta.info/property/isPartOfStructureItem> ?transcription_item ;",
+           "<http://scta.info/property/hasDocument> ?transcription_item_file ;",
+           "<http://scta.info/property/hasXML> ?xml_url .",
+        "}",
           "WHERE { ",
           "BIND(<" + sourceParagraphid + "> as ?expression_paragraph) .",
           "?expression_paragraph <http://scta.info/property/hasCanonicalManifestation> ?manifestation_paragraph .",
+          "?expression_paragraph <http://scta.info/property/hasManifestation> ?manifestations .",
           "?manifestation_paragraph <http://scta.info/property/hasCanonicalTranscription> ?transcription_paragraph .",
           "?transcription_paragraph <http://scta.info/property/isPartOfStructureItem> ?transcription_item .",
           "?transcription_item <http://scta.info/property/hasDocument> ?transcription_item_file .",
@@ -1829,14 +1861,15 @@ export var fetchSourceParagraph = () =>{
 
       dispatch(startSourceParagraphFetch());
       axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
-        var results = res.data.results.bindings[0];
+        var results = res.data
         if (results){
-          axios.get(results.xml_url.value).then(function(res2){
+          axios.get(results.hasXML).then(function(res2){
             var sourceParagraph = {
-              expression_id: results.expression_paragraph.value,
-              manifestation_id: results.manifestation_paragraph.value,
-              transcription_id: results.transcription_paragraph.value,
-              transcription_item_file: results.transcription_item_file ? results.transcription_item_file.value : "",
+              expression_id: results["@id"],
+              manifestations: results.hasManifestations,
+              manifestation_id: results.hasDefaultManifestation,
+              transcription_id: results.hasDefaultTranscription,
+              transcription_item_file: results.hasDocument,
               paragraph_text: res2.data
             }
             dispatch(completeSourceParagraphFetch(sourceParagraph));

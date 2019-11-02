@@ -4,6 +4,9 @@
   "private": true,
   "homepage": "http://lombardpress.org/adfontes",
   "dependencies": {
+    "@bit/jeffreycwitt.lbp.citation": "^0.0.3",
+    "@bit/jeffreycwitt.lbp.citation-explanation": "^0.0.1",
+    "@bit/jeffreycwitt.lbp.surface3wrapper": "^1.2.0",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "d3": "3.5.17",

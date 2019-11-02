@@ -63,7 +63,7 @@ class TodoApp extends React.Component{
 						{/* <FocusedQuotation/>
 						<CanonicalQuotation/> */}
 					</div>
-					<div id="CanonicalQuotationList" className="column5">
+					<div className="column5">
 						{
 							//<CanonicalQuotationList/>
 							<Paragraph type="source"/>

@@ -1,0 +1,21 @@
+.image-display-choice{
+  display: flex;
+  justify-content: space-around;
+}
+.iww-small{
+
+}
+.iww-big{
+  position: fixed;
+  width: 57%;
+  height: 100vh;
+  left: 0;
+  top: 49px;
+  z-index: 1;
+  background-color: white;
+
+  .container{
+    background-color: white;
+    border: white;
+  }
+}
