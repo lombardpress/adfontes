@@ -2,6 +2,7 @@ import React from 'react';
 import cetei from "../vendor/CETEI"
 import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
 import Citation from '@bit/jeffreycwitt.lbp.citation';
+//import {FaExpand, FaCompress} from 'react-icons/fa';
 var {connect} = require('react-redux');
 var actions = require('../actions/actions');
 
@@ -236,8 +237,8 @@ class Paragraph extends React.Component{
         <p>Context Paragraph</p>
         <div id="text" ref="text"><div/></div>
         {manifestation_id &&
-          <div id="imageWrapperWrapper" className={this.state.imageFocus ? "iww-big" : "iww-small"} >
-          <button onClick={this.handleImageWrapperWraperClick}>toggle</button>
+          <div id="imageWrapperWrapper" className={this.state.imageFocus ? "iww-big" : "iww-small"}>
+          {this.state.imageFocus ? <hr className="toggleBar" title="click to minimize" onClick={this.handleImageWrapperWraperClick}/> : <hr className="toggleBar" title="click to maximize" onClick={this.handleImageWrapperWraperClick}/>}
           <Surface3Wrapper
            manifestations={newManifestations}
            focusedManifestation={manifestation_id}

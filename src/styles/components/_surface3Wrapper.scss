@@ -19,3 +19,12 @@
     border: white;
   }
 }
+
+.toggleBar{
+  border: 2px solid #888384;
+  cursor: grab;
+  margin-bottom: .5em;
+}
+.toggleBar:hover{
+  border: 2px solid black;
+}
