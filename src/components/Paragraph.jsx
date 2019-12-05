@@ -22,7 +22,7 @@ class Paragraph extends React.Component{
     this.addTEICustom = this.addTEICustom.bind(this)
     this.handleClearFilters = this.handleClearFilters
     this.state = {
-      imageSize: 200,
+      imageSize: "200",
       imageFocus: false
     }
   }
@@ -252,7 +252,7 @@ class Paragraph extends React.Component{
         {
         //  showReview()
         }
-        {(this.props.type === "source" && this.props.focusedQuotation.source) && <p onClick={() => {this.runQueryForSource(this.props.sourceParagraph.expression_id.split("/resource/")[1])}}>Search Quotations of this Passage Only</p>}
+        {(this.props.type === "source" && this.props.focusedQuotation.id) && <p className="link" onClick={() => {this.runQueryForSource(this.props.sourceParagraph.expression_id.split("/resource/")[1])}}>Search Quotations of this Passage Only</p>}
         {
           // no longer needed since citation component is in place
           //manifestation_id && <p><a href={manifestation_id}>{manifestation_id}</a></p>
