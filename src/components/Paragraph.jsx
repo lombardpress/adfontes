@@ -28,7 +28,7 @@ class Paragraph extends React.Component{
   }
   handleImageWrapperWraperClick(){
     this.setState((prevState) => {
-      const imageSize = prevState.imageSize === 200 ? 725 : 200
+      const imageSize = prevState.imageSize === "200" ? "725" : "200"
       const imageFocus = prevState.imageFocus ? false : true
       return{
         imageSize,
