@@ -1765,13 +1765,13 @@ export var fetchParagraph = () =>{
       axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
         var results = res.data
         if (results){
-          axios.get(results.hasXML).then(function(res2){
+          axios.get(results.hasXML.replace("http://", "https://")).then(function(res2){
             var paragraph = {
               expression_id: results["@id"],
               manifestations: results.hasManifestations,
               manifestation_id: results.hasDefaultManifestation,
               transcription_id: results.hasDefaultTranscription,
-              transcription_item_file: results.hasDocument,
+              transcription_item_file: results.hasDocument.replace("http://", "https://"),
               paragraph_text: res2.data
             }
             dispatch(completeParagraphFetch(paragraph));
@@ -1802,7 +1802,7 @@ export var fetchReview = () =>{
 
     if (state.paragraph.transcription_item_file){
       var url = state.paragraph.transcription_item_file;
-      var reviewUrl = "http://dll-review-registry.scta.info/api/v1/reviews?url=" + url + "&society=MAA";
+      var reviewUrl = "https://dll-review-registry.scta.info/api/v1/reviews?url=" + url + "&society=MAA";
       dispatch(startReviewFetch());
       axios.get(reviewUrl).then(function(res){
         var review = res.data[0];
@@ -1863,13 +1863,13 @@ export var fetchSourceParagraph = () =>{
       axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
         var results = res.data
         if (results){
-          axios.get(results.hasXML).then(function(res2){
+          axios.get(results.hasXML.replace("http://", "https://")).then(function(res2){
             var sourceParagraph = {
               expression_id: results["@id"],
               manifestations: results.hasManifestations,
               manifestation_id: results.hasDefaultManifestation,
               transcription_id: results.hasDefaultTranscription,
-              transcription_item_file: results.hasDocument,
+              transcription_item_file: results.hasDocument.replace("http://", "https://"),
               paragraph_text: res2.data
             }
             dispatch(completeSourceParagraphFetch(sourceParagraph));
@@ -1897,7 +1897,7 @@ export var fetchSourceParagraphReview = () =>{
 
     if (state.sourceParagraph.transcription_item_file){
       var url = state.sourceParagraph.transcription_item_file;
-      var reviewUrl = "http://dll-review-registry.scta.info/api/v1/reviews?url=" + url + "&society=MAA";
+      var reviewUrl = "https://dll-review-registry.scta.info/api/v1/reviews?url=" + url + "&society=MAA";
       dispatch(startSourceParagraphFetch());
       axios.get(reviewUrl).then(function(res){
         var review = res.data[0];
@@ -1992,7 +1992,7 @@ export var fetchFullText = (source=false) =>{
             expression_id: results.expression_item.value,
             manifestation_id: results.manifestation_item.value,
             transcription_id: results.transcription_item.value,
-            transcription_item_file: results.transcription_item_file ? results.transcription_item_file.value : "",
+            transcription_item_file: results.transcription_item_file ? results.transcription_item_file.value.replace("http://", "https://") : "",
             text: res2.data
           }
           dispatch(completeFullTextFetch(text));
