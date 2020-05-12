@@ -200,8 +200,8 @@ class Paragraph extends React.Component{
 
     function showReview(){
       if (review){
-        var reviewLink  = "http://dll-review-registry.scta.info/reviews/" + review["id"] + ".html";
-        var ipfsGatewayLink  = "http://gateway.scta.info/ipfs/" + review["ipfs-hash"];
+        var reviewLink  = "https://dll-review-registry.scta.info/reviews/" + review["id"] + ".html";
+        var ipfsGatewayLink  = "https://gateway.scta.info/ipfs/" + review["ipfs-hash"];
         return(
           <p>
             <a href={reviewLink} target="_blank"><img src={review["badge-url"]}/></a> Content extracted from reviewed data source <a href={ipfsGatewayLink} target="_blank">{review["ipfs-hash"]}</a>
@@ -248,7 +248,7 @@ class Paragraph extends React.Component{
           //showImageToggle()
         }
         {showFullTextToggle()}
-        {manifestation_id && <p><a href={"http://sctalab.lombardpress.org/#/text?resourceid=" + manifestation_id} target="_blank">View in LbpWeb</a></p>}
+        {manifestation_id && <p><a href={"http://scta.lombardpress.org/#/text?resourceid=" + manifestation_id} target="_blank">View in LbpWeb</a></p>}
         {
         //  showReview()
         }

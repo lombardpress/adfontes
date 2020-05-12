@@ -1987,7 +1987,7 @@ export var fetchFullText = (source=false) =>{
       axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
         var results = res.data.results.bindings[0];
         console.log("full text results", results)
-        axios.get(results.xml_url.value).then(function(res2){
+        axios.get(results.xml_url.value.replace("http://", "https://")).then(function(res2){
           var text = {
             expression_id: results.expression_item.value,
             manifestation_id: results.manifestation_item.value,
