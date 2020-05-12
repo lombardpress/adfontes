@@ -4,6 +4,8 @@ import $ from 'jquery';
 import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
 import Citation from '@bit/jeffreycwitt.lbp.citation';
 
+import {FaInfo, FaRegImage} from 'react-icons/fa';
+
 var {connect} = require('react-redux');
 var actions = require('../actions/actions');
 
@@ -13,10 +15,30 @@ class ManifestationQuotationListItem extends React.Component{
 	constructor(props){
 		super(props)
 		this.handleOnClick = this.handleOnClick.bind(this)
+		this.handleToggleShowImage = this.handleToggleShowImage.bind(this)
+		this.handleToggleShowCitation = this.handleToggleShowCitation.bind(this)
 		this.state = {
       imageSize: "200",
-      imageFocus: false
+			imageFocus: false,
+			showImage: false,
+			showCitation: false
     }
+	}
+	handleToggleShowImage(){
+		console.log("test")
+		this.setState((prevState) => {
+			return({
+				showImage: !prevState.showImage
+			})
+		})
+	}
+	handleToggleShowCitation(){
+		this.setState((prevState) => {
+			return({
+				showCitation: !prevState.showCitation
+			})
+		})
+
 	}
 	handleOnClick(){
 		var {isManifestationOf, id, quotation, dispatch} = this.props;
@@ -98,7 +120,7 @@ class ManifestationQuotationListItem extends React.Component{
 
 
 	render(){
-		var {id, quotation, className} = this.props
+		var {id, quotation, className, canonicalTranscription} = this.props
 		const newManifestations = [{
 			manifestation: id,
 			manifestationTitle: id.split("/resource/")[1],
@@ -106,15 +128,24 @@ class ManifestationQuotationListItem extends React.Component{
 		}]
     return(
 			<div>
-				<p id={id} className={className} onClick={this.handleOnClick}>{quotation}</p>
-				<Surface3Wrapper
-           manifestations={newManifestations}
-           focusedManifestation={id}
-           width={this.state.imageSize}
-         />
-				 {
-				 /* could add citation here (perhaps in hidden drop down) */
-					}
+				<p id={id} className={className} onClick={this.handleOnClick}>{quotation} 
+					<a href={id} className="quotation-citation">{id}</a>
+					<span onClick={this.handleToggleShowImage}><FaRegImage/></span> 
+					<span onClick={this.handleToggleShowCitation}><FaInfo/></span>
+				</p>
+				<div>
+					{this.state.showImage &&
+						<Surface3Wrapper
+						manifestations={newManifestations}
+						focusedManifestation={id}
+						width={this.state.imageSize}
+					/>}
+					{this.state.showCitation && canonicalTranscription &&
+							/* could add citation here (perhaps in hidden drop down) */
+						<Citation tresourceid={canonicalTranscription}/>
+						}
+					</div>
+					
 			</div>
 		)
 	}

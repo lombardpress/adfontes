@@ -17,7 +17,8 @@ export var manifestationQuotationsReducer = (state = [], action) => {
           id: quotation.quotation.value,
           quotation: quotation.quotation_text.value,
           focused: false,
-          isManifestationOf: quotation.isManifestationOf ? quotation.isManifestationOf.value : null
+          isManifestationOf: quotation.isManifestationOf ? quotation.isManifestationOf.value : null,
+          canonicalTranscription: quotation.canonicalTranscription ? quotation.canonicalTranscription.value : null
         }
       });
     case 'CLEAR_MANIFESTATION_QUOTATIONS_FOCUS':

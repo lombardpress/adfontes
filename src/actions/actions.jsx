@@ -1654,22 +1654,30 @@ export var fetchManifestationQuotations = () =>{
     if (state.focusedQuotation.id != undefined){
       var expressionQuotationId = state.focusedQuotation.id;
       query = [
-            "SELECT ?quotation ?isManifestationOf ?quotation_text ",
+            "SELECT ?quotation ?isManifestationOf ?quotation_text ?canonicalTranscription ",
             "WHERE {",
             "<" + expressionQuotationId + "> <http://scta.info/property/hasManifestation> ?quotation .",
             "?quotation <http://scta.info/property/isManifestationOf> ?isManifestationOf .",
             "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
+            "OPTIONAL",
+            "{",
+              "?quotation <http://scta.info/property/hasCanonicalTranscription> ?canonicalTranscription .",
+            "}",
             "}"
           ].join('');
     }
     else{
       query = [
-          "SELECT ?quotation ?isManifestationOf ?quotation_text ",
+          "SELECT ?quotation ?isManifestationOf ?quotation_text ?canonicalTranscription ",
           "WHERE {",
           "?quotation <http://scta.info/property/structureElementType> <http://scta.info/resource/structureElementQuote> .",
           "?quotation a <http://scta.info/resource/manifestation> .",
           "?quotation <http://scta.info/property/isManifestationOf> ?isManifestationOf .",
           "?quotation <http://scta.info/property/structureElementText> ?quotation_text .",
+          "OPTIONAL",
+          "{",
+            "?quotation <http://scta.info/property/hasCanonicalTranscription> ?canonicalTranscription .",
+          "}",
           "FILTER (REGEX(STR(?quotation_text), '" + searchText + "', 'i')) .",
           "}",
           "ORDER BY ?isInstanceOf ",
