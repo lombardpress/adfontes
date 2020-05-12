@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d172fbb4c961a916f8457598abf7c272",
+    "revision": "bccd4a88b3ebe90bda48c6d57a88984c",
     "url": "/adfontes/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adfontes/static/css/2.0cee8fd6.chunk.css"
   },
   {
-    "revision": "2d3dfbaf9086e247b69d",
+    "revision": "6aee3b76988cb5f0a093",
     "url": "/adfontes/static/css/main.d8fcd9e0.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adfontes/static/js/2.e786c70f.chunk.js"
   },
   {
-    "revision": "2d3dfbaf9086e247b69d",
-    "url": "/adfontes/static/js/main.eda07c46.chunk.js"
+    "revision": "6aee3b76988cb5f0a093",
+    "url": "/adfontes/static/js/main.2e331c8a.chunk.js"
   },
   {
     "revision": "8477985853c4dddcdb7c",
