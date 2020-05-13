@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-//const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
+const sparqlEndpoint = "https://sparql-docker.scta.info/ds/query"
 //const sparqlEndpoint = "http://sparql-staging.scta.info/ds/query"
-const sparqlEndpoint = "http://localhost:3030/ds/query"
+//const sparqlEndpoint = "http://localhost:3030/ds/query"
 
 ///search actions
 //===============
@@ -1772,7 +1772,7 @@ export var fetchParagraph = () =>{
       dispatch(startParagraphFetch());
       axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
         var results = res.data
-        if (results){
+        if (results.hasXML){
           axios.get(results.hasXML.replace("http://", "https://")).then(function(res2){
             var paragraph = {
               expression_id: results["@id"],
@@ -1870,7 +1870,7 @@ export var fetchSourceParagraph = () =>{
       dispatch(startSourceParagraphFetch());
       axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
         var results = res.data
-        if (results){
+        if (results.hasXML){
           axios.get(results.hasXML.replace("http://", "https://")).then(function(res2){
             var sourceParagraph = {
               expression_id: results["@id"],

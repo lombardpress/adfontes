@@ -17,12 +17,23 @@ class ManifestationQuotationListItem extends React.Component{
 		this.handleOnClick = this.handleOnClick.bind(this)
 		this.handleToggleShowImage = this.handleToggleShowImage.bind(this)
 		this.handleToggleShowCitation = this.handleToggleShowCitation.bind(this)
+		this.handleImageWrapperWraperClick = this.handleImageWrapperWraperClick.bind(this)
 		this.state = {
       imageSize: "200",
 			imageFocus: false,
 			showImage: false,
 			showCitation: false
     }
+	}
+	handleImageWrapperWraperClick(){
+    this.setState((prevState) => {
+      const imageSize = prevState.imageSize === "200" ? "725" : "200"
+      const imageFocus = prevState.imageFocus ? false : true
+      return{
+        imageSize,
+        imageFocus
+      }
+		})
 	}
 	handleToggleShowImage(){
 		console.log("test")
@@ -133,13 +144,19 @@ class ManifestationQuotationListItem extends React.Component{
 					<span onClick={this.handleToggleShowImage}><FaRegImage/></span> 
 					<span onClick={this.handleToggleShowCitation}><FaInfo/></span>
 				</p>
-				<div>
+				<div id="mImageWrapperWrapper" className={this.state.imageFocus ? "iww-big" : "iww-small"}>
+          
 					{this.state.showImage &&
+					<div>
+						{this.state.imageFocus ? <hr className="toggleBar" title="click to minimize" onClick={this.handleImageWrapperWraperClick}/> : <hr className="toggleBar" title="click to maximize" onClick={this.handleImageWrapperWraperClick}/>}
 						<Surface3Wrapper
 						manifestations={newManifestations}
 						focusedManifestation={id}
 						width={this.state.imageSize}
-					/>}
+					/>
+					</div>
+					}
+					
 					{this.state.showCitation && canonicalTranscription &&
 							/* could add citation here (perhaps in hidden drop down) */
 						<Citation tresourceid={canonicalTranscription}/>
