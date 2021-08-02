@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import CanonicalQuotationListItem from "./CanonicalQuotationListItem"
 
 var actions = require('../actions/actions');
-
+//TODO: this component should be deleted
 class CanonicalQuotationList extends React.Component{
 	constructor(props){
 		super(props)

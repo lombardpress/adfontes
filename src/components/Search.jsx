@@ -130,13 +130,20 @@ class Search extends React.Component{
     //   workGroup
     // }
 
-    if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
-		dispatch(actions.clearFocusedQuotation());
+    
+    //TODO: delete; because canonical is not used any more
+
+    // if (!retainCanonical) dispatch(actions.clearCanonicalQuotation());
+		
+    dispatch(actions.clearFocusedQuotation());
     dispatch(actions.clearManifestationQuotations());
 		dispatch(actions.clearParagraph());
     dispatch(actions.clearSourceParagraph());
-		if (!retainCanonical) dispatch(actions.fetchCanonicalQuotations());
-		dispatch(actions.fetchQuotations());
+		
+    //TODO: delete; because canonical is not used any more
+    //if (!retainCanonical) dispatch(actions.fetchCanonicalQuotations());
+		
+    dispatch(actions.fetchQuotations());
 		dispatch(actions.fetchChart());
 	}
   handleClearFilters(e){
