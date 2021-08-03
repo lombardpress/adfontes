@@ -248,7 +248,7 @@ class Paragraph extends React.Component{
           //showImageToggle()
         }
         {showFullTextToggle()}
-        {manifestation_id && <p><a href={"https://scta.lombardpress.org/#/text?resourceid=" + manifestation_id} target="_blank">View in LbpWeb</a></p>}
+        {manifestation_id && <p><a href={"https://scta.lombardpress.org/res?resourceid=" + manifestation_id} target="_blank">View in LbpWeb</a></p>}
         {
         //  showReview()
         }
