@@ -1161,9 +1161,7 @@ export var fetchQuotations = () =>{
           structureElementTypeSparql,
           "?quotation <http://scta.info/property/structureElementType> ?refType . ",
           "?quotation a <http://scta.info/resource/expression> .",
-          "OPTIONAL {",
           sourceUnion(),
-          "}",
           expressionIdSparql,
           quotationAuthorCoreSparql,
           quotationWorkGroupSparql,
@@ -1193,6 +1191,7 @@ export var fetchQuotations = () =>{
           "LIMIT 100"
         ].join('');
     dispatch(startQuotationsFetch());
+    console.log("query", query)
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
 
