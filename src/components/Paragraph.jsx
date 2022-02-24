@@ -160,6 +160,11 @@ class Paragraph extends React.Component{
     }
     //var {paragraph} = this.props;
     var {expression_id, manifestation_id, transcription_id, manifestations, paragraph_text, review} = paragraph
+
+    // NOTE: sparql is returning construct id as sctar:<id>; this needs to be converted to its expanded form 
+    const transcription_id_expanded = transcription_id && transcription_id.replace("sctar:", "http://scta.info/resource/")
+    
+    
     // var domParser = new DOMParser();
     // var xsltProcessor = new XSLTProcessor();
     //
@@ -257,7 +262,7 @@ class Paragraph extends React.Component{
           // no longer needed since citation component is in place
           //manifestation_id && <p><a href={manifestation_id}>{manifestation_id}</a></p>
         }
-        {manifestation_id && <Citation tresourceid={transcription_id}/>}
+        {manifestation_id && <Citation tresourceid={transcription_id_expanded}/>}
       </div>
     )
   }

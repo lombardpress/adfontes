@@ -1191,7 +1191,6 @@ export var fetchQuotations = () =>{
           "LIMIT 100"
         ].join('');
     dispatch(startQuotationsFetch());
-    console.log("query", query)
     axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
       var results = res.data.results.bindings
 
@@ -1530,6 +1529,7 @@ export var fetchSourceParagraph = () =>{
               transcription_item_file: results.hasDocument.replace("http://", "https://"),
               paragraph_text: res2.data
             }
+            console.log("sourceP", sourceParagraph)
             dispatch(completeSourceParagraphFetch(sourceParagraph));
           //dispatch(fetchSourceParagraphReview());
           });
@@ -1640,11 +1640,9 @@ export var fetchFullText = (source=false) =>{
             "}"
           ].join('');
       }
-      console.log(query)
       dispatch(startFullTextFetch());
       axios.get(sparqlEndpoint, {params: {"query" : query, "output": "json"}}).then(function(res){
         var results = res.data.results.bindings[0];
-        console.log("full text results", results)
         axios.get(results.xml_url.value.replace("http://", "https://")).then(function(res2){
           var text = {
             expression_id: results.expression_item.value,

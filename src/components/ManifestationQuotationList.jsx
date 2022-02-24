@@ -28,7 +28,16 @@ class ManifestationQuotationList extends React.Component{
 		return(
 			<div>
 				<p>List of Manifestation Quotations</p>
-        <p>Count {manifestationQuotations.length}</p>
+        <p>Count {manifestationQuotations.length}
+          {(manifestationQuotations[0] && manifestationQuotations[0].isManifestationOf) &&
+          <>
+            | <a href={"https://lombardpress.org/collation-vizualizer/collatexView.html?id=" + manifestationQuotations[0].isManifestationOf} target="_blank">Collation </a>
+            | <a href={"https://mirador.scta.info/?blockid=" + manifestationQuotations[0].isManifestationOf} target="_blank">
+              <img alt="view in mirador" src="https://projectmirador.org/img/mirador-logo.svg" style={{width: "12px", height: "12px"}}/>
+            </a>
+          </>
+          }
+        </p>
         {renderQuotations()}
 			</div>
 		)

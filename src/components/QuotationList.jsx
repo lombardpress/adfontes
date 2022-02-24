@@ -16,7 +16,7 @@ class QuotationList extends React.Component{
         );
       }
 			else {
-				return quotations.map( (quotation) => {
+				return quotations.map( (quotation, idx) => {
 					//var quotationClass = quotation.focused ? "quotation focused" : "quotation"
 					let quotationClass = ""
 					if (focusedQuotation.id){
@@ -32,9 +32,13 @@ class QuotationList extends React.Component{
 					}
 					var refType = quotation.refType
 					var classes = quotationClass + " " + quotation.refType
+					
+          //NOTE: in the return statement below react complains of duplicate keys with out the addition of the ids
+          //this could suggest duplicate quotation results. But I don't see any duplicates at the moment
+          //adding the idx removes the warning; but the reason for the warning is still unclear.
 	        return (
 
-	          <Quotation className={classes} key={quotation.id} {...quotation}/>
+	          <Quotation className={classes} key={idx + "-" + quotation.id} {...quotation}/>
 	        );
 	      });
 			}
