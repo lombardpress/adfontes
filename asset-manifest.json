@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/adfontes/static/css/main.1a216582.chunk.css",
-    "main.js": "/adfontes/static/js/main.3c48e48b.chunk.js",
-    "main.js.map": "/adfontes/static/js/main.3c48e48b.chunk.js.map",
+    "main.css": "/adfontes/static/css/main.1f17c6fc.chunk.css",
+    "main.js": "/adfontes/static/js/main.314805be.chunk.js",
+    "main.js.map": "/adfontes/static/js/main.314805be.chunk.js.map",
     "runtime~main.js": "/adfontes/static/js/runtime~main.eb45c678.js",
     "runtime~main.js.map": "/adfontes/static/js/runtime~main.eb45c678.js.map",
     "static/css/2.22a7d4ef.chunk.css": "/adfontes/static/css/2.22a7d4ef.chunk.css",
-    "static/js/2.4a38e6be.chunk.js": "/adfontes/static/js/2.4a38e6be.chunk.js",
-    "static/js/2.4a38e6be.chunk.js.map": "/adfontes/static/js/2.4a38e6be.chunk.js.map",
+    "static/js/2.cb4ba28a.chunk.js": "/adfontes/static/js/2.cb4ba28a.chunk.js",
+    "static/js/2.cb4ba28a.chunk.js.map": "/adfontes/static/js/2.cb4ba28a.chunk.js.map",
     "index.html": "/adfontes/index.html",
-    "precache-manifest.329a0466546c637672435ef9e1870a6d.js": "/adfontes/precache-manifest.329a0466546c637672435ef9e1870a6d.js",
+    "precache-manifest.f206afba04600cde3a50015f8c9388e5.js": "/adfontes/precache-manifest.f206afba04600cde3a50015f8c9388e5.js",
     "service-worker.js": "/adfontes/service-worker.js",
     "static/css/2.22a7d4ef.chunk.css.map": "/adfontes/static/css/2.22a7d4ef.chunk.css.map",
-    "static/css/main.1a216582.chunk.css.map": "/adfontes/static/css/main.1a216582.chunk.css.map"
+    "static/css/main.1f17c6fc.chunk.css.map": "/adfontes/static/css/main.1f17c6fc.chunk.css.map"
   }
 }
