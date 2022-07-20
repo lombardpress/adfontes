@@ -219,10 +219,11 @@ class Paragraph extends React.Component{
     }
     let newManifestations = []
     if (manifestations && manifestations.constructor === Array) {
+      console.log("manifestations", manifestations)
       newManifestations = manifestations.map((m) => {
         return {
-          manifestation: m,
-          manifestationTitle: m.split("/resource/")[1],
+          manifestation: m.replace("sctar:", "http://scta.info/resource/"),
+          manifestationTitle: m.replace("sctar:", "http://scta.info/resource/").split("/resource/")[1],
           transcription:""
         }
       })
@@ -230,8 +231,8 @@ class Paragraph extends React.Component{
     else if (typeof manifestations === "string")
     {
       newManifestations = [{
-        manifestation: manifestations,
-        manifestationTitle: manifestations.split("/resource/")[1],
+        manifestation: manifestations.replace("sctar:", "http://scta.info/resource/"),
+        manifestationTitle: manifestations.replace("sctar:", "http://scta.info/resource/").split("/resource/")[1],
         transcription:""
       }]
     }
