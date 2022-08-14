@@ -2,7 +2,8 @@ import React from 'react'
 import $ from 'jquery';
 
 import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
-import Citation from '@bit/jeffreycwitt.lbp.citation';
+//import Citation from '@bit/jeffreycwitt.lbp.citation';
+import {Citation} from '@jeffreycwitt/lbp2.citation';
 
 import {FaInfo, FaRegImage} from 'react-icons/fa';
 

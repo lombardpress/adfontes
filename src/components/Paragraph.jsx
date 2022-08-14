@@ -1,7 +1,8 @@
 import React from 'react';
 import cetei from "../vendor/CETEI"
 import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
-import Citation from '@bit/jeffreycwitt.lbp.citation';
+//import Citation from '@bit/jeffreycwitt.lbp.citation';
+import {Citation} from '@jeffreycwitt/lbp2.citation';
 //import {FaExpand, FaCompress} from 'react-icons/fa';
 var {connect} = require('react-redux');
 var actions = require('../actions/actions');
