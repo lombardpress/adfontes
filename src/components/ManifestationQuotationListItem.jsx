@@ -1,7 +1,8 @@
 import React from 'react'
 import $ from 'jquery';
 
-import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
+//import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
+import {Surface3Wrapper} from '@jeffreycwitt/lbp2.surface3wrapper';
 //import Citation from '@bit/jeffreycwitt.lbp.citation';
 import {Citation} from '@jeffreycwitt/lbp2.citation';
 
@@ -20,15 +21,16 @@ class ManifestationQuotationListItem extends React.Component{
 		this.handleToggleShowCitation = this.handleToggleShowCitation.bind(this)
 		this.handleImageWrapperWraperClick = this.handleImageWrapperWraperClick.bind(this)
 		this.state = {
-      imageSize: "200",
+      imageSize: "300",
 			imageFocus: false,
 			showImage: false,
 			showCitation: false
     }
 	}
+
 	handleImageWrapperWraperClick(){
     this.setState((prevState) => {
-      const imageSize = prevState.imageSize === "200" ? "725" : "200"
+      const imageSize = prevState.imageSize === "300" ? "800" : "300"
       const imageFocus = prevState.imageFocus ? false : true
       return{
         imageSize,
@@ -148,12 +150,14 @@ class ManifestationQuotationListItem extends React.Component{
 				<div id="mImageWrapperWrapper" className={this.state.imageFocus ? "iww-big" : "iww-small"}>
           
 					{this.state.showImage &&
-					<div>
+					<div style={{padding: "2px 0"}}>
 						{this.state.imageFocus ? <hr className="toggleBar" title="click to minimize" onClick={this.handleImageWrapperWraperClick}/> : <hr className="toggleBar" title="click to maximize" onClick={this.handleImageWrapperWraperClick}/>}
 						<Surface3Wrapper
+						hideSelectionList={true}
+						hideCustomImageForm={true}
 						manifestations={newManifestations}
 						focusedManifestation={id}
-						width={this.state.imageSize}
+						width={parseInt(this.state.imageSize)}
 					/>
 					</div>
 					}

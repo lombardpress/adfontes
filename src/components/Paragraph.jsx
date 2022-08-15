@@ -1,6 +1,7 @@
 import React from 'react';
 import cetei from "../vendor/CETEI"
-import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
+//import Surface3Wrapper from '@bit/jeffreycwitt.lbp.surface3wrapper';
+import {Surface3Wrapper} from '@jeffreycwitt/lbp2.surface3wrapper';
 //import Citation from '@bit/jeffreycwitt.lbp.citation';
 import {Citation} from '@jeffreycwitt/lbp2.citation';
 //import {FaExpand, FaCompress} from 'react-icons/fa';
@@ -23,13 +24,13 @@ class Paragraph extends React.Component{
     this.addTEICustom = this.addTEICustom.bind(this)
     this.handleClearFilters = this.handleClearFilters
     this.state = {
-      imageSize: "200",
+      imageSize: "300",
       imageFocus: false
     }
   }
   handleImageWrapperWraperClick(){
     this.setState((prevState) => {
-      const imageSize = prevState.imageSize === "200" ? "725" : "200"
+      const imageSize = prevState.imageSize === "300" ? "800" : "300"
       const imageFocus = prevState.imageFocus ? false : true
       return{
         imageSize,
@@ -220,7 +221,6 @@ class Paragraph extends React.Component{
     }
     let newManifestations = []
     if (manifestations && manifestations.constructor === Array) {
-      console.log("manifestations", manifestations)
       newManifestations = manifestations.map((m) => {
         return {
           manifestation: m.replace("sctar:", "http://scta.info/resource/"),
@@ -249,8 +249,10 @@ class Paragraph extends React.Component{
           <Surface3Wrapper
            manifestations={newManifestations}
            focusedManifestation={manifestation_id}
-           width={this.state.imageSize}
-         />
+           width={parseInt(this.state.imageSize)}
+           hideCustomImageForm={true}
+           hideSelectionList={false}
+           />
          </div>
           //showImageToggle()
         }
