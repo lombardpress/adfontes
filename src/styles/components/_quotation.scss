@@ -49,6 +49,7 @@
   //border: .5px solid $light-color;
   border-right: solid .25rem lighten($theme-color, 20%);
   background-color: white;
+ 
 
 }
 .column1{
@@ -72,11 +73,13 @@
 .column4{
   width: 21%;
   left: 58%;
+  //z-index: -1;
 
 }
 .column5{
   width: 21%;
   left: 79%;
+  //z-index: -1;
 
 }
 
@@ -87,4 +90,10 @@
 .quotation-wrapper{
   padding: 0.2rem;
   margin: 0;
+}
+
+// overrides collationTable left position based on mouseclick position
+// NOTE: not the best solution, but style api of CollationTable needs to be improved first
+.imageViewWrapper{
+  left: 0 !important;
 }

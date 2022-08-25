@@ -1,11 +1,29 @@
 import React from 'react'
 import {connect} from 'react-redux';
-
+import { CollationTable } from '@jeffreycwitt/lbp2.collation-table';
 
 import ManifestationQuotationListItem from "./ManifestationQuotationListItem"
 var actions = require('../actions/actions');
 
 class ManifestationQuotationList extends React.Component{
+  constructor(props){
+    super(props)
+    this.handleToggleCollation = this.handleToggleCollation.bind(this)
+    this.state = {
+      showCollation: false
+    }
+  }
+  handleToggleCollation(){
+    console.log("firing")
+    this.setState((prevState) => {
+      console.log("prevState", prevState.showCollation)
+      return {
+        showCollation: !prevState.showCollation
+      }
+    })
+
+  }
+
 	render(){
     var {manifestationQuotations} = this.props;
     var renderQuotations = () => {
@@ -31,14 +49,21 @@ class ManifestationQuotationList extends React.Component{
         <p>Count {manifestationQuotations.length}
           {(manifestationQuotations[0] && manifestationQuotations[0].isManifestationOf) &&
           <>
-            | <a href={"https://lombardpress.org/collation-vizualizer/collatexView.html?id=" + manifestationQuotations[0].isManifestationOf} target="_blank">Collation </a>
-            | <a href={"https://mirador.scta.info/?blockid=" + manifestationQuotations[0].isManifestationOf} target="_blank">
+            | <span className="link" onClick={this.handleToggleCollation}>Collation</span>
+            | 
+            <a href={"https://mirador.scta.info/?blockid=" + manifestationQuotations[0].isManifestationOf} target="_blank">
               <img alt="view in mirador" src="https://projectmirador.org/img/mirador-logo.svg" style={{width: "12px", height: "12px"}}/>
             </a>
           </>
           }
         </p>
         {renderQuotations()}
+        {this.state.showCollation &&
+        <div id="collationWrapper" className={"iww-big"}>
+          <span onClick={this.handleToggleCollation}>x</span>
+          {manifestationQuotations[0] && <CollationTable expressionId={manifestationQuotations[0].isManifestationOf}></CollationTable>}
+        </div>
+        }
 			</div>
 		)
 	}
