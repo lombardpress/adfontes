@@ -61,7 +61,7 @@ class ManifestationQuotationList extends React.Component{
         {this.state.showCollation &&
         <div id="collationWrapper" className={"iww-big"}>
           <span onClick={this.handleToggleCollation}>x</span>
-          {manifestationQuotations[0] && <CollationTable expressionId={manifestationQuotations[0].isManifestationOf}></CollationTable>}
+          {manifestationQuotations[0] && <CollationTable expressionIds={[manifestationQuotations[0].isManifestationOf]}></CollationTable>}
         </div>
         }
 			</div>

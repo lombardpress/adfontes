@@ -901,14 +901,15 @@
     prop-types "^15.8.1"
     react-icons "^4.4.0"
 
-"@jeffreycwitt/lbp2.collation-table@^0.0.6":
-  version "0.0.6"
-  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.collation-table/-/@jeffreycwitt-lbp2.collation-table-0.0.6.tgz#7ec77918fff64cacc11e142b9966f5fbfc7db079"
-  integrity sha1-fsd5GP/2TKzBHhQrmWb1+/x9sHk=
+"@jeffreycwitt/lbp2.collation-table@^0.0.8":
+  version "0.0.8"
+  resolved "https://node.bit.cloud/@jeffreycwitt/lbp2.collation-table/-/@jeffreycwitt-lbp2.collation-table-0.0.8.tgz#b1aa14b53eec02c5dce843b770f7d259a007071b"
+  integrity sha1-saoUtT7sAsXc6EO3cPfSWaAHBxs=
   dependencies:
     "@jeffreycwitt/lbp2.surface3" "0.0.18"
     axios "^0.27.2"
     core-js "^3.0.0"
+    prop-types "^15.8.1"
     react-icons "^4.4.0"
 
 "@jeffreycwitt/lbp2.iiif-image-logo@0.0.5":
